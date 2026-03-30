@@ -1,0 +1,39 @@
+# MailPilot - Root .htaccess
+
+# Enable mod_rewrite
+RewriteEngine On
+
+# Protect sensitive files
+<FilesMatch "(config\.php|\.htaccess|\.log)$">
+    Require all denied
+</FilesMatch>
+
+# Protect directories
+<IfModule mod_autoindex.c>
+    Options -Indexes
+</IfModule>
+
+# Protect logs directory
+RewriteRule ^logs/ - [F,L]
+
+# Protect lib directory  
+RewriteRule ^lib/ - [F,L]
+
+# Protect includes directory
+RewriteRule ^includes/ - [F,L]
+
+# Security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# PHP settings
+<IfModule mod_php.c>
+    php_value upload_max_filesize 10M
+    php_value post_max_size 15M
+    php_value max_execution_time 120
+    php_value max_input_time 60
+</IfModule>

@@ -1,0 +1,26 @@
+# MailPilot - .gitignore
+
+# Uploads (user content)
+assets/uploads/*
+!assets/uploads/.htaccess
+
+# Logs
+logs/*
+!logs/.gitkeep
+
+# Config with credentials (keep the template)
+# config.php  ← Uncomment this after first push if you go public
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# PHP dependencies (if using composer later)
+vendor/
