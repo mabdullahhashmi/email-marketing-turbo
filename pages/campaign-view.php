@@ -153,12 +153,15 @@ $pct = $campaign['total_emails'] > 0 ? round(($sentCount / $campaign['total_emai
                             <th>Recipient</th>
                             <th>Status</th>
                             <th>Scheduled</th>
+                            <th>⏱ Countdown</th>
                             <th>Sent At</th>
                             <th>Error</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($queueItems as $qi): ?>
+                        <?php foreach ($queueItems as $qi): 
+                            $scheduledTs = strtotime($qi['scheduled_at']);
+                        ?>
                         <tr>
                             <td>
                                 <strong style="color: var(--text-primary);"><?= e($qi['to_email']) ?></strong>
@@ -168,6 +171,22 @@ $pct = $campaign['total_emails'] > 0 ? round(($sentCount / $campaign['total_emai
                             </td>
                             <td><?= statusBadge($qi['status']) ?></td>
                             <td><?= formatDateTime($qi['scheduled_at']) ?></td>
+                            <td>
+                                <?php if ($qi['status'] === 'sent'): ?>
+                                    <span style="color: var(--color-success); font-weight: 600; font-size: 13px;">✓ Delivered</span>
+                                <?php elseif ($qi['status'] === 'failed'): ?>
+                                    <span style="color: var(--color-danger); font-weight: 600; font-size: 13px;">✕ Failed</span>
+                                <?php elseif ($qi['status'] === 'sending'): ?>
+                                    <span style="color: var(--color-info); font-weight: 600; font-size: 13px;"><span class="spinner" style="width:12px;height:12px;"></span> Sending...</span>
+                                <?php else: ?>
+                                    <span class="countdown-timer" 
+                                          data-scheduled="<?= $scheduledTs ?>" 
+                                          data-status="<?= $qi['status'] ?>"
+                                          style="font-family: 'SF Mono', 'Consolas', monospace; font-size: 13px; font-weight: 600;">
+                                        Loading...
+                                    </span>
+                                <?php endif; ?>
+                            </td>
                             <td><?= $qi['sent_at'] ? formatDateTime($qi['sent_at']) : '—' ?></td>
                             <td>
                                 <?php if ($qi['error_message']): ?>
@@ -271,7 +290,64 @@ $pct = $campaign['total_emails'] > 0 ? round(($sentCount / $campaign['total_emai
 </div>
 
 <?php
+// Pass server time to JS so countdown syncs with server, not client clock
+$serverTimeJs = time();
 $pageScript = <<<JS
+// Server time sync (avoids client timezone issues)
+const SERVER_TIME_ON_LOAD = {$serverTimeJs};
+const CLIENT_TIME_ON_LOAD = Math.floor(Date.now() / 1000);
+const TIME_OFFSET = SERVER_TIME_ON_LOAD - CLIENT_TIME_ON_LOAD;
+
+function getServerNow() {
+    return Math.floor(Date.now() / 1000) + TIME_OFFSET;
+}
+
+// Countdown timer system
+function updateCountdowns() {
+    document.querySelectorAll('.countdown-timer').forEach(el => {
+        const scheduledTs = parseInt(el.dataset.scheduled);
+        const status = el.dataset.status;
+        const now = getServerNow();
+        const diff = scheduledTs - now;
+        
+        if (status !== 'pending') return;
+        
+        if (diff <= 0) {
+            // Overdue - waiting for cron pickup
+            const overdue = Math.abs(diff);
+            const m = Math.floor(overdue / 60);
+            const s = overdue % 60;
+            el.innerHTML = '⏳ Overdue by ' + (m > 0 ? m + 'm ' : '') + s + 's';
+            el.style.color = '#ef4444';
+        } else {
+            // Counting down
+            const hours = Math.floor(diff / 3600);
+            const mins = Math.floor((diff % 3600) / 60);
+            const secs = diff % 60;
+            
+            let display = '';
+            if (hours > 0) display += hours + 'h ';
+            if (mins > 0 || hours > 0) display += String(mins).padStart(2, '0') + 'm ';
+            display += String(secs).padStart(2, '0') + 's';
+            
+            el.innerHTML = '⏱ ' + display;
+            
+            // Color: green when close, yellow when medium, blue when far
+            if (diff <= 60) {
+                el.style.color = '#10b981'; // About to send
+            } else if (diff <= 300) {
+                el.style.color = '#f59e0b'; // Soon
+            } else {
+                el.style.color = '#6366f1'; // Waiting
+            }
+        }
+    });
+}
+
+// Update every second
+updateCountdowns();
+setInterval(updateCountdowns, 1000);
+
 // Start polling if campaign is actively sending
 const campaignStatus = '{$campaign['status']}';
 if (['sending', 'scheduled'].includes(campaignStatus)) {
