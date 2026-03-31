@@ -20,7 +20,9 @@ try {
         exit;
     }
 } catch (PDOException $e) {
-    if ($step !== 'check') {
+    // Table doesn't exist yet — that's fine, we need to install
+    // Only show error if it's NOT a "table not found" error
+    if (strpos($e->getMessage(), '1146') === false && strpos($e->getMessage(), '42S02') === false) {
         $error = 'Database connection failed: ' . $e->getMessage();
         $step = 'check';
     }
