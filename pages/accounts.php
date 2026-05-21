@@ -34,6 +34,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'bulk_
 
 // Fetch accounts
 $accounts = dbFetchAll("SELECT * FROM smtp_accounts ORDER BY created_at DESC");
+
+if (!function_exists('smtpDomainColor')) {
+    function smtpDomainColor($domain) {
+        $palette = ['#60a5fa', '#34d399', '#f59e0b', '#f472b6', '#a78bfa', '#22c55e', '#fb7185', '#38bdf8', '#c084fc', '#f97316'];
+        $hash = 0;
+        $domain = strtolower(trim((string) $domain));
+        for ($i = 0; $i < strlen($domain); $i++) {
+            $hash = (($hash << 5) - $hash) + ord($domain[$i]);
+            $hash &= 0x7fffffff;
+        }
+        return $palette[$hash % count($palette)];
+    }
+}
+
+$domainCounts = [];
+foreach ($accounts as $account) {
+    $domain = '';
+    if (!empty($account['from_email']) && strpos($account['from_email'], '@') !== false) {
+        $domain = strtolower(substr(strrchr($account['from_email'], '@'), 1));
+    }
+    if ($domain) {
+        $domainCounts[$domain] = ($domainCounts[$domain] ?? 0) + 1;
+    }
+}
 ?>
 
 <div class="page-header">
@@ -53,6 +77,13 @@ $accounts = dbFetchAll("SELECT * FROM smtp_accounts ORDER BY created_at DESC");
 <!-- Accounts List -->
 <div class="card">
     <div class="card-body" style="padding: 0;">
+        <div style="padding: 16px 24px 0; display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+            <span class="badge badge-completed">Total SMTPs: <?= number_format(count($accounts)) ?></span>
+            <span class="badge badge-draft">Unique Domains: <?= number_format(count($domainCounts)) ?></span>
+            <?php foreach ($domainCounts as $domain => $count): ?>
+                <span class="badge" style="background: <?= smtpDomainColor($domain) ?>; color: #fff;"><?= e($domain) ?> (<?= $count ?>)</span>
+            <?php endforeach; ?>
+        </div>
         <?php if (empty($accounts)): ?>
             <div class="empty-state">
                 <div class="empty-icon">🔧</div>
@@ -100,8 +131,21 @@ $accounts = dbFetchAll("SELECT * FROM smtp_accounts ORDER BY created_at DESC");
                                 <span class="badge" style="font-size:10px; padding: 2px 6px; background: rgba(99,102,241,0.1); color: #a5b4fc;"><?= strtoupper($acc['smtp_encryption']) ?></span>
                             </td>
                             <td>
-                                <div style="color: var(--text-primary);"><?= e($acc['from_name']) ?></div>
-                                <div class="text-muted fs-sm"><?= e($acc['from_email']) ?></div>
+                                <?php
+                                    $fromEmail = $acc['from_email'] ?? '';
+                                    $fromDomain = '';
+                                    if ($fromEmail && strpos($fromEmail, '@') !== false) {
+                                        $fromDomain = strtolower(substr(strrchr($fromEmail, '@'), 1));
+                                    }
+                                    $domainColor = $fromDomain ? smtpDomainColor($fromDomain) : 'var(--text-primary)';
+                                ?>
+                                <div style="color: <?= $domainColor ?>; font-weight: 600;\><?= e($acc['from_name']) ?></div>
+                                <div class="text-muted fs-sm" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                                    <span style="color: <?= $domainColor ?>; font-weight: 600;"><?= e($fromEmail) ?></span>
+                                    <?php if ($fromDomain): ?>
+                                        <span class="badge" style="background: <?= $domainColor ?>; color:#fff; font-size:10px; padding: 2px 6px;"><?= e($fromDomain) ?></span>
+                                    <?php endif; ?>
+                                </div>
                             </td>
                             <td>
                                 <?php if ($acc['is_active']): ?>

@@ -102,12 +102,9 @@ try {
             }
 
             if (!$password) {
-                $existing = dbFetchOne("SELECT id, warmup_status FROM smtp_accounts WHERE smtp_host = ? AND smtp_username = ? LIMIT 1", [$host, $username]);
-                if (!$existing) {
-                    $skipped++;
-                    $errors[] = 'Row ' . ($rowNumber + 2) . ': Password is required for new SMTP accounts.';
-                    continue;
-                }
+                $skipped++;
+                $errors[] = 'Row ' . ($rowNumber + 2) . ': Password is required.';
+                continue;
             }
 
             $port = (int) ($rowData['smtp_port'] ?? 465);
@@ -135,69 +132,33 @@ try {
                 ? (int) $rowData['daily_limit']
                 : 100;
 
-            $existing = dbFetchOne("SELECT id, warmup_status FROM smtp_accounts WHERE smtp_host = ? AND smtp_username = ? LIMIT 1", [$host, $username]);
-            $currentStatus = $existing['warmup_status'] ?? 'idle';
-
-            if (!$imapHost) {
-                $newWarmupStatus = 'idle';
-            } elseif ($currentStatus === 'completed') {
-                $newWarmupStatus = 'completed';
-            } elseif ($currentStatus === 'active') {
-                $newWarmupStatus = 'active';
-            } else {
-                $newWarmupStatus = 'active';
-            }
-
-            if ($existing) {
-                $sql = "UPDATE smtp_accounts SET label = ?, smtp_host = ?, smtp_port = ?, smtp_encryption = ?, smtp_username = ?, from_name = ?, from_email = ?, daily_limit = ?, imap_host = ?, imap_port = ?, imap_encryption = ?, imap_username = ?, is_seed_account = ?, warmup_status = ?";
-                $params = [$label, $host, $port, $encryption, $username, $fromName, $fromEmail, $dailyLimit, $imapHost ?: null, $imapPort, $imapEncryption, $imapUsername ?: null, $isSeedAccount, $newWarmupStatus];
-
-                if ($password) {
-                    $sql .= ", smtp_password = ?";
-                    $params[] = encryptString($password);
-                }
-                if ($imapPassword) {
-                    $sql .= ", imap_password = ?";
-                    $params[] = encryptString($imapPassword);
-                }
-                if ($newWarmupStatus === 'active' && $currentStatus !== 'active' && $currentStatus !== 'completed') {
-                    $sql .= ", warmup_current_day = 1, warmup_target_daily = 2, sent_today = 0, last_reset_date = ?";
-                    $params[] = date('Y-m-d');
-                }
-
-                $sql .= " WHERE id = ?";
-                $params[] = $existing['id'];
-                dbExecute($sql, $params);
-                $updated++;
-            } else {
-                $newImapPassword = $imapPassword ? encryptString($imapPassword) : null;
-                dbInsert(
-                    "INSERT INTO smtp_accounts (label, smtp_host, smtp_port, smtp_encryption, smtp_username, smtp_password, from_name, from_email, daily_limit, imap_host, imap_port, imap_encryption, imap_username, imap_password, is_seed_account, warmup_status, warmup_current_day, warmup_target_daily, sent_today, last_reset_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                    [
-                        $label,
-                        $host,
-                        $port,
-                        $encryption,
-                        $username,
-                        encryptString($password),
-                        $fromName,
-                        $fromEmail,
-                        $dailyLimit,
-                        $imapHost ?: null,
-                        $imapPort,
-                        $imapEncryption,
-                        $imapUsername ?: null,
-                        $newImapPassword,
-                        $isSeedAccount,
-                        $imapHost ? 'active' : 'idle',
-                        $imapHost ? 1 : 0,
-                        $imapHost ? 2 : 0,
-                        0,
-                        $imapHost ? date('Y-m-d') : null,
-                    ]
-                );
-                $created++;
-            }
+            $newImapPassword = $imapPassword ? encryptString($imapPassword) : null;
+            dbInsert(
+                "INSERT INTO smtp_accounts (label, smtp_host, smtp_port, smtp_encryption, smtp_username, smtp_password, from_name, from_email, daily_limit, imap_host, imap_port, imap_encryption, imap_username, imap_password, is_seed_account, warmup_status, warmup_current_day, warmup_target_daily, sent_today, last_reset_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                [
+                    $label,
+                    $host,
+                    $port,
+                    $encryption,
+                    $username,
+                    encryptString($password),
+                    $fromName,
+                    $fromEmail,
+                    $dailyLimit,
+                    $imapHost ?: null,
+                    $imapPort,
+                    $imapEncryption,
+                    $imapUsername ?: null,
+                    $newImapPassword,
+                    $isSeedAccount,
+                    $imapHost ? 'active' : 'idle',
+                    $imapHost ? 1 : 0,
+                    $imapHost ? 2 : 0,
+                    0,
+                    $imapHost ? date('Y-m-d') : null,
+                ]
+            );
+            $created++;
         }
 
         $pdo->commit();
