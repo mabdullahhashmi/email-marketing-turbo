@@ -116,7 +116,7 @@ foreach ($accounts as $account) {
             <div class="table-wrapper">
                 <table>
                     <thead>
-                        <tr>
+                        <tr id="smtp-account-row-<?= $acc['id'] ?>">
                             <th style="width: 36px;">
                                 <input type="checkbox" id="smtpSelectAll" onchange="toggleAllSmtpAccounts(this.checked)" style="width:auto;">
                             </th>
@@ -172,19 +172,17 @@ foreach ($accounts as $account) {
                                     $testedAt = $acc['last_tested_at'] ?? null;
                                     $testMessage = $acc['last_test_message'] ?? '';
                                 ?>
-                                <?php if ($testStatus === 'passed'): ?>
-                                    <span class="badge badge-completed">Passed</span>
-                                <?php elseif ($testStatus === 'failed'): ?>
-                                    <span class="badge badge-failed">Failed</span>
-                                <?php else: ?>
-                                    <span class="badge badge-draft">Untested</span>
-                                <?php endif; ?>
-                                <?php if ($testedAt): ?>
-                                    <div class="text-muted fs-sm mt-1"><?= e($testedAt) ?></div>
-                                <?php endif; ?>
-                                <?php if ($testMessage): ?>
-                                    <div class="text-muted fs-sm mt-1" style="max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="<?= e($testMessage) ?>"><?= e($testMessage) ?></div>
-                                <?php endif; ?>
+                                <span id="smtp-runtime-status-badge-<?= $acc['id'] ?>">
+                                    <?php if ($testStatus === 'passed'): ?>
+                                        <span class="badge badge-completed">Passed</span>
+                                    <?php elseif ($testStatus === 'failed'): ?>
+                                        <span class="badge badge-failed">Failed</span>
+                                    <?php else: ?>
+                                        <span class="badge badge-draft">Untested</span>
+                                    <?php endif; ?>
+                                </span>
+                                <div id="smtp-runtime-tested-at-<?= $acc['id'] ?>" class="text-muted fs-sm mt-1"><?= $testedAt ? e($testedAt) : '' ?></div>
+                                <div id="smtp-runtime-message-<?= $acc['id'] ?>" class="text-muted fs-sm mt-1" style="max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="<?= e($testMessage) ?>"><?= e($testMessage) ?></div>
                             </td>
                             <td>
                                 <?php if ($acc['warmup_status'] === 'active'): ?>
@@ -489,9 +487,10 @@ async function testSmtp(accountId) {
         const result = await apiCall(basePath + '/api/smtp-test.php', { id: accountId });
         if (result.success) {
             Toast.success('✓ SMTP connection successful!');
-            setTimeout(() => location.reload(), 800);
+            updateRuntimeStatusRow(accountId, 'passed', result.message || 'Email sent successfully', result.tested_at || new Date().toISOString().slice(0, 19).replace('T', ' '), result.runtime_status_saved ?? false);
         } else {
             Toast.error('✕ ' + (result.message || 'Connection failed'));
+            updateRuntimeStatusRow(accountId, 'failed', result.message || 'Connection failed', '', result.runtime_status_saved ?? false);
         }
     } catch (err) {
         Toast.error('✕ ' + (err.message || 'Connection test failed'));
@@ -561,22 +560,62 @@ async function bulkTestSelected() {
         const result = await apiCall(basePath + '/api/smtp-bulk-test.php', { ids }, 'POST');
         const passed = Number(result.passed || 0);
         const failed = Number(result.failed || 0);
+        const skipped = Number(result.skipped || 0);
         const lines = Array.isArray(result.results)
-            ? result.results.map((row) => `${row.success ? 'PASS' : 'FAIL'} - ${row.label} - ${row.message}`).join('\n')
+            ? result.results.map((row) => `${(row.status || (row.success ? 'passed' : 'failed')).toUpperCase()} - ${row.label || ('#' + row.id)} - ${row.message}`).join('\n')
             : '';
 
-        if (failed === 0) {
+        if (Array.isArray(result.results)) {
+            result.results.forEach((row) => {
+                updateRuntimeStatusRow(
+                    row.id,
+                    row.status || (row.success ? 'passed' : 'failed'),
+                    row.message || '',
+                    row.runtime_status_saved ? new Date().toISOString().slice(0, 19).replace('T', ' ') : '',
+                    row.runtime_status_saved ?? false
+                );
+            });
+        }
+
+        if (failed === 0 && skipped === 0) {
             Toast.success(`Bulk test complete: ${passed} passed.`);
         } else {
-            Toast.warning(`Bulk test complete: ${passed} passed, ${failed} failed.`);
+            Toast.warning(`Bulk test complete: ${passed} passed, ${failed} failed, ${skipped} skipped.`);
         }
 
         if (lines) {
             console.log('SMTP bulk test results:\n' + lines);
         }
-        setTimeout(() => location.reload(), 1200);
     } catch (err) {
         Toast.error(err.message || 'Bulk test failed');
+    }
+}
+
+function updateRuntimeStatusRow(accountId, status, message, testedAt, runtimeSaved) {
+    const badge = document.getElementById(`smtp-runtime-status-badge-${accountId}`);
+    const testedAtEl = document.getElementById(`smtp-runtime-tested-at-${accountId}`);
+    const messageEl = document.getElementById(`smtp-runtime-message-${accountId}`);
+
+    if (badge) {
+        const savedMark = runtimeSaved === false ? ' <span class="badge badge-draft" style="margin-left:6px;">Not saved</span>' : '';
+        if (status === 'passed') {
+            badge.innerHTML = `<span class="badge badge-completed">Passed</span>${savedMark}`;
+        } else if (status === 'failed') {
+            badge.innerHTML = `<span class="badge badge-failed">Failed</span>${savedMark}`;
+        } else if (status === 'skipped') {
+            badge.innerHTML = `<span class="badge badge-draft">Skipped</span>${savedMark}`;
+        } else {
+            badge.innerHTML = `<span class="badge badge-draft">Untested</span>${savedMark}`;
+        }
+    }
+
+    if (testedAtEl) {
+        testedAtEl.textContent = testedAt || '';
+    }
+
+    if (messageEl) {
+        messageEl.textContent = message || '';
+        messageEl.title = message || '';
     }
 }
 

@@ -47,7 +47,7 @@ try {
     $toEmail = $input['to_email'] ?? $account['from_email'];
 
     $result = smtpTestRun($account, $toEmail, $subject, $body);
-    smtpTestStoreRuntimeStatus($account['id'], 'passed', $result['message']);
+    $runtimeSaved = smtpTestStoreRuntimeStatus($account['id'], 'passed', $result['message']);
 
     jsonResponse([
         'success' => true,
@@ -55,17 +55,18 @@ try {
         'to_email' => $result['to_email'],
         'duration_ms' => $result['duration_ms'],
         'runtime_status' => 'passed',
+        'runtime_status_saved' => $runtimeSaved,
         'tested_at' => date('Y-m-d H:i:s'),
     ]);
 
 } catch (Exception $e) {
     if (!empty($account['id'])) {
-        smtpTestStoreRuntimeStatus($account['id'], 'failed', $e->getMessage());
+        $runtimeSaved = smtpTestStoreRuntimeStatus($account['id'], 'failed', $e->getMessage());
     }
-    jsonResponse(['success' => false, 'message' => 'SMTP Error: ' . $e->getMessage()]);
+    jsonResponse(['success' => false, 'message' => 'SMTP Error: ' . $e->getMessage(), 'runtime_status_saved' => $runtimeSaved ?? false]);
 } catch (\Exception $e) {
     if (!empty($account['id'])) {
-        smtpTestStoreRuntimeStatus($account['id'], 'failed', $e->getMessage());
+        $runtimeSaved = smtpTestStoreRuntimeStatus($account['id'], 'failed', $e->getMessage());
     }
-    jsonResponse(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+    jsonResponse(['success' => false, 'message' => 'Error: ' . $e->getMessage(), 'runtime_status_saved' => $runtimeSaved ?? false]);
 }

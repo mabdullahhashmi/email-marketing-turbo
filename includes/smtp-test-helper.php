@@ -54,7 +54,9 @@ function smtpTestStoreRuntimeStatus($accountId, $status, $message) {
             "UPDATE smtp_accounts SET last_test_status = ?, last_test_message = ?, last_tested_at = NOW() WHERE id = ?",
             [$status, $message, $accountId]
         );
+        return true;
     } catch (Exception $e) {
         // Ignore if the runtime-status columns have not been migrated yet.
+        return false;
     }
 }

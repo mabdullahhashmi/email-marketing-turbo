@@ -30,36 +30,63 @@ if (!$ids) {
 $results = [];
 $passed = 0;
 $failed = 0;
+$skipped = 0;
 
 foreach ($ids as $id) {
     $account = dbFetchOne("SELECT * FROM smtp_accounts WHERE id = ?", [$id]);
     if (!$account) {
-        $results[] = ['id' => $id, 'success' => false, 'message' => 'Account not found'];
-        $failed++;
+        $results[] = [
+            'id' => $id,
+            'status' => 'skipped',
+            'success' => false,
+            'message' => 'Account not found',
+            'runtime_status_saved' => false,
+        ];
+        $skipped++;
+        continue;
+    }
+
+    if (empty($account['smtp_host']) || empty($account['smtp_port']) || empty($account['smtp_username']) || empty($account['smtp_password']) || empty($account['from_email'])) {
+        $message = 'Missing SMTP settings';
+        $runtimeSaved = smtpTestStoreRuntimeStatus($id, 'failed', $message);
+        $results[] = [
+            'id' => $id,
+            'label' => $account['label'],
+            'from_email' => $account['from_email'],
+            'status' => 'skipped',
+            'success' => false,
+            'message' => $message,
+            'runtime_status_saved' => $runtimeSaved,
+        ];
+        $skipped++;
         continue;
     }
 
     try {
         $result = smtpTestRun($account, $account['from_email']);
-        smtpTestStoreRuntimeStatus($id, 'passed', $result['message']);
+        $runtimeSaved = smtpTestStoreRuntimeStatus($id, 'passed', $result['message']);
         $results[] = [
             'id' => $id,
             'label' => $account['label'],
             'from_email' => $account['from_email'],
+            'status' => 'passed',
             'success' => true,
             'message' => $result['message'],
             'duration_ms' => $result['duration_ms'],
+            'runtime_status_saved' => $runtimeSaved,
         ];
         $passed++;
     } catch (Exception $e) {
         $message = $e->getMessage();
-        smtpTestStoreRuntimeStatus($id, 'failed', $message);
+        $runtimeSaved = smtpTestStoreRuntimeStatus($id, 'failed', $message);
         $results[] = [
             'id' => $id,
             'label' => $account['label'],
             'from_email' => $account['from_email'],
+            'status' => 'failed',
             'success' => false,
             'message' => $message,
+            'runtime_status_saved' => $runtimeSaved,
         ];
         $failed++;
     }
@@ -70,5 +97,6 @@ jsonResponse([
     'message' => 'Bulk SMTP test completed.',
     'passed' => $passed,
     'failed' => $failed,
+    'skipped' => $skipped,
     'results' => $results,
 ]);
