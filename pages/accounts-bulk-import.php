@@ -25,7 +25,7 @@ require_once __DIR__ . '/../includes/header.php';
         <div class="form-group">
             <label>Paste rows here</label>
             <textarea id="smtpPasteInput" class="form-control" rows="10" placeholder="Label\tSMTP Host\tSMTP Port\tSMTP Username\tSMTP Password\tSMTP Enc."></textarea>
-            <div class="form-hint">Tab, comma, or semicolon separated. Daily limit will default to 100 if not provided.</div>
+            <div class="form-hint">Tab, comma, or semicolon separated. Use the built-in template or paste rows in this exact order: Email, SMTP Host, SMTP Port, SMTP Username, SMTP Password, SMTP Enc.</div>
         </div>
         <div style="display:flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
             <button type="button" class="btn btn-outline" onclick="loadPasteToPreview()">Use Pasted Rows</button>
@@ -91,6 +91,8 @@ require_once __DIR__ . '/../includes/header.php';
 <?php
 $pageScript = <<<'JS'
 let smtpCsvData = null;
+let smtpPasteRows = [];
+const smtpPresetHeaders = ['Email', 'SMTP Host', 'SMTP Port', 'SMTP Username', 'SMTP Password', 'SMTP Enc.'];
 
 const smtpPresetText = `hello@clients-flow.app\tsmtp.clients-flow.app\t465\thello@clients-flow.app\ttiktok@unPassword\tSSL\t100
 contact@clients-flow.app\tsmtp.clients-flow.app\t465\tcontact@clients-flow.app\ttiktok@unPassword\tSSL\t100
@@ -181,19 +183,61 @@ function loadPasteToPreview() {
         Toast.error('Paste rows first or load the template.');
         return;
     }
-    smtpCsvData = parseCsvPreview(raw);
-    if (smtpCsvData.rows.length) {
-        smtpCsvData.rows = smtpCsvData.rows.map((row) => {
-            const copy = [...row];
-            if (copy.length < smtpCsvData.headers.length) {
-                while (copy.length < smtpCsvData.headers.length) copy.push('');
-            }
-            return copy;
-        });
-    }
+    smtpPasteRows = parsePasteRows(raw);
+    smtpCsvData = {
+        headers: smtpPresetHeaders,
+        rows: smtpPasteRows.map((row) => [row.email, row.smtp_host, String(row.smtp_port), row.smtp_username, row.smtp_password, row.smtp_encryption]),
+    };
     renderSmtpMappingUI();
     renderSmtpPreview();
-    Toast.success(`Parsed ${smtpCsvData.rows.length} row(s).`);
+    Toast.success(`Parsed ${smtpPasteRows.length} row(s).`);
+}
+
+function parsePasteRows(raw) {
+    const lines = raw.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+    const rows = [];
+
+    for (const line of lines) {
+        let delimiter = '\t';
+        if (line.includes('\t')) {
+            delimiter = '\t';
+        } else if (line.includes(';') && !line.includes(',')) {
+            delimiter = ';';
+        } else if (line.includes(',')) {
+            delimiter = ',';
+        }
+
+        const parts = line.split(delimiter).map((value) => value.trim());
+        if (parts.length < 6) {
+            continue;
+        }
+
+        const [email, smtpHost, smtpPort, smtpUsername, smtpPassword, smtpEncryption] = parts;
+        if (!email || !smtpHost || !smtpUsername || !smtpPassword) {
+            continue;
+        }
+
+        rows.push({
+            label: email,
+            email,
+            smtp_host: smtpHost,
+            smtp_port: smtpPort || '465',
+            smtp_username: smtpUsername,
+            smtp_password: smtpPassword,
+            smtp_encryption: (smtpEncryption || 'SSL').toLowerCase(),
+            from_name: email,
+            from_email: email,
+            daily_limit: 100,
+            imap_host: '',
+            imap_port: '',
+            imap_encryption: '',
+            imap_username: '',
+            imap_password: '',
+            is_seed_account: 0,
+        });
+    }
+
+    return rows;
 }
 
 function renderSmtpMappingUI() {
@@ -202,6 +246,17 @@ function renderSmtpMappingUI() {
 
     if (!headers.length) {
         container.innerHTML = '<div class="text-muted fs-sm">Upload a file first to see available columns.</div>';
+        return;
+    }
+
+    if (smtpPasteRows.length) {
+        container.innerHTML = `
+            <div class="mapping-row" style="display:grid; grid-template-columns: minmax(160px, 1fr) 24px minmax(220px, 320px); gap: 12px; align-items:center; padding: 12px; border: 1px solid var(--border-color); border-radius: 12px;">
+                <div class="mapping-source" style="font-weight: 500; color: var(--text-primary);">Preset SMTP Rows</div>
+                <div class="mapping-arrow" style="text-align:center; color: var(--text-muted);">→</div>
+                <div class="text-muted fs-sm">Mapped automatically from the pasted six-column layout. Daily limit is set to 100.</div>
+            </div>
+        `;
         return;
     }
 
@@ -309,14 +364,22 @@ async function importSmtpRows() {
 
     try {
         const formData = new FormData();
-        formData.append('file', document.getElementById('smtpCsvFileInput').files[0]);
+        const uploadFile = document.getElementById('smtpCsvFileInput').files[0];
 
-        const mappings = {};
-        smtpCsvData.headers.forEach((header, index) => {
-            const select = document.getElementById(`smtpMapping_${index}`);
-            mappings[index] = { field: select ? select.value : 'skip', header };
-        });
-        formData.append('mappings', JSON.stringify(mappings));
+        if (uploadFile) {
+            formData.append('file', uploadFile);
+            const mappings = {};
+            smtpCsvData.headers.forEach((header, index) => {
+                const select = document.getElementById(`smtpMapping_${index}`);
+                mappings[index] = { field: select ? select.value : 'skip', header };
+            });
+            formData.append('mappings', JSON.stringify(mappings));
+        } else if (smtpPasteRows.length) {
+            formData.append('rows_json', JSON.stringify(smtpPasteRows));
+        } else {
+            Toast.error('Please upload a CSV file or paste SMTP rows first.');
+            return;
+        }
 
         const result = await apiCall(basePath + '/api/smtp-bulk-import.php', formData);
         const errors = Array.isArray(result.errors) ? result.errors : [];
