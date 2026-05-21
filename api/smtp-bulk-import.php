@@ -16,7 +16,20 @@ requireAuth();
 validateCSRF($_POST['csrf_token'] ?? '');
 
 $mappingsJson = $_POST['mappings'] ?? '{}';
-$rowsJson = $_POST['rows_json'] ?? '';
+
+if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
+    jsonResponse(['success' => false, 'message' => 'No file uploaded or upload error.'], 400);
+}
+
+$file = $_FILES['file'];
+if ($file['size'] > MAX_CSV_SIZE) {
+    jsonResponse(['success' => false, 'message' => 'File too large. Maximum is ' . (MAX_CSV_SIZE / 1024 / 1024) . 'MB.'], 400);
+}
+
+$ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+if (!in_array($ext, ['csv', 'txt'])) {
+    jsonResponse(['success' => false, 'message' => 'Only CSV and TXT files are allowed.'], 400);
+}
 
 function normalizeSmtpBool($value) {
     return in_array(strtolower(trim((string) $value)), ['1', 'true', 'yes', 'y', 'on', 'seed'], true) ? 1 : 0;
@@ -24,49 +37,25 @@ function normalizeSmtpBool($value) {
 
 try {
     $mappings = json_decode($mappingsJson, true);
-    $csvData = null;
-    $directRows = [];
+    if (!$mappings) {
+        jsonResponse(['success' => false, 'message' => 'Invalid column mappings.'], 400);
+    }
 
-    if ($rowsJson !== '') {
-        $directRows = json_decode($rowsJson, true);
-        if (!is_array($directRows)) {
-            jsonResponse(['success' => false, 'message' => 'Invalid pasted SMTP rows.'], 400);
-        }
-    } else {
-        if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
-            jsonResponse(['success' => false, 'message' => 'No file uploaded or paste rows provided.'], 400);
-        }
+    $csvData = parseCSV($file['tmp_name']);
+    if (empty($csvData['headers']) || empty($csvData['rows'])) {
+        jsonResponse(['success' => false, 'message' => 'CSV file is empty or has no data rows.'], 400);
+    }
 
-        $file = $_FILES['file'];
-        if ($file['size'] > MAX_CSV_SIZE) {
-            jsonResponse(['success' => false, 'message' => 'File too large. Maximum is ' . (MAX_CSV_SIZE / 1024 / 1024) . 'MB.'], 400);
+    $mappedColumns = [];
+    foreach ($mappings as $colIndex => $mapping) {
+        $field = $mapping['field'] ?? 'skip';
+        if ($field !== 'skip') {
+            $mappedColumns[(int) $colIndex] = $field;
         }
+    }
 
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        if (!in_array($ext, ['csv', 'txt'])) {
-            jsonResponse(['success' => false, 'message' => 'Only CSV and TXT files are allowed.'], 400);
-        }
-
-        if (!$mappings) {
-            jsonResponse(['success' => false, 'message' => 'Invalid column mappings.'], 400);
-        }
-
-        $csvData = parseCSV($file['tmp_name']);
-        if (empty($csvData['headers']) || empty($csvData['rows'])) {
-            jsonResponse(['success' => false, 'message' => 'CSV file is empty or has no data rows.'], 400);
-        }
-
-        $mappedColumns = [];
-        foreach ($mappings as $colIndex => $mapping) {
-            $field = $mapping['field'] ?? 'skip';
-            if ($field !== 'skip') {
-                $mappedColumns[(int) $colIndex] = $field;
-            }
-        }
-
-        if (!in_array('smtp_host', $mappedColumns, true) || !in_array('smtp_username', $mappedColumns, true)) {
-            jsonResponse(['success' => false, 'message' => 'Please map at least SMTP Host and SMTP Username columns.'], 400);
-        }
+    if (!in_array('smtp_host', $mappedColumns, true) || !in_array('smtp_username', $mappedColumns, true)) {
+        jsonResponse(['success' => false, 'message' => 'Please map at least SMTP Host and SMTP Username columns.'], 400);
     }
 
     $created = 0;
@@ -78,20 +67,14 @@ try {
     $pdo->beginTransaction();
 
     try {
-        $rowsToProcess = $directRows ?: $csvData['rows'];
-
-        foreach ($rowsToProcess as $rowNumber => $row) {
-            if (isset($row['smtp_host'])) {
-                $rowData = $row;
-            } else {
-                $rowData = [];
-                foreach ($mappings as $colIndex => $mapping) {
-                    $field = $mapping['field'] ?? 'skip';
-                    if ($field === 'skip') {
-                        continue;
-                    }
-                    $rowData[$field] = trim($row[(int) $colIndex] ?? '');
+        foreach ($csvData['rows'] as $rowNumber => $row) {
+            $rowData = [];
+            foreach ($mappings as $colIndex => $mapping) {
+                $field = $mapping['field'] ?? 'skip';
+                if ($field === 'skip') {
+                    continue;
                 }
+                $rowData[$field] = trim($row[(int) $colIndex] ?? '');
             }
 
             $host = $rowData['smtp_host'] ?? '';
