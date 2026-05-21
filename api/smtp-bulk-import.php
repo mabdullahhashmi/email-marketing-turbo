@@ -92,7 +92,7 @@ try {
             $fromName = $rowData['from_name'] ?? '';
 
             if (!$fromEmail) {
-                $fromEmail = $username;
+                $fromEmail = $label ?: $username;
             }
             if (!$label) {
                 $label = $fromEmail ?: $username;

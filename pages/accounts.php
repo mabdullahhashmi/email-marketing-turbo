@@ -139,7 +139,7 @@ foreach ($accounts as $account) {
                                     }
                                     $domainColor = $fromDomain ? smtpDomainColor($fromDomain) : 'var(--text-primary)';
                                 ?>
-                                <div style="color: <?= $domainColor ?>; font-weight: 600;\><?= e($acc['from_name']) ?></div>
+                                <div style="color: <?= $domainColor ?>; font-weight: 600;"><?= e($acc['from_name']) ?></div>
                                 <div class="text-muted fs-sm" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                                     <span style="color: <?= $domainColor ?>; font-weight: 600;"><?= e($fromEmail) ?></span>
                                     <?php if ($fromDomain): ?>
