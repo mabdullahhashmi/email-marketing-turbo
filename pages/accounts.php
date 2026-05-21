@@ -16,6 +16,22 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     }
 }
 
+// Handle bulk delete
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'bulk_delete') {
+    validateCSRF();
+
+    $ids = array_values(array_unique(array_filter(array_map('intval', $_POST['account_ids'] ?? []), fn($id) => $id > 0)));
+    if ($ids) {
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        dbExecute("DELETE FROM smtp_accounts WHERE id IN ({$placeholders})", $ids);
+        setFlash('success', count($ids) . ' SMTP account(s) deleted successfully.');
+    } else {
+        setFlash('error', 'Please select at least one SMTP account.');
+    }
+
+    redirect($basePath . '/pages/accounts.php');
+}
+
 // Fetch accounts
 $accounts = dbFetchAll("SELECT * FROM smtp_accounts ORDER BY created_at DESC");
 ?>
@@ -27,6 +43,7 @@ $accounts = dbFetchAll("SELECT * FROM smtp_accounts ORDER BY created_at DESC");
     </div>
     <div style="display:flex; gap:8px;">
         <a class="btn btn-outline" href="<?= $basePath ?>/pages/accounts-bulk-gmail.php">📥 Bulk Gmail Import</a>
+        <a class="btn btn-outline" href="<?= $basePath ?>/pages/accounts-bulk-import.php">📥 Bulk SMTP Import</a>
         <button class="btn btn-primary" onclick="openAddAccountModal()">
             ✚ Add Account
         </button>
@@ -44,10 +61,23 @@ $accounts = dbFetchAll("SELECT * FROM smtp_accounts ORDER BY created_at DESC");
                 <button class="btn btn-primary" onclick="openAddAccountModal()">✚ Add SMTP Account</button>
             </div>
         <?php else: ?>
+            <form method="POST" id="smtpBulkDeleteForm" onsubmit="return confirmBulkDeleteSmtp(event)">
+                <input type="hidden" name="action" value="bulk_delete">
+                <input type="hidden" name="<?= CSRF_TOKEN_NAME ?>" value="<?= e(getCSRFToken()) ?>">
+                <div style="display:flex; justify-content: space-between; align-items:center; gap:12px; padding: 16px 24px 0; flex-wrap: wrap;">
+                    <div class="text-muted fs-sm">Select rows to delete multiple SMTP accounts at once.</div>
+                    <div style="display:flex; align-items:center; gap: 10px;">
+                        <span class="text-muted fs-sm"><span id="smtpSelectedCount">0</span> selected</span>
+                        <button type="submit" class="btn btn-outline" style="color: var(--color-danger); border-color: var(--color-danger);" id="smtpBulkDeleteBtn" disabled>🗑️ Delete Selected</button>
+                    </div>
+                </div>
             <div class="table-wrapper">
                 <table>
                     <thead>
                         <tr>
+                            <th style="width: 36px;">
+                                <input type="checkbox" id="smtpSelectAll" onchange="toggleAllSmtpAccounts(this.checked)" style="width:auto;">
+                            </th>
                             <th>Label</th>
                             <th>Server</th>
                             <th>From</th>
@@ -60,6 +90,9 @@ $accounts = dbFetchAll("SELECT * FROM smtp_accounts ORDER BY created_at DESC");
                     <tbody>
                         <?php foreach ($accounts as $acc): ?>
                         <tr>
+                            <td>
+                                <input type="checkbox" name="account_ids[]" value="<?= $acc['id'] ?>" class="smtp-account-checkbox" onchange="updateSmtpBulkDeleteState()" style="width:auto;">
+                            </td>
                             <td><strong style="color: var(--text-primary);"><?= e($acc['label']) ?></strong></td>
                             <td>
                                 <span style="color: var(--text-primary);"><?= e($acc['smtp_host']) ?></span>
@@ -111,6 +144,7 @@ $accounts = dbFetchAll("SELECT * FROM smtp_accounts ORDER BY created_at DESC");
                     </tbody>
                 </table>
             </div>
+            </form>
         <?php endif; ?>
     </div>
 </div>
@@ -403,6 +437,40 @@ document.getElementById('accUsername').addEventListener('input', function() {
 document.getElementById('accEncryption').addEventListener('change', function() {
     document.getElementById('accPort').value = this.value === 'ssl' ? 465 : 587;
 });
+
+function toggleAllSmtpAccounts(checked) {
+    document.querySelectorAll('.smtp-account-checkbox').forEach((checkbox) => {
+        checkbox.checked = checked;
+    });
+    updateSmtpBulkDeleteState();
+}
+
+function updateSmtpBulkDeleteState() {
+    const selected = document.querySelectorAll('.smtp-account-checkbox:checked').length;
+    const countEl = document.getElementById('smtpSelectedCount');
+    const btn = document.getElementById('smtpBulkDeleteBtn');
+    const selectAll = document.getElementById('smtpSelectAll');
+
+    if (countEl) countEl.textContent = String(selected);
+    if (btn) btn.disabled = selected === 0;
+    if (selectAll) {
+        const total = document.querySelectorAll('.smtp-account-checkbox').length;
+        selectAll.checked = total > 0 && selected === total;
+        selectAll.indeterminate = selected > 0 && selected < total;
+    }
+}
+
+function confirmBulkDeleteSmtp(event) {
+    const selected = document.querySelectorAll('.smtp-account-checkbox:checked').length;
+    if (!selected) {
+        event.preventDefault();
+        Toast.error('Please select at least one SMTP account.');
+        return false;
+    }
+    return confirm(`Delete ${selected} selected SMTP account(s)?`);
+}
+
+updateSmtpBulkDeleteState();
 JS;
 
 require_once __DIR__ . '/../includes/footer.php';

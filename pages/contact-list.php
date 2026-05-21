@@ -36,6 +36,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 }
 
+// Handle bulk delete contacts
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'bulk_delete_contacts') {
+    validateCSRF();
+
+    $ids = array_values(array_unique(array_filter(array_map('intval', $_POST['contact_ids'] ?? []), fn($id) => $id > 0)));
+    if ($ids) {
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        dbExecute("DELETE FROM contacts WHERE list_id = ? AND id IN ({$placeholders})", array_merge([$listId], $ids));
+        dbExecute("UPDATE contact_lists SET total_contacts = (SELECT COUNT(*) FROM contacts WHERE list_id = ?) WHERE id = ?", [$listId, $listId]);
+        setFlash('success', count($ids) . ' contact(s) deleted.');
+    } else {
+        setFlash('error', 'Please select at least one contact.');
+    }
+
+    $redirectUrl = $basePath . '/pages/contact-list.php?id=' . $listId;
+    if (!empty($_POST['search'])) {
+        $redirectUrl .= '&search=' . urlencode($_POST['search']);
+    }
+    if (!empty($_POST['page'])) {
+        $redirectUrl .= '&page=' . (int)$_POST['page'];
+    }
+    redirect($redirectUrl);
+}
+
 // Handle delete contact
 if (isset($_GET['delete_contact']) && is_numeric($_GET['delete_contact'])) {
     $token = $_GET['token'] ?? '';
@@ -79,6 +103,7 @@ $contacts = dbFetchAll("
         <div class="subtitle"><?= number_format($totalContacts) ?> contacts<?= $list['description'] ? ' — ' . e($list['description']) : '' ?></div>
     </div>
     <div class="btn-group">
+        <button class="btn btn-outline" type="button" onclick="scrollToContactActions()">☑ Bulk Delete</button>
         <button class="btn btn-primary" onclick="Modal.open('addContactModal')">✚ Add Contact</button>
         <a href="<?= $basePath ?>/pages/contacts.php" class="btn btn-outline">← Back</a>
     </div>
@@ -108,10 +133,25 @@ $contacts = dbFetchAll("
                 <p><?= $search ? 'Try a different search term.' : 'Add contacts manually or import from CSV.' ?></p>
             </div>
         <?php else: ?>
+            <form method="POST" id="contactsBulkDeleteForm" onsubmit="return confirmBulkDeleteContacts(event)">
+                <input type="hidden" name="action" value="bulk_delete_contacts">
+                <input type="hidden" name="<?= CSRF_TOKEN_NAME ?>" value="<?= e(getCSRFToken()) ?>">
+                <input type="hidden" name="search" value="<?= e($search) ?>">
+                <input type="hidden" name="page" value="<?= $page ?>">
+                <div id="contactActionsBar" style="display:flex; justify-content: space-between; align-items:center; gap:12px; padding: 16px 24px 0; flex-wrap: wrap;">
+                    <div class="text-muted fs-sm">Select contacts to delete them in bulk.</div>
+                    <div style="display:flex; align-items:center; gap: 10px;">
+                        <span class="text-muted fs-sm"><span id="contactSelectedCount">0</span> selected</span>
+                        <button type="submit" class="btn btn-outline" style="color: var(--color-danger); border-color: var(--color-danger);" id="contactBulkDeleteBtn" disabled>🗑️ Delete Selected</button>
+                    </div>
+                </div>
             <div class="table-wrapper">
                 <table>
                     <thead>
                         <tr>
+                            <th style="width: 36px;">
+                                <input type="checkbox" id="contactSelectAll" onchange="toggleAllContacts(this.checked)" style="width:auto;">
+                            </th>
                             <th>Email</th>
                             <th>Name</th>
                             <th>Custom Fields</th>
@@ -125,6 +165,9 @@ $contacts = dbFetchAll("
                             $customFields = $contact['custom_fields'] ? json_decode($contact['custom_fields'], true) : [];
                         ?>
                         <tr>
+                            <td>
+                                <input type="checkbox" name="contact_ids[]" value="<?= $contact['id'] ?>" class="contact-checkbox" onchange="updateContactBulkDeleteState()" style="width:auto;">
+                            </td>
                             <td><strong style="color: var(--text-primary);"><?= e($contact['email']) ?></strong></td>
                             <td><?= e($contact['name']) ?: '<span class="text-muted">—</span>' ?></td>
                             <td>
@@ -170,6 +213,7 @@ $contacts = dbFetchAll("
                 <?php endif; ?>
             </div>
             <?php endif; ?>
+            </form>
         <?php endif; ?>
     </div>
 </div>
@@ -203,4 +247,49 @@ $contacts = dbFetchAll("
     </div>
 </div>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php
+$pageScript = <<<'JS'
+function toggleAllContacts(checked) {
+    document.querySelectorAll('.contact-checkbox').forEach((checkbox) => {
+        checkbox.checked = checked;
+    });
+    updateContactBulkDeleteState();
+}
+
+function updateContactBulkDeleteState() {
+    const selected = document.querySelectorAll('.contact-checkbox:checked').length;
+    const total = document.querySelectorAll('.contact-checkbox').length;
+    const selectAll = document.getElementById('contactSelectAll');
+    const countEl = document.getElementById('contactSelectedCount');
+    const btn = document.getElementById('contactBulkDeleteBtn');
+
+    if (countEl) countEl.textContent = String(selected);
+    if (btn) btn.disabled = selected === 0;
+    if (selectAll) {
+        selectAll.checked = total > 0 && selected === total;
+        selectAll.indeterminate = selected > 0 && selected < total;
+    }
+}
+
+function confirmBulkDeleteContacts(event) {
+    const selected = document.querySelectorAll('.contact-checkbox:checked').length;
+    if (!selected) {
+        event.preventDefault();
+        Toast.error('Please select at least one contact.');
+        return false;
+    }
+    return confirm(`Delete ${selected} selected contact(s)?`);
+}
+
+function scrollToContactActions() {
+    const bar = document.getElementById('contactActionsBar');
+    if (bar) {
+        bar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+updateContactBulkDeleteState();
+JS;
+
+require_once __DIR__ . '/../includes/footer.php';
+?>
