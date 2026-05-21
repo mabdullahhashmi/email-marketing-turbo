@@ -49,6 +49,7 @@ if (!function_exists('smtpDomainColor')) {
 }
 
 $domainCounts = [];
+$runtimeCounts = ['untested' => 0, 'passed' => 0, 'failed' => 0];
 foreach ($accounts as $account) {
     $domain = '';
     if (!empty($account['from_email']) && strpos($account['from_email'], '@') !== false) {
@@ -57,6 +58,12 @@ foreach ($accounts as $account) {
     if ($domain) {
         $domainCounts[$domain] = ($domainCounts[$domain] ?? 0) + 1;
     }
+
+    $runtimeStatus = $account['last_test_status'] ?? 'untested';
+    if (!isset($runtimeCounts[$runtimeStatus])) {
+        $runtimeStatus = 'untested';
+    }
+    $runtimeCounts[$runtimeStatus]++;
 }
 ?>
 
@@ -68,6 +75,7 @@ foreach ($accounts as $account) {
     <div style="display:flex; gap:8px;">
         <a class="btn btn-outline" href="<?= $basePath ?>/pages/accounts-bulk-gmail.php">📥 Bulk Gmail Import</a>
         <a class="btn btn-outline" href="<?= $basePath ?>/pages/accounts-bulk-import.php">📥 Bulk SMTP Import</a>
+        <button class="btn btn-outline" onclick="bulkTestSelected()">🧪 Bulk Test SMTP</button>
         <button class="btn btn-primary" onclick="openAddAccountModal()">
             ✚ Add Account
         </button>
@@ -80,6 +88,9 @@ foreach ($accounts as $account) {
         <div style="padding: 16px 24px 0; display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
             <span class="badge badge-completed">Total SMTPs: <?= number_format(count($accounts)) ?></span>
             <span class="badge badge-draft">Unique Domains: <?= number_format(count($domainCounts)) ?></span>
+            <span class="badge" style="background:#22c55e;color:#fff;">Runtime Passed: <?= number_format($runtimeCounts['passed']) ?></span>
+            <span class="badge" style="background:#ef4444;color:#fff;">Runtime Failed: <?= number_format($runtimeCounts['failed']) ?></span>
+            <span class="badge" style="background:#64748b;color:#fff;">Runtime Untested: <?= number_format($runtimeCounts['untested']) ?></span>
             <?php foreach ($domainCounts as $domain => $count): ?>
                 <span class="badge" style="background: <?= smtpDomainColor($domain) ?>; color: #fff;"><?= e($domain) ?> (<?= $count ?>)</span>
             <?php endforeach; ?>
@@ -113,6 +124,7 @@ foreach ($accounts as $account) {
                             <th>Server</th>
                             <th>From</th>
                             <th>Status</th>
+                            <th>Runtime Status</th>
                             <th>Warm-Up</th>
                             <th>Sent Today</th>
                             <th>Actions</th>
@@ -152,6 +164,26 @@ foreach ($accounts as $account) {
                                     <span class="badge badge-completed">Active</span>
                                 <?php else: ?>
                                     <span class="badge badge-draft">Disabled</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <?php
+                                    $testStatus = $acc['last_test_status'] ?? 'untested';
+                                    $testedAt = $acc['last_tested_at'] ?? null;
+                                    $testMessage = $acc['last_test_message'] ?? '';
+                                ?>
+                                <?php if ($testStatus === 'passed'): ?>
+                                    <span class="badge badge-completed">Passed</span>
+                                <?php elseif ($testStatus === 'failed'): ?>
+                                    <span class="badge badge-failed">Failed</span>
+                                <?php else: ?>
+                                    <span class="badge badge-draft">Untested</span>
+                                <?php endif; ?>
+                                <?php if ($testedAt): ?>
+                                    <div class="text-muted fs-sm mt-1"><?= e($testedAt) ?></div>
+                                <?php endif; ?>
+                                <?php if ($testMessage): ?>
+                                    <div class="text-muted fs-sm mt-1" style="max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="<?= e($testMessage) ?>"><?= e($testMessage) ?></div>
                                 <?php endif; ?>
                             </td>
                             <td>
@@ -457,6 +489,7 @@ async function testSmtp(accountId) {
         const result = await apiCall(basePath + '/api/smtp-test.php', { id: accountId });
         if (result.success) {
             Toast.success('✓ SMTP connection successful!');
+            setTimeout(() => location.reload(), 800);
         } else {
             Toast.error('✕ ' + (result.message || 'Connection failed'));
         }
@@ -512,6 +545,39 @@ function confirmBulkDeleteSmtp(event) {
         return false;
     }
     return confirm(`Delete ${selected} selected SMTP account(s)?`);
+}
+
+async function bulkTestSelected() {
+    const ids = Array.from(document.querySelectorAll('.smtp-account-checkbox:checked')).map((el) => parseInt(el.value, 10)).filter(Boolean);
+    if (!ids.length) {
+        Toast.error('Please select at least one SMTP account to test.');
+        return;
+    }
+
+    const basePath = document.querySelector('meta[name="base-path"]')?.content || '';
+    Toast.info(`Testing ${ids.length} SMTP account(s)...`, 10000);
+
+    try {
+        const result = await apiCall(basePath + '/api/smtp-bulk-test.php', { ids }, 'POST');
+        const passed = Number(result.passed || 0);
+        const failed = Number(result.failed || 0);
+        const lines = Array.isArray(result.results)
+            ? result.results.map((row) => `${row.success ? 'PASS' : 'FAIL'} - ${row.label} - ${row.message}`).join('\n')
+            : '';
+
+        if (failed === 0) {
+            Toast.success(`Bulk test complete: ${passed} passed.`);
+        } else {
+            Toast.warning(`Bulk test complete: ${passed} passed, ${failed} failed.`);
+        }
+
+        if (lines) {
+            console.log('SMTP bulk test results:\n' + lines);
+        }
+        setTimeout(() => location.reload(), 1200);
+    } catch (err) {
+        Toast.error(err.message || 'Bulk test failed');
+    }
 }
 
 updateSmtpBulkDeleteState();

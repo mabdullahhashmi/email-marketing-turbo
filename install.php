@@ -79,6 +79,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step === 'install') {
                     `daily_limit` INT NOT NULL DEFAULT 0,
                     `sent_today` INT NOT NULL DEFAULT 0,
                     `last_reset_date` DATE DEFAULT NULL,
+                    `last_test_status` ENUM('untested','passed','failed') NOT NULL DEFAULT 'untested',
+                    `last_test_message` TEXT DEFAULT NULL,
+                    `last_tested_at` DATETIME DEFAULT NULL,
                     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     INDEX idx_active (`is_active`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
