@@ -16,12 +16,21 @@ require_once __DIR__ . '/../includes/header.php';
 
 <div class="card" style="margin-bottom: 20px;">
     <div class="card-header">
-        <h3>Upload File</h3>
+        <h3>Paste or Upload</h3>
     </div>
     <div class="card-body">
         <p class="text-muted fs-sm" style="margin-bottom: 12px;">
-            Supported fields include label, SMTP host, port, encryption, username, password, from name, from email, daily limit, IMAP settings, and seed account flag.
+            Paste rows directly or upload a CSV/TXT file. Supported fields include label, SMTP host, port, encryption, username, password, from name, from email, daily limit, IMAP settings, and seed account flag.
         </p>
+        <div class="form-group">
+            <label>Paste rows here</label>
+            <textarea id="smtpPasteInput" class="form-control" rows="10" placeholder="Label\tSMTP Host\tSMTP Port\tSMTP Username\tSMTP Password\tSMTP Enc."></textarea>
+            <div class="form-hint">Tab, comma, or semicolon separated. Daily limit will default to 100 if not provided.</div>
+        </div>
+        <div style="display:flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
+            <button type="button" class="btn btn-outline" onclick="loadPasteToPreview()">Use Pasted Rows</button>
+            <button type="button" class="btn btn-outline" onclick="loadTemplateRows()">Load Template</button>
+        </div>
         <div class="file-upload-area" id="smtpCsvUploadArea">
             <div class="upload-icon">📁</div>
             <h4>Drop your CSV file here</h4>
@@ -83,6 +92,41 @@ require_once __DIR__ . '/../includes/header.php';
 $pageScript = <<<'JS'
 let smtpCsvData = null;
 
+const smtpPresetText = `hello@clients-flow.app\tsmtp.clients-flow.app\t465\thello@clients-flow.app\ttiktok@unPassword\tSSL\t100
+contact@clients-flow.app\tsmtp.clients-flow.app\t465\tcontact@clients-flow.app\ttiktok@unPassword\tSSL\t100
+connect@clients-flow.app\tsmtp.clients-flow.app\t465\tconnect@clients-flow.app\ttiktok@unPassword\tSSL\t100
+grow@clients-flow.app\tsmtp.clients-flow.app\t465\tgrow@clients-flow.app\ttiktok@unPassword\tSSL\t100
+reach@clients-flow.app\tsmtp.clients-flow.app\t465\treach@clients-flow.app\ttiktok@unPassword\tSSL\t100
+start@clients-flow.app\tsmtp.clients-flow.app\t465\tstart@clients-flow.app\ttiktok@unPassword\tSSL\t100
+hello@growthnest.tech\tsmtp.growthnest.tech\t465\thello@growthnest.tech\ttiktok@unPassword\tSSL\t100
+contact@growthnest.tech\tsmtp.growthnest.tech\t465\tcontact@growthnest.tech\ttiktok@unPassword\tSSL\t100
+connect@growthnest.tech\tsmtp.growthnest.tech\t465\tconnect@growthnest.tech\ttiktok@unPassword\tSSL\t100
+grow@growthnest.tech\tsmtp.growthnest.tech\t465\tgrow@growthnest.tech\ttiktok@unPassword\tSSL\t100
+reach@growthnest.tech\tsmtp.growthnest.tech\t465\treach@growthnest.tech\ttiktok@unPassword\tSSL\t100
+start@growthnest.tech\tsmtp.growthnest.tech\t465\tstart@growthnest.tech\ttiktok@unPassword\tSSL\t100
+hello@boostrive.app\tsmtp.boostrive.app\t465\thello@boostrive.app\ttiktok@unPassword\tSSL\t100
+contact@boostrive.app\tsmtp.boostrive.app\t465\tcontact@boostrive.app\ttiktok@unPassword\tSSL\t100
+connect@boostrive.app\tsmtp.boostrive.app\t465\tconnect@boostrive.app\ttiktok@unPassword\tSSL\t100
+grow@boostrive.app\tsmtp.boostrive.app\t465\tgrow@boostrive.app\ttiktok@unPassword\tSSL\t100
+reach@boostrive.app\tsmtp.boostrive.app\t465\treach@boostrive.app\ttiktok@unPassword\tSSL\t100
+start@boostrive.app\tsmtp.boostrive.app\t465\tstart@boostrive.app\ttiktok@unPassword\tSSL\t100
+hello@boostrive.pro\tmy.mailbux.com\t587\thello@boostrive.pro\tliinwztdefgsikqc\tTLS\t100
+connect@boostrive.pro\tmy.mailbux.com\t587\tconnect@boostrive.pro\tnokgfjrapqtdtacs\tTLS\t100
+grow@boostrive.pro\tmy.mailbux.com\t587\tgrow@boostrive.pro\toguppqptmbekelhj\tTLS\t100
+reach@boostrive.pro\tmy.mailbux.com\t587\treach@boostrive.pro\tjrnzgfpkmxpbrjtg\tTLS\t100
+start@boostrive.pro\tmy.mailbux.com\t587\tstart@boostrive.pro\trlmclwhgcgtoicjv\tTLS\t100
+hello@scalebridge.app\tmy.mailbux.com\t587\thello@scalebridge.app\txddebujyzzrejpaw\tTLS\t100
+connect@scalebridge.app\tmy.mailbux.com\t587\tconnect@scalebridge.app\tedlwdvlntrsxxpcq\tTLS\t100
+grow@scalebridge.app\tmy.mailbux.com\t587\tgrow@scalebridge.app\tuvcaerarkgxtzpue\tTLS\t100
+reach@scalebridge.app\tmy.mailbux.com\t587\treach@scalebridge.app\tcrkwcstkbjrotwrw\tTLS\t100
+start@scalebridge.app\tmy.mailbux.com\t587\tstart@scalebridge.app\twbmnykvfgzbuanfy\tTLS\t100
+hello@scalitive.com\tsmtp.clients-flow.app\t465\thello@clients-flow.app\ttiktok@unPassword\tSSL\t100
+contact@scalitive.com\tsmtp.clients-flow.app\t465\tcontact@clients-flow.app\ttiktok@unPassword\tSSL\t100
+connect@scalitive.com\tsmtp.clients-flow.app\t465\tconnect@clients-flow.app\ttiktok@unPassword\tSSL\t100
+grow@scalitive.com\tsmtp.clients-flow.app\t465\tgrow@clients-flow.app\ttiktok@unPassword\tSSL\t100
+reach@scalitive.com\tsmtp.clients-flow.app\t465\treach@clients-flow.app\ttiktok@unPassword\tSSL\t100
+start@scalitive.com\tsmtp.clients-flow.app\t465\tstart@clients-flow.app\ttiktok@unPassword\tSSL\t100`;
+
 function parseCsvPreview(raw) {
     const lines = raw.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
     if (!lines.length) {
@@ -125,6 +169,32 @@ initFileUpload('smtpCsvUploadArea', 'smtpCsvFileInput', (file) => {
     };
     reader.readAsText(file);
 });
+
+function loadTemplateRows() {
+    document.getElementById('smtpPasteInput').value = smtpPresetText;
+    loadPasteToPreview();
+}
+
+function loadPasteToPreview() {
+    const raw = document.getElementById('smtpPasteInput').value || '';
+    if (!raw.trim()) {
+        Toast.error('Paste rows first or load the template.');
+        return;
+    }
+    smtpCsvData = parseCsvPreview(raw);
+    if (smtpCsvData.rows.length) {
+        smtpCsvData.rows = smtpCsvData.rows.map((row) => {
+            const copy = [...row];
+            if (copy.length < smtpCsvData.headers.length) {
+                while (copy.length < smtpCsvData.headers.length) copy.push('');
+            }
+            return copy;
+        });
+    }
+    renderSmtpMappingUI();
+    renderSmtpPreview();
+    Toast.success(`Parsed ${smtpCsvData.rows.length} row(s).`);
+}
 
 function renderSmtpMappingUI() {
     const container = document.getElementById('smtpColumnMappings');
@@ -171,6 +241,7 @@ function renderSmtpMappingUI() {
         if (['imap_username'].includes(h)) return 'imap_username';
         if (['imap_password'].includes(h)) return 'imap_password';
         if (['is_seed_account', 'seed', 'warmup_seed'].includes(h)) return 'is_seed_account';
+        if (['email'].includes(h)) return 'label';
         return 'skip';
     };
 

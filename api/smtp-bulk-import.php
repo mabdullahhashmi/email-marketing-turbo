@@ -131,7 +131,9 @@ try {
             $imapUsername = trim($rowData['imap_username'] ?? '');
             $imapPassword = trim($rowData['imap_password'] ?? '');
             $isSeedAccount = normalizeSmtpBool($rowData['is_seed_account'] ?? 0);
-            $dailyLimit = (int) ($rowData['daily_limit'] ?? 0);
+            $dailyLimit = isset($rowData['daily_limit']) && trim((string) $rowData['daily_limit']) !== ''
+                ? (int) $rowData['daily_limit']
+                : 100;
 
             $existing = dbFetchOne("SELECT id, warmup_status FROM smtp_accounts WHERE smtp_host = ? AND smtp_username = ? LIMIT 1", [$host, $username]);
             $currentStatus = $existing['warmup_status'] ?? 'idle';
