@@ -61,6 +61,7 @@ require_once __DIR__ . '/../includes/header.php';
         <h3>Preview</h3>
     </div>
     <div class="card-body" style="padding: 0;">
+        <div id="smtpPreviewSummary" style="padding: 16px 24px 0; display:flex; gap:12px; flex-wrap:wrap;"></div>
         <div id="smtpPreviewEmpty" style="padding: 24px; text-align:center; color: var(--text-muted);">
             No file loaded yet. Upload a CSV to preview the first rows.
         </div>
@@ -205,6 +206,86 @@ function parseSmtpPasteRows(raw) {
     return { headers: smtpPasteHeaders.slice(), rows };
 }
 
+function normalizeEmail(value) {
+    return String(value || '').trim().toLowerCase();
+}
+
+function getDomainFromEmail(value) {
+    const email = normalizeEmail(value);
+    const atIndex = email.lastIndexOf('@');
+    return atIndex >= 0 ? email.slice(atIndex + 1) : '';
+}
+
+function getDomainColor(domain) {
+    const palette = ['#60a5fa', '#34d399', '#f59e0b', '#f472b6', '#a78bfa', '#22c55e', '#fb7185', '#38bdf8', '#c084fc', '#f97316'];
+    const normalized = String(domain || '').toLowerCase();
+    let hash = 0;
+    for (let i = 0; i < normalized.length; i++) {
+        hash = ((hash << 5) - hash) + normalized.charCodeAt(i);
+        hash |= 0;
+    }
+    return palette[Math.abs(hash) % palette.length];
+}
+
+function escapeHtml(str) {
+    return String(str)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+}
+
+function computeSmtpStats() {
+    if (!smtpCsvData || !smtpCsvData.rows.length) {
+        return { total: 0, domains: {}, uniqueDomains: 0 };
+    }
+
+    const domains = {};
+    smtpCsvData.rows.forEach((row) => {
+        const email = normalizeEmail(row[0] || row[3] || '');
+        const domain = getDomainFromEmail(email);
+        if (!domain) {
+            return;
+        }
+        domains[domain] = (domains[domain] || 0) + 1;
+    });
+
+    return {
+        total: smtpCsvData.rows.length,
+        domains,
+        uniqueDomains: Object.keys(domains).length,
+    };
+}
+
+function renderSmtpSummary() {
+    const summaryEl = document.getElementById('smtpPreviewSummary');
+    const stats = computeSmtpStats();
+
+    if (!summaryEl) {
+        return;
+    }
+
+    if (!stats.total) {
+        summaryEl.innerHTML = '';
+        return;
+    }
+
+    const domainChips = Object.entries(stats.domains)
+        .sort((a, b) => a[0].localeCompare(b[0]))
+        .map(([domain, count]) => {
+            const color = getDomainColor(domain);
+            return `<span class="badge" style="background:${color}; color:#fff;">${escapeHtml(domain)} (${count})</span>`;
+        })
+        .join('');
+
+    summaryEl.innerHTML = `
+        <span class="badge badge-completed">Total Emails: ${stats.total}</span>
+        <span class="badge badge-draft">Unique Domains: ${stats.uniqueDomains}</span>
+        ${domainChips}
+    `;
+}
+
 initFileUpload('smtpCsvUploadArea', 'smtpCsvFileInput', (file) => {
     smtpImportMode = 'file';
     document.getElementById('smtpCsvFileInfo').style.display = 'flex';
@@ -310,13 +391,27 @@ function renderSmtpPreview() {
     if (!smtpCsvData || !smtpCsvData.headers.length) {
         previewWrap.style.display = 'none';
         previewEmpty.style.display = 'block';
+        renderSmtpSummary();
         return;
     }
 
     previewHead.innerHTML = smtpCsvData.headers.map((header) => `<th>${escapeHtml(header)}</th>`).join('');
-    previewBody.innerHTML = smtpCsvData.rows.slice(0, 3).map((row) => `<tr>${row.map((cell) => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`).join('');
+    previewBody.innerHTML = smtpCsvData.rows.slice(0, 3).map((row) => {
+        const domain = getDomainFromEmail(row[0] || row[3] || '');
+        const color = domain ? getDomainColor(domain) : 'var(--text-muted)';
+        return `<tr>${row.map((cell, index) => {
+            if (index === 0 || index === 3) {
+                return `<td><strong style="color:${color};">${escapeHtml(cell)}</strong>${domain ? `<div class="text-muted fs-sm" style="margin-top:4px;">${escapeHtml(domain)}</div>` : ''}</td>`;
+            }
+            if (index === 5) {
+                return `<td><span class="badge" style="background:${color}; color:#fff;">${escapeHtml(cell)}</span></td>`;
+            }
+            return `<td>${escapeHtml(cell)}</td>`;
+        }).join('')}</tr>`;
+    }).join('');
     previewEmpty.style.display = 'none';
     previewWrap.style.display = 'block';
+    renderSmtpSummary();
 }
 
 function previewSmtpRows() {
@@ -327,15 +422,6 @@ function previewSmtpRows() {
     renderSmtpMappingUI();
     renderSmtpPreview();
     Toast.success(`Parsed ${smtpCsvData.rows.length} row(s).`);
-}
-
-function escapeHtml(str) {
-    return String(str)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
 }
 
 async function importSmtpRows() {
@@ -377,9 +463,12 @@ async function importSmtpRows() {
         const errors = Array.isArray(result.errors) ? result.errors : [];
 
         document.getElementById('smtpImportResult').innerHTML = `
-            <div style="color: var(--color-success); margin-bottom: 8px;"><strong>Created:</strong> ${Number(result.created || 0)}</div>
-            <div style="color: var(--text-secondary); margin-bottom: 8px;"><strong>Updated:</strong> ${Number(result.updated || 0)}</div>
-            <div style="color: ${errors.length ? 'var(--color-danger)' : 'var(--text-secondary)'};"><strong>Skipped:</strong> ${Number(result.skipped || 0)}</div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 8px;">
+                <span class="badge badge-completed">Created: ${Number(result.created || 0)}</span>
+                <span class="badge badge-draft">Updated: ${Number(result.updated || 0)}</span>
+                <span class="badge" style="background:${errors.length ? 'var(--color-danger)' : 'var(--text-secondary)'}; color:#fff;">Skipped: ${Number(result.skipped || 0)}</span>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 8px;">${(computeSmtpStats().total ? Object.entries(computeSmtpStats().domains).map(([domain, count]) => `<span class="badge" style="background:${getDomainColor(domain)}; color:#fff;">${escapeHtml(domain)} (${count})</span>`).join('') : '')}</div>
             ${errors.length ? `<div style="margin-top:10px; font-size:12px; color: var(--text-muted); white-space: pre-wrap;">${escapeHtml(errors.join('\n'))}</div>` : ''}
         `;
         Toast.success(result.message || 'SMTP import completed.');
