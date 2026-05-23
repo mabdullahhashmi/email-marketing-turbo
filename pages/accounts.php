@@ -35,6 +35,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'bulk_
 // Fetch accounts
 $accounts = dbFetchAll("SELECT * FROM smtp_accounts ORDER BY created_at DESC");
 
+function loadRuntimeStatusMap() {
+    try {
+        $rows = dbFetchAll("SELECT account_id, last_test_status, last_test_message, last_tested_at FROM smtp_runtime_status");
+        $map = [];
+        foreach ($rows as $row) {
+            $map[(int) $row['account_id']] = $row;
+        }
+        return $map;
+    } catch (Exception $e) {
+        return [];
+    }
+}
+
+$runtimeMap = loadRuntimeStatusMap();
+
 if (!function_exists('smtpDomainColor')) {
     function smtpDomainColor($domain) {
         $palette = ['#60a5fa', '#34d399', '#f59e0b', '#f472b6', '#a78bfa', '#22c55e', '#fb7185', '#38bdf8', '#c084fc', '#f97316'];
@@ -59,7 +74,8 @@ foreach ($accounts as $account) {
         $domainCounts[$domain] = ($domainCounts[$domain] ?? 0) + 1;
     }
 
-    $runtimeStatus = $account['last_test_status'] ?? 'untested';
+    $runtimeRow = $runtimeMap[(int) $account['id']] ?? [];
+    $runtimeStatus = $runtimeRow['last_test_status'] ?? ($account['last_test_status'] ?? 'untested');
     if (!isset($runtimeCounts[$runtimeStatus])) {
         $runtimeStatus = 'untested';
     }
@@ -168,9 +184,10 @@ foreach ($accounts as $account) {
                             </td>
                             <td>
                                 <?php
-                                    $testStatus = $acc['last_test_status'] ?? 'untested';
-                                    $testedAt = $acc['last_tested_at'] ?? null;
-                                    $testMessage = $acc['last_test_message'] ?? '';
+                                    $runtimeRow = $runtimeMap[(int) $acc['id']] ?? [];
+                                    $testStatus = $runtimeRow['last_test_status'] ?? ($acc['last_test_status'] ?? 'untested');
+                                    $testedAt = $runtimeRow['last_tested_at'] ?? ($acc['last_tested_at'] ?? null);
+                                    $testMessage = $runtimeRow['last_test_message'] ?? ($acc['last_test_message'] ?? '');
                                 ?>
                                 <span id="smtp-runtime-status-badge-<?= $acc['id'] ?>">
                                     <?php if ($testStatus === 'passed'): ?>

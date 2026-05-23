@@ -5,6 +5,41 @@ require_once __DIR__ . '/../lib/PHPMailer/src/SMTP.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 
+function smtpEnsureRuntimeTable() {
+    try {
+        dbExecute(
+            "CREATE TABLE IF NOT EXISTS `smtp_runtime_status` (\
+                `account_id` INT NOT NULL PRIMARY KEY,\
+                `last_test_status` ENUM('untested','passed','failed') NOT NULL DEFAULT 'untested',\
+                `last_test_message` TEXT DEFAULT NULL,\
+                `last_tested_at` DATETIME DEFAULT NULL,\
+                `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP\
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
+        );
+        return true;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
+function smtpStoreRuntimeFallback($accountId, $status, $message) {
+    if (!smtpEnsureRuntimeTable()) {
+        return false;
+    }
+
+    try {
+        dbExecute(
+            "INSERT INTO `smtp_runtime_status` (account_id, last_test_status, last_test_message, last_tested_at)\
+             VALUES (?, ?, ?, NOW())\
+             ON DUPLICATE KEY UPDATE last_test_status = VALUES(last_test_status), last_test_message = VALUES(last_test_message), last_tested_at = VALUES(last_tested_at)",
+            [$accountId, $status, $message]
+        );
+        return true;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
 function smtpTestRun($account, $toEmail = null, $subject = null, $body = null) {
     $startedAt = microtime(true);
 
@@ -89,10 +124,9 @@ function smtpTestStoreRuntimeStatus($accountId, $status, $message) {
                 try {
                     @file_put_contents($logFile, date('[Y-m-d H:i:s] ') . "Auto-migration failed for account {$accountId}: " . $e2->getMessage() . PHP_EOL, FILE_APPEND);
                 } catch (Exception $_) {}
-                return false;
+                return smtpStoreRuntimeFallback($accountId, $status, $message);
             }
         }
-
-        return false;
+        return smtpStoreRuntimeFallback($accountId, $status, $message);
     }
 }
