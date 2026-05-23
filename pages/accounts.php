@@ -596,6 +596,8 @@ function updateRuntimeStatusRow(accountId, status, message, testedAt, runtimeSav
     const testedAtEl = document.getElementById(`smtp-runtime-tested-at-${accountId}`);
     const messageEl = document.getElementById(`smtp-runtime-message-${accountId}`);
 
+    const basePath = document.querySelector('meta[name="base-path"]')?.content || '';
+
     if (badge) {
         const savedMark = runtimeSaved === false ? ' <span class="badge badge-draft" style="margin-left:6px;">Not saved</span>' : '';
         if (status === 'passed') {
@@ -616,6 +618,10 @@ function updateRuntimeStatusRow(accountId, status, message, testedAt, runtimeSav
     if (messageEl) {
         messageEl.textContent = message || '';
         messageEl.title = message || '';
+    }
+
+    if (runtimeSaved === false) {
+        Toast.warning('Runtime status was not saved to the database. Run the one-time migration: ' + basePath + '/migrate-smtp-runtime-status.php', 10000);
     }
 }
 

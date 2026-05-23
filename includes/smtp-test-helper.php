@@ -57,6 +57,16 @@ function smtpTestStoreRuntimeStatus($accountId, $status, $message) {
         );
         return true;
     } catch (Exception $e) {
+        // Log the failure to help diagnose missing DB permissions or other issues.
+        try {
+            $logDir = __DIR__ . '/../storage/logs';
+            if (!is_dir($logDir)) @mkdir($logDir, 0755, true);
+            $logFile = $logDir . '/smtp-test-persist.log';
+            @file_put_contents($logFile, date('[Y-m-d H:i:s] ') . "Initial update failed for account {$accountId}: " . $e->getMessage() . PHP_EOL, FILE_APPEND);
+        } catch (Exception $_) {
+            // swallow logging errors
+        }
+
         // If update failed because the columns don't exist, attempt to add them now and retry once.
         $msg = $e->getMessage();
         if (stripos($msg, 'Unknown column') !== false || stripos($msg, "doesn't exist") !== false || stripos($msg, 'column') !== false) {
@@ -75,7 +85,10 @@ function smtpTestStoreRuntimeStatus($accountId, $status, $message) {
                 );
                 return true;
             } catch (Exception $e2) {
-                // If the alter/update fails, give up gracefully.
+                // If the alter/update fails, log and give up gracefully.
+                try {
+                    @file_put_contents($logFile, date('[Y-m-d H:i:s] ') . "Auto-migration failed for account {$accountId}: " . $e2->getMessage() . PHP_EOL, FILE_APPEND);
+                } catch (Exception $_) {}
                 return false;
             }
         }
