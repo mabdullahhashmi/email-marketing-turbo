@@ -28,7 +28,8 @@ function smtpTestRun($account, $toEmail = null, $subject = null, $body = null) {
     $mail->Password = $password;
     $mail->SMTPSecure = $encryption === 'tls' ? PHPMailer::ENCRYPTION_STARTTLS : PHPMailer::ENCRYPTION_SMTPS;
     $mail->Port = $port;
-    $mail->Timeout = 15;
+    // Use a conservative per-connection timeout to keep bulk runs responsive.
+    $mail->Timeout = 8;
 
     $mail->setFrom($fromEmail, $fromName);
     $mail->addAddress($recipient);

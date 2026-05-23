@@ -9,6 +9,10 @@ require_once __DIR__ . '/../includes/smtp-test-helper.php';
 
 header('Content-Type: application/json');
 
+// Allow long-running bulk tests (best-effort). The environment may still enforce limits.
+@set_time_limit(0);
+@ignore_user_abort(true);
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     jsonResponse(['success' => false, 'message' => 'Method not allowed'], 405);
 }
