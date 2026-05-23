@@ -56,7 +56,29 @@ function smtpTestStoreRuntimeStatus($accountId, $status, $message) {
         );
         return true;
     } catch (Exception $e) {
-        // Ignore if the runtime-status columns have not been migrated yet.
+        // If update failed because the columns don't exist, attempt to add them now and retry once.
+        $msg = $e->getMessage();
+        if (stripos($msg, 'Unknown column') !== false || stripos($msg, "doesn't exist") !== false || stripos($msg, 'column') !== false) {
+            try {
+                dbExecute(
+                    "ALTER TABLE `smtp_accounts` \
+                        ADD COLUMN `last_test_status` ENUM('untested','passed','failed') NOT NULL DEFAULT 'untested', \
+                        ADD COLUMN `last_test_message` TEXT DEFAULT NULL, \
+                        ADD COLUMN `last_tested_at` DATETIME DEFAULT NULL"
+                );
+
+                // Retry the update once.
+                dbExecute(
+                    "UPDATE smtp_accounts SET last_test_status = ?, last_test_message = ?, last_tested_at = NOW() WHERE id = ?",
+                    [$status, $message, $accountId]
+                );
+                return true;
+            } catch (Exception $e2) {
+                // If the alter/update fails, give up gracefully.
+                return false;
+            }
+        }
+
         return false;
     }
 }
