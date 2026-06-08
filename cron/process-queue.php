@@ -22,6 +22,7 @@ require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/bounce-helper.php';
 require_once __DIR__ . '/../lib/PHPMailer/src/Exception.php';
 require_once __DIR__ . '/../lib/PHPMailer/src/PHPMailer.php';
 require_once __DIR__ . '/../lib/PHPMailer/src/SMTP.php';
@@ -197,87 +198,32 @@ foreach ($pendingEmails as $email) {
         $errorMsg = $e->getMessage();
         cronLog("✕ Failed {$email['to_email']}: {$errorMsg}");
         
-        // ---- Bounce Classification ----
-        $bounceType = 'unknown';
-        $bounceCode = '';
-        
-        // Extract SMTP status code
-        if (preg_match('/(\d{3})\s/', $errorMsg, $codeMatch)) {
-            $bounceCode = $codeMatch[1];
-        }
-        
-        // Hard bounces: 5xx permanent failures
-        $hardBouncePatterns = [
-            '/550/',                    // Mailbox not found
-            '/551/',                    // User not local
-            '/552/',                    // Exceeded storage
-            '/553/',                    // Mailbox name not allowed
-            '/554/',                    // Transaction failed
-            '/user\s+(unknown|not\s+found)/i',
-            '/mailbox\s+(not\s+found|unavailable|does\s+not\s+exist)/i',
-            '/no\s+such\s+user/i',
-            '/address\s+rejected/i',
-            '/recipient\s+rejected/i',
-            '/account\s+(disabled|suspended|closed)/i',
-            '/invalid\s+(mailbox|recipient|address)/i',
-        ];
-        
-        // Soft bounces: 4xx temporary failures
-        $softBouncePatterns = [
-            '/421/',                    // Service not available
-            '/450/',                    // Mailbox busy
-            '/451/',                    // Local error
-            '/452/',                    // Insufficient storage
-            '/too\s+many\s+(connections|recipients)/i',
-            '/rate\s+limit/i',
-            '/try\s+again\s+later/i',
-            '/temporarily\s+deferred/i',
-            '/greylisted/i',
-        ];
-        
-        // Complaint patterns
-        $complaintPatterns = [
-            '/spam/i',
-            '/blocked/i',
-            '/blacklist/i',
-            '/dnsbl/i',
-            '/rejected.*policy/i',
-        ];
-        
-        foreach ($hardBouncePatterns as $pat) {
-            if (preg_match($pat, $errorMsg)) { $bounceType = 'hard'; break; }
-        }
-        if ($bounceType === 'unknown') {
-            foreach ($softBouncePatterns as $pat) {
-                if (preg_match($pat, $errorMsg)) { $bounceType = 'soft'; break; }
-            }
-        }
-        if ($bounceType === 'unknown') {
-            foreach ($complaintPatterns as $pat) {
-                if (preg_match($pat, $errorMsg)) { $bounceType = 'complaint'; break; }
-            }
-        }
+        $classification = bounceClassifyMessage($errorMsg);
+        $bounceType = $classification['type'];
         
         // Record bounce
         try {
-            dbInsert(
-                "INSERT INTO bounces (email, smtp_account_id, campaign_id, queue_id, bounce_type, bounce_code, bounce_message, source) 
-                 VALUES (?, ?, ?, ?, ?, ?, ?, 'smtp_response')",
-                [$email['to_email'], $smtpId, $email['campaign_id'], $email['id'], $bounceType, $bounceCode, substr($errorMsg, 0, 1000)]
-            );
+            bounceRecord($email['to_email'], $classification, [
+                'smtp_account_id' => $smtpId,
+                'campaign_id' => $email['campaign_id'],
+                'queue_id' => $email['id'],
+                'source' => 'smtp_response',
+                'message' => $errorMsg,
+            ]);
         } catch (\Exception $bx) {
             cronLog("  → Could not log bounce: " . $bx->getMessage());
         }
         
-        // Auto-suppress hard bounces
-        if ($bounceType === 'hard') {
+        // Auto-suppress hard bounces and complaints
+        if (in_array($bounceType, ['hard', 'complaint'], true)) {
             try {
-                dbInsert(
-                    "INSERT IGNORE INTO suppression_list (email, reason, source_detail) VALUES (?, 'hard_bounce', ?)",
-                    [$email['to_email'], "Auto-suppressed: $errorMsg"]
-                );
-                cronLog("  → Hard bounce: {$email['to_email']} added to suppression list");
+                bounceSuppressIfNeeded($email['to_email'], $classification, "Auto-suppressed: $errorMsg");
+                cronLog("  → {$bounceType} bounce: {$email['to_email']} added to suppression list");
             } catch (\Exception $sx) { /* duplicate, ignore */ }
+
+            dbExecute("UPDATE email_queue SET status = 'failed', error_message = ? WHERE id = ?", [$errorMsg, $email['id']]);
+            dbExecute("UPDATE campaigns SET failed_count = failed_count + 1, updated_at = NOW() WHERE id = ?", [$email['campaign_id']]);
+            continue;
         }
         
         // Check if max retries reached

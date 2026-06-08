@@ -11,6 +11,7 @@ $hardBounces = getCount('bounces', "bounce_type = 'hard'");
 $softBounces = getCount('bounces', "bounce_type = 'soft'");
 $complaints = getCount('bounces', "bounce_type = 'complaint'");
 $suppressed = getCount('suppression_list');
+$imapAccounts = getCount('smtp_accounts', "is_active = 1 AND imap_host IS NOT NULL AND imap_host != ''");
 
 // Filters
 $filterType = $_GET['type'] ?? '';
@@ -69,6 +70,9 @@ $topBounceDomains = dbFetchAll("
         <h1><span class="header-icon">🛡️</span>Bounce Management</h1>
         <div class="subtitle">Track bounces, suppress bad addresses, protect sender reputation</div>
     </div>
+    <div style="display:flex; gap:10px; align-items:center;">
+        <button type="button" class="btn btn-primary" id="scanBounceBtn" onclick="scanBounceInboxes()">Scan Bounce Inboxes</button>
+    </div>
 </div>
 
 <div class="stats-grid" style="margin-bottom: 24px;">
@@ -94,6 +98,11 @@ $topBounceDomains = dbFetchAll("
         <div class="stat-title">Suppressed Emails</div>
         <div class="stat-value" style="color: var(--text-muted);"><?= number_format($suppressed) ?></div>
         <div class="stat-subtitle">Will never be sent to</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title">IMAP Bounce Inboxes</div>
+        <div class="stat-value" style="color: var(--color-primary);"><?= number_format($imapAccounts) ?></div>
+        <div class="stat-subtitle">Available for delayed scans</div>
     </div>
 </div>
 
@@ -162,7 +171,10 @@ $topBounceDomains = dbFetchAll("
                                 <span class="badge" style="background:<?= $color ?>;color:#fff;"><?= ucfirst($b['bounce_type']) ?></span>
                             </td>
                             <td class="text-muted fs-sm"><?= e($b['bounce_code'] ?: '—') ?></td>
-                            <td class="text-muted fs-sm"><?= e($b['smtp_email'] ?? '—') ?></td>
+                            <td class="text-muted fs-sm">
+                                <?= e(ucwords(str_replace('_', ' ', $b['source']))) ?>
+                                <div><?= e($b['smtp_email'] ?? '—') ?></div>
+                            </td>
                             <td class="text-muted fs-sm"><?= e($b['campaign_name'] ?? '—') ?></td>
                             <td class="text-muted fs-sm"><?= timeAgo($b['created_at']) ?></td>
                         </tr>
@@ -231,5 +243,28 @@ $topBounceDomains = dbFetchAll("
         </div>
     </div>
 </div>
+
+<script>
+async function scanBounceInboxes() {
+    const btn = document.getElementById('scanBounceBtn');
+    const basePath = document.querySelector('meta[name="base-path"]')?.content || '';
+    const originalText = btn.textContent;
+
+    btn.disabled = true;
+    btn.textContent = 'Scanning...';
+
+    try {
+        const result = await apiCall(basePath + '/api/bounce-scan.php', { limit: 120 }, 'POST');
+        const summary = result.summary || {};
+        Toast.success(`${result.message} Suppressed ${summary.suppressed || 0} address(es).`, 7000);
+        setTimeout(() => window.location.reload(), 1200);
+    } catch (err) {
+        Toast.error(err.message || 'Bounce scan failed', 8000);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = originalText;
+    }
+}
+</script>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
