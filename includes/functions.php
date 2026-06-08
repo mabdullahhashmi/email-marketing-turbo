@@ -124,11 +124,11 @@ function getEmbeddedImages($html) {
     $images = [];
     $uploadDir = UPLOAD_DIR;
     
-    // Match img src pointing to assets/uploads/
-    preg_match_all('/src=["\'](?:\.\.\/|\.\/)?(?:assets\/uploads\/)([^"\']+)["\']/i', $html, $matches);
+    // Match img src pointing anywhere under assets/uploads/.
+    preg_match_all('/src=["\']([^"\']*assets\/uploads\/([^"\']+))["\']/i', $html, $matches);
     
-    if (!empty($matches[1])) {
-        foreach ($matches[1] as $filename) {
+    if (!empty($matches[2])) {
+        foreach ($matches[2] as $index => $filename) {
             $filepath = $uploadDir . $filename;
             if (file_exists($filepath)) {
                 $cid = 'img_' . md5($filename) . '_' . pathinfo($filename, PATHINFO_FILENAME);
@@ -136,6 +136,7 @@ function getEmbeddedImages($html) {
                     'path' => $filepath,
                     'cid' => $cid,
                     'name' => $filename,
+                    'original_src' => $matches[1][$index],
                     'original_src_pattern' => $filename,
                 ];
             }
@@ -150,6 +151,10 @@ function getEmbeddedImages($html) {
  */
 function replaceImagesWithCID($html, $images) {
     foreach ($images as $img) {
+        if (!empty($img['original_src'])) {
+            $html = str_replace($img['original_src'], 'cid:' . $img['cid'], $html);
+        }
+
         // Replace various forms of the image path with cid: reference
         $patterns = [
             'assets/uploads/' . $img['original_src_pattern'],
