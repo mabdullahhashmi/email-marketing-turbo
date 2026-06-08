@@ -1340,11 +1340,21 @@ table tbody tr:last-child td {
     border-bottom: 1px solid var(--border-color);
 }
 
+.campaign-builder-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 24px;
+    align-items: start;
+}
+
 .email-builder-shell {
     display: grid;
-    grid-template-columns: 190px minmax(360px, 1fr) 260px;
+    grid-template-columns: 220px minmax(0, 1fr);
     min-height: 680px;
-    background: rgba(15, 23, 42, 0.35);
+    background: rgba(15, 23, 42, 0.28);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    overflow: hidden;
 }
 
 .builder-panel {
@@ -1358,7 +1368,9 @@ table tbody tr:last-child td {
 }
 
 .builder-panel-right {
-    border-left: 1px solid var(--border-color);
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--border-color);
+    background: rgba(15, 23, 42, 0.54);
 }
 
 .builder-panel-title {
@@ -1371,7 +1383,7 @@ table tbody tr:last-child td {
 
 .builder-block-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 8px;
 }
 
@@ -1385,6 +1397,26 @@ table tbody tr:last-child td {
     font-size: 12px;
     cursor: pointer;
     transition: var(--transition);
+}
+
+.builder-block-grid .builder-block-button {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    align-items: flex-start;
+    min-height: 54px;
+    text-align: left;
+    line-height: 1.2;
+}
+
+.builder-block-grid .builder-block-button strong {
+    font-size: 13px;
+    color: var(--text-primary);
+}
+
+.builder-block-grid .builder-block-button span {
+    font-size: 11px;
+    color: var(--text-muted);
 }
 
 .builder-block-grid button:hover,
@@ -1407,6 +1439,7 @@ table tbody tr:last-child td {
     gap: 10px;
     padding: 0 16px;
     border-bottom: 1px solid var(--border-color);
+    background: rgba(15, 23, 42, 0.62);
 }
 
 .builder-preview-wrap {
@@ -1462,12 +1495,18 @@ table tbody tr:last-child td {
 
 .builder-block-tools button {
     border: 0;
-    background: #111827;
+    background: #111827 !important;
     color: #ffffff;
     border-radius: 4px;
     padding: 4px 6px;
     font-size: 11px;
     cursor: pointer;
+    line-height: 1;
+}
+
+.builder-block-tools button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
 }
 
 .builder-empty-inspector {
@@ -1493,6 +1532,7 @@ table tbody tr:last-child td {
     border-radius: var(--radius-sm);
     padding: 8px 10px;
     font-size: 13px;
+    display: block;
 }
 
 textarea.builder-control {
@@ -1512,14 +1552,64 @@ textarea.builder-control {
     align-items: center;
 }
 
+.builder-design-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+.builder-design-grid label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border: 1px solid var(--border-color);
+    background: rgba(30, 41, 59, 0.55);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+}
+
 .builder-color-row input[type="color"],
-.builder-panel input[type="color"] {
+.builder-panel input[type="color"],
+.builder-design-grid input[type="color"] {
     width: 44px;
     height: 34px;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
     background: transparent;
     padding: 2px;
+}
+
+#builderInspector {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(160px, 1fr));
+    gap: 12px 14px;
+    align-items: start;
+}
+
+#builderInspector > div:first-child {
+    grid-column: 1 / -1;
+}
+
+.builder-field {
+    min-width: 0;
+}
+
+.builder-field-wide {
+    grid-column: span 2;
+}
+
+#builderInspector textarea.builder-control,
+#builderInspector .builder-color-row,
+#builderInspector input[type="file"].builder-control {
+    min-width: 0;
+}
+
+#builderInspector textarea.builder-control {
+    min-height: 96px;
 }
 
 .builder-source-modal {
@@ -1613,9 +1703,23 @@ textarea.builder-control {
     .builder-preview-wrap {
         padding: 14px;
     }
+
+    #builderInspector {
+        grid-template-columns: 1fr;
+    }
+
+    .builder-field-wide {
+        grid-column: auto;
+    }
     
     .modal {
         margin: 10px;
+    }
+}
+
+@media (max-width: 1320px) {
+    .campaign-builder-layout {
+        grid-template-columns: 1fr;
     }
 }
 

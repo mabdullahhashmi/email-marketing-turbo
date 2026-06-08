@@ -42,7 +42,7 @@ $contactLists = dbFetchAll("
 <form id="campaignForm" onsubmit="saveCampaign(event)">
     <input type="hidden" id="campaignId" value="<?= $editId ?>">
     
-    <div style="display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start;">
+    <div class="campaign-builder-layout">
         <!-- Main Content -->
         <div>
             <!-- Campaign Details -->
@@ -100,16 +100,16 @@ $contactLists = dbFetchAll("
                         <aside class="builder-panel builder-panel-left">
                             <div class="builder-panel-title">Blocks</div>
                             <div class="builder-block-grid">
-                                <button type="button" onclick="builderAddBlock('hero')">Hero</button>
-                                <button type="button" onclick="builderAddBlock('text')">Text</button>
-                                <button type="button" onclick="builderAddBlock('image')">Image</button>
-                                <button type="button" onclick="builderAddBlock('button')">Button</button>
-                                <button type="button" onclick="builderAddBlock('twoColumn')">2 Columns</button>
-                                <button type="button" onclick="builderAddBlock('product')">Product</button>
-                                <button type="button" onclick="builderAddBlock('divider')">Divider</button>
-                                <button type="button" onclick="builderAddBlock('spacer')">Spacer</button>
-                                <button type="button" onclick="builderAddBlock('social')">Social</button>
-                                <button type="button" onclick="builderAddBlock('html')">HTML</button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('hero')"><strong>Hero</strong><span>Headline + CTA</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('text')"><strong>Text</strong><span>Rich copy</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('image')"><strong>Image</strong><span>Upload visual</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('button')"><strong>Button</strong><span>Action link</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('twoColumn')"><strong>Columns</strong><span>Two sections</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('product')"><strong>Product</strong><span>Offer card</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('divider')"><strong>Divider</strong><span>Separator</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('spacer')"><strong>Spacer</strong><span>Vertical gap</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('social')"><strong>Social</strong><span>Profile links</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('html')"><strong>HTML</strong><span>Custom code</span></button>
                             </div>
 
                             <div class="builder-panel-title" style="margin-top:18px;">Shortcodes</div>
@@ -123,12 +123,11 @@ $contactLists = dbFetchAll("
                             </div>
 
                             <div class="builder-panel-title" style="margin-top:18px;">Design</div>
-                            <label class="builder-control-label">Page Background</label>
-                            <input type="color" id="builderBg" value="#f4f7fb" onchange="builderUpdateSettings()">
-                            <label class="builder-control-label">Email Background</label>
-                            <input type="color" id="builderContentBg" value="#ffffff" onchange="builderUpdateSettings()">
-                            <label class="builder-control-label">Accent Color</label>
-                            <input type="color" id="builderAccent" value="#2563eb" onchange="builderUpdateSettings()">
+                            <div class="builder-design-grid">
+                                <label><span>Page</span><input type="color" id="builderBg" value="#f4f7fb" onchange="builderUpdateSettings()"></label>
+                                <label><span>Email</span><input type="color" id="builderContentBg" value="#ffffff" onchange="builderUpdateSettings()"></label>
+                                <label><span>Accent</span><input type="color" id="builderAccent" value="#2563eb" onchange="builderUpdateSettings()"></label>
+                            </div>
                         </aside>
 
                         <section class="builder-stage">
@@ -642,26 +641,32 @@ function builderRender() {
 function builderInput(label, key, type = 'text') {
     const block = builderGetBlock();
     return `
+        <div class="builder-field">
         <label class="builder-control-label">${label}</label>
         <input class="builder-control" type="${type}" value="${builderAttr(block[key] ?? '')}" onfocus="builderFocusedField={id:'${block.id}',key:'${key}'}" oninput="builderSet('${block.id}','${key}',this.value)">
+        </div>
     `;
 }
 
 function builderTextarea(label, key, rows = 4) {
     const block = builderGetBlock();
     return `
+        <div class="builder-field builder-field-wide">
         <label class="builder-control-label">${label}</label>
         <textarea class="builder-control" rows="${rows}" onfocus="builderFocusedField={id:'${block.id}',key:'${key}'}" oninput="builderSet('${block.id}','${key}',this.value)">${builderEsc(block[key] ?? '')}</textarea>
+        </div>
     `;
 }
 
 function builderColor(label, key) {
     const block = builderGetBlock();
     return `
+        <div class="builder-field">
         <label class="builder-control-label">${label}</label>
         <div class="builder-color-row">
             <input type="color" value="${builderAttr(block[key] || '#ffffff')}" oninput="builderSet('${block.id}','${key}',this.value)">
             <input class="builder-control" type="text" value="${builderAttr(block[key] || '')}" oninput="builderSet('${block.id}','${key}',this.value)">
+        </div>
         </div>
     `;
 }
@@ -669,18 +674,22 @@ function builderColor(label, key) {
 function builderSelect(label, key, options) {
     const block = builderGetBlock();
     return `
+        <div class="builder-field">
         <label class="builder-control-label">${label}</label>
         <select class="builder-control" onchange="builderSet('${block.id}','${key}',this.value)">
             ${options.map((opt) => `<option value="${builderAttr(opt)}" ${block[key] === opt ? 'selected' : ''}>${builderEsc(opt)}</option>`).join('')}
         </select>
+        </div>
     `;
 }
 
 function builderNumber(label, key, min = 0, max = 999) {
     const block = builderGetBlock();
     return `
+        <div class="builder-field">
         <label class="builder-control-label">${label}</label>
         <input class="builder-control" type="number" min="${min}" max="${max}" value="${builderAttr(block[key] ?? '')}" oninput="builderSet('${block.id}','${key}',this.value)">
+        </div>
     `;
 }
 
@@ -688,8 +697,10 @@ function builderImageControl(label, key) {
     const block = builderGetBlock();
     return `
         ${builderInput(label, key, 'text')}
+        <div class="builder-field">
         <label class="builder-control-label">Upload</label>
         <input class="builder-control" type="file" accept="image/*" onchange="builderUploadImage('${block.id}','${key}',this)">
+        </div>
     `;
 }
 

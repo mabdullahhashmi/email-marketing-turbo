@@ -25,7 +25,7 @@ try {
     <meta name="base-path" content="<?= e($basePath) ?>">
     <title><?= e($pageTitle ?? 'Dashboard') ?> — <?= APP_NAME ?></title>
     <meta name="description" content="<?= APP_NAME ?> — Email Marketing Campaign Manager">
-    <link rel="stylesheet" href="<?= $basePath ?>/assets/css/style.css">
+    <link rel="stylesheet" href="<?= $basePath ?>/assets/css/style.css?v=<?= filemtime(__DIR__ . '/../assets/css/style.css') ?>">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📧</text></svg>">
 </head>
 <body>
