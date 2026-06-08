@@ -80,6 +80,10 @@ try {
                         <span class="nav-icon">↩️</span>
                         Bounces
                     </a>
+                    <a href="<?= $basePath ?>/pages/email-verifier.php" class="nav-item <?= $currentPage === 'email-verifier' ? 'active' : '' ?>">
+                        <span class="nav-icon">@</span>
+                        Email Verifier
+                    </a>
                     <a href="<?= $basePath ?>/pages/reputation.php" class="nav-item <?= $currentPage === 'reputation' ? 'active' : '' ?>">
                         <span class="nav-icon">🏆</span>
                         Reputation

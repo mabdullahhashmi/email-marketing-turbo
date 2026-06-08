@@ -71,8 +71,33 @@ try {
     ");
     echo "  reputation_checks table ready.\n";
 
-    // ---- 4. Add subject column to warmup_logs for reporting ----
-    echo "Step 4: Adding subject/email_body columns to warmup_logs for reporting...\n";
+    // ---- 4. Email verifier history table ----
+    echo "Step 4: Creating email_verifications table...\n";
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS `email_verifications` (
+            `id` INT AUTO_INCREMENT PRIMARY KEY,
+            `email` VARCHAR(255) NOT NULL,
+            `domain` VARCHAR(255) NOT NULL,
+            `status` ENUM('valid','invalid','risky','unknown') NOT NULL DEFAULT 'unknown',
+            `score` INT NOT NULL DEFAULT 0,
+            `mx_valid` TINYINT(1) NOT NULL DEFAULT 0,
+            `smtp_status` VARCHAR(30) DEFAULT NULL,
+            `is_disposable` TINYINT(1) NOT NULL DEFAULT 0,
+            `is_role` TINYINT(1) NOT NULL DEFAULT 0,
+            `is_catch_all` TINYINT(1) NOT NULL DEFAULT 0,
+            `suggestion` VARCHAR(255) DEFAULT NULL,
+            `details` JSON,
+            `checked_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_email (`email`),
+            INDEX idx_domain (`domain`),
+            INDEX idx_status (`status`),
+            INDEX idx_checked (`checked_at`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    ");
+    echo "  email_verifications table ready.\n";
+
+    // ---- 5. Add subject column to warmup_logs for reporting ----
+    echo "Step 5: Adding subject/email_body columns to warmup_logs for reporting...\n";
     $cols = [
         "ADD COLUMN `subject` VARCHAR(500) DEFAULT NULL AFTER `message_id`",
         "ADD COLUMN `sender_email` VARCHAR(255) DEFAULT NULL AFTER `subject`",
