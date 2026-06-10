@@ -128,6 +128,17 @@ $contactLists = dbFetchAll("
                                 <label><span>Email</span><input type="color" id="builderContentBg" value="#ffffff" onchange="builderUpdateSettings()"></label>
                                 <label><span>Accent</span><input type="color" id="builderAccent" value="#2563eb" onchange="builderUpdateSettings()"></label>
                             </div>
+                            <label class="builder-control-label">Email Font</label>
+                            <select id="builderFont" class="builder-control" onchange="builderUpdateSettings()">
+                                <option value="Poppins">Poppins</option>
+                                <option value="Montserrat">Montserrat</option>
+                                <option value="Arial">Arial</option>
+                                <option value="Helvetica">Helvetica</option>
+                                <option value="Verdana">Verdana</option>
+                                <option value="Trebuchet MS">Trebuchet MS</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                            </select>
                         </aside>
 
                         <section class="builder-stage">
@@ -249,7 +260,7 @@ $contactLists = dbFetchAll("
 <?php
 $pageScript = <<<'JS'
 let builderState = {
-    settings: { bg: '#f4f7fb', contentBg: '#ffffff', accent: '#2563eb' },
+    settings: { bg: '#f4f7fb', contentBg: '#ffffff', accent: '#2563eb', font: 'Poppins' },
     blocks: []
 };
 let builderSelectedId = null;
@@ -275,6 +286,30 @@ function builderAttr(value) {
 
 function builderLines(value) {
     return builderEsc(value).replace(/\n/g, '<br>');
+}
+
+function builderFontStack(font = builderState.settings.font) {
+    const stacks = {
+        'Poppins': "'Poppins', Arial, Helvetica, sans-serif",
+        'Montserrat': "'Montserrat', Arial, Helvetica, sans-serif",
+        'Arial': 'Arial, Helvetica, sans-serif',
+        'Helvetica': 'Helvetica, Arial, sans-serif',
+        'Verdana': 'Verdana, Geneva, sans-serif',
+        'Trebuchet MS': "'Trebuchet MS', Arial, sans-serif",
+        'Georgia': 'Georgia, serif',
+        'Times New Roman': "'Times New Roman', Times, serif",
+    };
+    return stacks[font] || stacks.Poppins;
+}
+
+function builderFontImport() {
+    if (builderState.settings.font === 'Poppins') {
+        return "<link href=\"https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap\" rel=\"stylesheet\">";
+    }
+    if (builderState.settings.font === 'Montserrat') {
+        return "<link href=\"https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap\" rel=\"stylesheet\">";
+    }
+    return '';
 }
 
 function builderSnapshot() {
@@ -461,6 +496,7 @@ function builderInit() {
     document.getElementById('builderBg').value = builderState.settings.bg || '#f4f7fb';
     document.getElementById('builderContentBg').value = builderState.settings.contentBg || '#ffffff';
     document.getElementById('builderAccent').value = builderState.settings.accent || '#2563eb';
+    document.getElementById('builderFont').value = builderState.settings.font || 'Poppins';
     builderRender();
 }
 
@@ -468,8 +504,10 @@ function builderUpdateSettings() {
     builderState.settings.bg = document.getElementById('builderBg').value;
     builderState.settings.contentBg = document.getElementById('builderContentBg').value;
     builderState.settings.accent = document.getElementById('builderAccent').value;
+    builderState.settings.font = document.getElementById('builderFont').value;
     document.getElementById('builderPreviewWrap').style.background = builderState.settings.bg;
     document.getElementById('builderCanvas').style.background = builderState.settings.contentBg;
+    document.getElementById('builderCanvas').style.fontFamily = builderFontStack();
     builderRenderCanvas();
 }
 
@@ -627,6 +665,7 @@ function builderRenderCanvas() {
     const canvas = document.getElementById('builderCanvas');
     document.getElementById('builderPreviewWrap').style.background = builderState.settings.bg;
     canvas.style.background = builderState.settings.contentBg;
+    canvas.style.fontFamily = builderFontStack();
     canvas.innerHTML = builderState.blocks.length
         ? builderState.blocks.map(builderPreviewBlock).join('')
         : '<div class="builder-empty-state">Choose a template or add a block to start building.</div>';
@@ -860,12 +899,12 @@ function builderGenerateHtml() {
     const rows = builderState.blocks.map(builderEmailBlock).join('');
     return `<!doctype html>
 <html>
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>
-<body style="margin:0; padding:0; background:${builderAttr(builderState.settings.bg)};">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">${builderFontImport()}</head>
+<body style="margin:0; padding:0; background:${builderAttr(builderState.settings.bg)}; font-family:${builderAttr(builderFontStack())};">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%; background:${builderAttr(builderState.settings.bg)}; border-collapse:collapse;">
 <tr>
 <td align="center" style="padding:24px 12px;">
-<table role="presentation" width="640" cellspacing="0" cellpadding="0" border="0" style="width:100%; max-width:640px; background:${builderAttr(builderState.settings.contentBg)}; border-collapse:collapse; font-family:Arial, Helvetica, sans-serif;">
+<table role="presentation" width="640" cellspacing="0" cellpadding="0" border="0" style="width:100%; max-width:640px; background:${builderAttr(builderState.settings.contentBg)}; border-collapse:collapse; font-family:${builderAttr(builderFontStack())};">
 ${rows}
 </table>
 </td>
