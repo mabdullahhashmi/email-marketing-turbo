@@ -21,8 +21,11 @@ if (!$campaign) {
     jsonResponse(['success' => false, 'message' => 'Campaign not found.'], 404);
 }
 
+ensureCampaignOpenTrackingTable();
+
 $pendingCount = getCount('email_queue', 'campaign_id = ? AND status = ?', [$id, 'pending']);
 $clickCount = getCount('click_tracking', 'campaign_id = ? AND clicked_at IS NOT NULL', [$id]);
+$openCount = getCount('campaign_open_tracking', 'campaign_id = ? AND opened_at IS NOT NULL', [$id]);
 
 jsonResponse([
     'success' => true,
@@ -33,5 +36,6 @@ jsonResponse([
         'failed_count' => (int)$campaign['failed_count'],
         'pending_count' => $pendingCount,
         'click_count' => $clickCount,
+        'open_count' => $openCount,
     ]
 ]);

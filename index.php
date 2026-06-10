@@ -6,9 +6,11 @@ $pageTitle = 'Dashboard';
 require_once __DIR__ . '/includes/header.php';
 
 // Fetch stats
+ensureCampaignOpenTrackingTable();
 $totalCampaigns = getCount('campaigns');
 $totalContacts = getCount('contacts', 'is_unsubscribed = 0');
 $totalSent = (int) dbFetchValue("SELECT COALESCE(SUM(sent_count), 0) FROM campaigns");
+$totalOpens = getCount('campaign_open_tracking', 'opened_at IS NOT NULL');
 $totalClicks = getCount('click_tracking', 'clicked_at IS NOT NULL');
 
 $activeCampaignsData = dbFetchAll("
@@ -57,6 +59,11 @@ $recentCampaigns = dbFetchAll("
         <div class="stat-icon">✅</div>
         <div class="stat-value"><?= number_format($totalSent) ?></div>
         <div class="stat-label">Emails Sent</div>
+    </div>
+    <div class="stat-card card-orange">
+        <div class="stat-icon">👁</div>
+        <div class="stat-value"><?= number_format($totalOpens) ?></div>
+        <div class="stat-label">Email Opens</div>
     </div>
     <div class="stat-card card-orange">
         <div class="stat-icon">🖱️</div>

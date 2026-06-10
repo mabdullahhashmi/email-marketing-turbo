@@ -168,6 +168,9 @@ foreach ($pendingEmails as $email) {
         
         // Process click tracking - replace URLs with tracking redirects
         $bodyHtml = processClickTracking($bodyHtml, $email['campaign_id'], $email['contact_id'], $email['id']);
+
+        // Process open tracking - inject a hidden pixel into final campaign HTML
+        $bodyHtml = processOpenTracking($bodyHtml, $email['campaign_id'], $email['contact_id'], $email['id']);
         
         // Embed images as CID inline attachments
         $images = getEmbeddedImages($bodyHtml);

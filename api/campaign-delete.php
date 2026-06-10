@@ -33,6 +33,8 @@ try {
     
     // Also clean up click tracking
     dbExecute("DELETE FROM click_tracking WHERE campaign_id = ?", [$id]);
+    ensureCampaignOpenTrackingTable();
+    dbExecute("DELETE FROM campaign_open_tracking WHERE campaign_id = ?", [$id]);
     
     if ($deleted) {
         jsonResponse(['success' => true, 'message' => 'Campaign deleted.']);

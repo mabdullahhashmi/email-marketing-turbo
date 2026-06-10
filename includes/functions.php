@@ -117,6 +117,69 @@ function processClickTracking($html, $campaignId, $contactId, $queueId) {
 }
 
 /**
+ * Ensure campaign open tracking table exists.
+ */
+function ensureCampaignOpenTrackingTable() {
+    try {
+        dbExecute("
+            CREATE TABLE IF NOT EXISTS `campaign_open_tracking` (
+                `id` INT AUTO_INCREMENT PRIMARY KEY,
+                `campaign_id` INT NOT NULL,
+                `contact_id` INT NOT NULL,
+                `queue_id` INT DEFAULT NULL,
+                `tracking_token` VARCHAR(64) NOT NULL UNIQUE,
+                `opened_at` DATETIME DEFAULT NULL,
+                `open_count` INT NOT NULL DEFAULT 0,
+                `ip_address` VARCHAR(45) DEFAULT NULL,
+                `user_agent` TEXT,
+                `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_token (`tracking_token`),
+                INDEX idx_campaign (`campaign_id`),
+                INDEX idx_queue (`queue_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        ");
+        return true;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
+/**
+ * Add a 1x1 campaign open tracking pixel to the final email HTML.
+ */
+function processOpenTracking($html, $campaignId, $contactId, $queueId) {
+    ensureCampaignOpenTrackingTable();
+
+    $existingToken = dbFetchValue(
+        "SELECT tracking_token FROM campaign_open_tracking WHERE queue_id = ? LIMIT 1",
+        [$queueId]
+    );
+
+    $token = $existingToken ?: generateTrackingToken();
+    if (!$existingToken) {
+        dbInsert(
+            "INSERT INTO campaign_open_tracking (campaign_id, contact_id, queue_id, tracking_token)
+             VALUES (?, ?, ?, ?)",
+            [$campaignId, $contactId, $queueId, $token]
+        );
+    }
+
+    $appUrl = APP_URL ?: getAppUrl();
+    $pixelUrl = $appUrl . '/track/open.php?t=' . urlencode($token) . '&cb=' . urlencode((string) $queueId);
+    $pixel = '<img src="' . e($pixelUrl) . '" width="1" height="1" alt="" style="display:block;width:1px;height:1px;max-width:1px;max-height:1px;opacity:0;overflow:hidden;border:0;margin:0;padding:0;" />';
+
+    if (stripos($html, 'track/open.php?t=') !== false) {
+        return $html;
+    }
+
+    if (stripos($html, '</body>') !== false) {
+        return preg_replace('/<\/body>/i', $pixel . '</body>', $html, 1);
+    }
+
+    return $html . $pixel;
+}
+
+/**
  * Scan HTML for uploaded images and prepare CID mapping
  * Returns array of ['path' => filepath, 'cid' => content_id, 'name' => filename]
  */

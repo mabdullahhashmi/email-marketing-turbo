@@ -224,6 +224,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step === 'install') {
                     INDEX idx_campaign (`campaign_id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
             ");
+
+            $pdo->exec("
+                CREATE TABLE IF NOT EXISTS `campaign_open_tracking` (
+                    `id` INT AUTO_INCREMENT PRIMARY KEY,
+                    `campaign_id` INT NOT NULL,
+                    `contact_id` INT NOT NULL,
+                    `queue_id` INT DEFAULT NULL,
+                    `tracking_token` VARCHAR(64) NOT NULL UNIQUE,
+                    `opened_at` DATETIME DEFAULT NULL,
+                    `open_count` INT NOT NULL DEFAULT 0,
+                    `ip_address` VARCHAR(45) DEFAULT NULL,
+                    `user_agent` TEXT,
+                    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    INDEX idx_token (`tracking_token`),
+                    INDEX idx_campaign (`campaign_id`),
+                    INDEX idx_queue (`queue_id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            ");
             
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS `warmup_logs` (

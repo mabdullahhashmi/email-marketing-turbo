@@ -96,8 +96,29 @@ try {
     ");
     echo "  email_verifications table ready.\n";
 
-    // ---- 5. Add subject column to warmup_logs for reporting ----
-    echo "Step 5: Adding subject/email_body columns to warmup_logs for reporting...\n";
+    // ---- 5. Campaign open tracking table ----
+    echo "Step 5: Creating campaign_open_tracking table...\n";
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS `campaign_open_tracking` (
+            `id` INT AUTO_INCREMENT PRIMARY KEY,
+            `campaign_id` INT NOT NULL,
+            `contact_id` INT NOT NULL,
+            `queue_id` INT DEFAULT NULL,
+            `tracking_token` VARCHAR(64) NOT NULL UNIQUE,
+            `opened_at` DATETIME DEFAULT NULL,
+            `open_count` INT NOT NULL DEFAULT 0,
+            `ip_address` VARCHAR(45) DEFAULT NULL,
+            `user_agent` TEXT,
+            `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_token (`tracking_token`),
+            INDEX idx_campaign (`campaign_id`),
+            INDEX idx_queue (`queue_id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    ");
+    echo "  campaign_open_tracking table ready.\n";
+
+    // ---- 6. Add subject column to warmup_logs for reporting ----
+    echo "Step 6: Adding subject/email_body columns to warmup_logs for reporting...\n";
     $cols = [
         "ADD COLUMN `subject` VARCHAR(500) DEFAULT NULL AFTER `message_id`",
         "ADD COLUMN `sender_email` VARCHAR(255) DEFAULT NULL AFTER `subject`",

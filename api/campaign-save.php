@@ -101,6 +101,8 @@ try {
         // Clear any existing queue for this campaign
         dbExecute("DELETE FROM email_queue WHERE campaign_id = ?", [$id]);
         dbExecute("DELETE FROM click_tracking WHERE campaign_id = ?", [$id]);
+        ensureCampaignOpenTrackingTable();
+        dbExecute("DELETE FROM campaign_open_tracking WHERE campaign_id = ?", [$id]);
         
         // Calculate scheduled times with random delays
         $startTime = $scheduledAt ? strtotime($scheduledAt) : time();

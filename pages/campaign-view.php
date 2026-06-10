@@ -27,11 +27,14 @@ if (!$campaign) {
 $pageTitle = $campaign['name'];
 require_once __DIR__ . '/../includes/header.php';
 
+ensureCampaignOpenTrackingTable();
+
 // Queue status counts
 $pendingCount = getCount('email_queue', 'campaign_id = ? AND status = ?', [$campaignId, 'pending']);
 $sentCount = $campaign['sent_count'];
 $failedCount = $campaign['failed_count'];
 $clickCount = getCount('click_tracking', 'campaign_id = ? AND clicked_at IS NOT NULL', [$campaignId]);
+$openCount = getCount('campaign_open_tracking', 'campaign_id = ? AND opened_at IS NOT NULL', [$campaignId]);
 
 // Queue items
 $queuePage = max(1, (int)($_GET['qpage'] ?? 1));
@@ -59,7 +62,18 @@ $clicks = dbFetchAll("
     LIMIT 50
 ", [$campaignId]);
 
+// Open tracking data
+$opens = dbFetchAll("
+    SELECT cot.*, c.email, c.name
+    FROM campaign_open_tracking cot
+    LEFT JOIN contacts c ON cot.contact_id = c.id
+    WHERE cot.campaign_id = ? AND cot.opened_at IS NOT NULL
+    ORDER BY cot.opened_at DESC
+    LIMIT 50
+", [$campaignId]);
+
 $pct = $campaign['total_emails'] > 0 ? round(($sentCount / $campaign['total_emails']) * 100) : 0;
+$openRate = $sentCount > 0 ? round(($openCount / $sentCount) * 100, 1) : 0;
 ?>
 
 <div class="page-header">
@@ -121,6 +135,10 @@ $pct = $campaign['total_emails'] > 0 ? round(($sentCount / $campaign['total_emai
     <div class="stat-item">
         <div class="stat-number" id="statFailed" style="color: var(--color-danger);"><?= $failedCount ?></div>
         <div class="stat-label">Failed</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-number" id="statOpened" style="color: var(--color-warning);"><?= $openCount ?></div>
+        <div class="stat-label">Opens (<?= $openRate ?>%)</div>
     </div>
     <div class="stat-item">
         <div class="stat-number" id="statClicked" style="color: var(--color-info);"><?= $clickCount ?></div>
@@ -217,6 +235,45 @@ $pct = $campaign['total_emails'] > 0 ? round(($sentCount / $campaign['total_emai
         <?php endif; ?>
     </div>
 </div>
+
+<!-- Open Tracking -->
+<?php if (!empty($opens)): ?>
+<div class="card mb-6">
+    <div class="card-header">
+        <h2>Open Tracking</h2>
+        <span class="text-muted fs-sm"><?= $openCount ?> opens, <?= $openRate ?>% open rate</span>
+    </div>
+    <div class="card-body" style="padding: 0;">
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Contact</th>
+                        <th>Opens</th>
+                        <th>First Open</th>
+                        <th>Last IP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($opens as $open): ?>
+                    <tr>
+                        <td>
+                            <strong style="color: var(--text-primary);"><?= e($open['email']) ?></strong>
+                            <?php if ($open['name']): ?>
+                                <div class="text-muted fs-sm"><?= e($open['name']) ?></div>
+                            <?php endif; ?>
+                        </td>
+                        <td><?= (int)$open['open_count'] ?></td>
+                        <td><?= timeAgo($open['opened_at']) ?></td>
+                        <td class="text-muted fs-sm"><?= e($open['ip_address'] ?: '—') ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 
 <!-- Click Tracking -->
 <?php if (!empty($clicks)): ?>

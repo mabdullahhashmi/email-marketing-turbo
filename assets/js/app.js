@@ -376,11 +376,13 @@ function updateCampaignUI(data) {
     const failedEl = document.getElementById('statFailed');
     const pendingEl = document.getElementById('statPending');
     const clickedEl = document.getElementById('statClicked');
+    const openedEl = document.getElementById('statOpened');
     
     if (sentEl) sentEl.textContent = data.sent_count || 0;
     if (failedEl) failedEl.textContent = data.failed_count || 0;
     if (pendingEl) pendingEl.textContent = data.pending_count || 0;
     if (clickedEl) clickedEl.textContent = data.click_count || 0;
+    if (openedEl) openedEl.textContent = data.open_count || 0;
     
     // Update status badge
     if (statusBadge) {
