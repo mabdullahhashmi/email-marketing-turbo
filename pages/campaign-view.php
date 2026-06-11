@@ -89,6 +89,10 @@ $openRate = $sentCount > 0 ? round(($openCount / $sentCount) * 100, 1) : 0;
         <?php elseif ($campaign['status'] === 'paused'): ?>
             <button class="btn btn-success" onclick="resumeCampaign(<?= $campaignId ?>)">▶ Resume</button>
         <?php endif; ?>
+        <?php if ($totalQueueItems > 0): ?>
+            <a href="<?= $basePath ?>/api/campaign-export.php?id=<?= $campaignId ?>&format=csv" class="btn btn-outline">Export CSV</a>
+            <a href="<?= $basePath ?>/api/campaign-export.php?id=<?= $campaignId ?>&format=xls" class="btn btn-outline">Export Excel</a>
+        <?php endif; ?>
         <button class="btn btn-outline" onclick="deleteCampaign(<?= $campaignId ?>)">🗑️ Delete</button>
         <a href="<?= $basePath ?>/pages/campaigns.php" class="btn btn-outline">← Back</a>
     </div>
@@ -318,6 +322,25 @@ $openRate = $sentCount > 0 ? round(($openCount / $sentCount) * 100, 1) : 0;
     </div>
 </div>
 <?php endif; ?>
+
+<!-- Campaign Email Body -->
+<div class="card mb-6">
+    <div class="card-header">
+        <h2>Email Body Used</h2>
+        <span class="text-muted fs-sm">Saved HTML for this campaign</span>
+    </div>
+    <div class="card-body">
+        <?php if (!empty($campaign['body_html'])): ?>
+            <iframe class="campaign-body-preview" sandbox srcdoc="<?= e($campaign['body_html']) ?>"></iframe>
+            <textarea class="form-control campaign-body-source" readonly><?= e($campaign['body_html']) ?></textarea>
+        <?php else: ?>
+            <div class="empty-state" style="padding: 24px;">
+                <h3>No email body saved</h3>
+                <p>This campaign does not have saved HTML content yet.</p>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
 
 <!-- Campaign Config Details -->
 <div class="card">

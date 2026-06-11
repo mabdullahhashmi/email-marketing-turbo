@@ -91,6 +91,11 @@ $contactLists = dbFetchAll("
                         <button type="button" class="btn btn-outline btn-sm" onclick="builderLoadTemplate('newsletter')">Newsletter</button>
                         <button type="button" class="btn btn-outline btn-sm" onclick="builderLoadTemplate('promo')">Promo</button>
                         <button type="button" class="btn btn-outline btn-sm" onclick="builderLoadTemplate('announcement')">Announcement</button>
+                        <span class="builder-action-divider"></span>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="builderSaveCurrentTemplate()">Save Template</button>
+                        <select id="savedTemplateSelect" class="builder-template-select" onchange="builderApplySavedTemplate(this.value)">
+                            <option value="">Saved templates...</option>
+                        </select>
                         <button type="button" class="btn btn-outline btn-sm" onclick="builderPreviewHtml()">Preview HTML</button>
                     </div>
 
@@ -266,6 +271,7 @@ let builderState = {
 let builderSelectedId = null;
 let builderHistory = [];
 let builderFocusedField = null;
+let builderSavedTemplates = [];
 
 function builderId() {
     return 'blk_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
@@ -481,6 +487,92 @@ function builderParseStateFromHtml(html) {
     }
 }
 
+function builderApplyStateSettingsToControls() {
+    builderState.settings = Object.assign(
+        { bg: '#f4f7fb', contentBg: '#ffffff', accent: '#2563eb', font: 'Poppins' },
+        builderState.settings || {}
+    );
+    document.getElementById('builderBg').value = builderState.settings.bg || '#f4f7fb';
+    document.getElementById('builderContentBg').value = builderState.settings.contentBg || '#ffffff';
+    document.getElementById('builderAccent').value = builderState.settings.accent || '#2563eb';
+    document.getElementById('builderFont').value = builderState.settings.font || 'Poppins';
+}
+
+function builderRenderTemplateSelect() {
+    const select = document.getElementById('savedTemplateSelect');
+    if (!select) return;
+    const options = builderSavedTemplates.map((template) => {
+        const subject = template.subject ? ` - ${template.subject}` : '';
+        return `<option value="${builderAttr(template.id)}">${builderEsc(template.name + subject)}</option>`;
+    }).join('');
+    select.innerHTML = `<option value="">Saved templates...</option>${options}`;
+}
+
+async function builderLoadSavedTemplateList() {
+    const basePath = document.querySelector('meta[name="base-path"]')?.content || '';
+    try {
+        const result = await apiCall(basePath + '/api/campaign-template-list.php', {}, 'GET');
+        builderSavedTemplates = result.templates || [];
+        builderRenderTemplateSelect();
+    } catch (err) {
+        Toast.warning(err.message || 'Saved templates could not be loaded.');
+    }
+}
+
+async function builderSaveCurrentTemplate() {
+    builderSyncHtml();
+    const defaultName = document.getElementById('campaignName').value || 'Campaign Template';
+    const name = prompt('Template name:', defaultName);
+    if (!name) return;
+
+    const basePath = document.querySelector('meta[name="base-path"]')?.content || '';
+    try {
+        const result = await apiCall(basePath + '/api/campaign-template-save.php', {
+            name: name.trim(),
+            subject: document.getElementById('campaignSubject').value,
+            body_html: document.getElementById('emailBody').value,
+        });
+
+        if (result.success) {
+            Toast.success('Template saved.');
+            await builderLoadSavedTemplateList();
+            const select = document.getElementById('savedTemplateSelect');
+            if (select && result.template_id) select.value = result.template_id;
+        } else {
+            Toast.error(result.message || 'Template save failed.');
+        }
+    } catch (err) {
+        Toast.error(err.message || 'Template save failed.');
+    }
+}
+
+function builderApplySavedTemplate(templateId) {
+    if (!templateId) return;
+    const template = builderSavedTemplates.find((item) => String(item.id) === String(templateId));
+    if (!template) return;
+
+    builderSnapshot();
+    const savedState = builderParseStateFromHtml(template.body_html);
+    if (savedState && Array.isArray(savedState.blocks)) {
+        builderState = savedState;
+    } else {
+        builderState = {
+            settings: { bg: '#f4f7fb', contentBg: '#ffffff', accent: '#2563eb', font: 'Poppins' },
+            blocks: [builderBlock('html', { html: template.body_html, padding: 0 })],
+        };
+    }
+
+    if (template.subject) {
+        document.getElementById('campaignSubject').value = template.subject;
+    }
+
+    builderSelectedId = builderState.blocks[0]?.id || null;
+    builderApplyStateSettingsToControls();
+    builderRender();
+    builderSyncHtml();
+    Toast.success('Template loaded.');
+}
+
 function builderInit() {
     const hidden = document.getElementById('emailBody');
     const existing = hidden.value.trim();
@@ -493,11 +585,9 @@ function builderInit() {
         builderState.blocks = builderTemplates().newsletter;
     }
     builderSelectedId = builderState.blocks[0]?.id || null;
-    document.getElementById('builderBg').value = builderState.settings.bg || '#f4f7fb';
-    document.getElementById('builderContentBg').value = builderState.settings.contentBg || '#ffffff';
-    document.getElementById('builderAccent').value = builderState.settings.accent || '#2563eb';
-    document.getElementById('builderFont').value = builderState.settings.font || 'Poppins';
+    builderApplyStateSettingsToControls();
     builderRender();
+    builderLoadSavedTemplateList();
 }
 
 function builderUpdateSettings() {

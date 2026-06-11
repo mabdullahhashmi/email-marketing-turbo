@@ -133,6 +133,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step === 'install') {
                     INDEX idx_scheduled (`scheduled_at`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
             ");
+
+            $pdo->exec("
+                CREATE TABLE IF NOT EXISTS `campaign_templates` (
+                    `id` INT AUTO_INCREMENT PRIMARY KEY,
+                    `name` VARCHAR(255) NOT NULL,
+                    `subject` VARCHAR(500) DEFAULT '',
+                    `body_html` LONGTEXT NOT NULL,
+                    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    `updated_at` DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+                    INDEX idx_name (`name`),
+                    INDEX idx_created (`created_at`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            ");
             
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS `email_queue` (

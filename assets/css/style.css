@@ -1340,6 +1340,24 @@ table tbody tr:last-child td {
     border-bottom: 1px solid var(--border-color);
 }
 
+.builder-action-divider {
+    width: 1px;
+    min-height: 32px;
+    background: var(--border-color);
+    margin: 0 4px;
+}
+
+.builder-template-select {
+    min-width: 220px;
+    height: 34px;
+    padding: 0 34px 0 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: var(--bg-input);
+    color: var(--text-primary);
+    font-size: 13px;
+}
+
 .campaign-builder-layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 340px;
@@ -1637,6 +1655,22 @@ textarea.builder-control {
 .builder-source-modal textarea {
     width: 100%;
     min-height: 420px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 12px;
+}
+
+.campaign-body-preview {
+    width: 100%;
+    min-height: 520px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: #ffffff;
+}
+
+.campaign-body-source {
+    width: 100%;
+    min-height: 180px;
+    margin-top: 12px;
     font-family: 'SF Mono', 'Fira Code', monospace;
     font-size: 12px;
 }

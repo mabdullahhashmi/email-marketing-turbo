@@ -145,6 +145,29 @@ function ensureCampaignOpenTrackingTable() {
 }
 
 /**
+ * Ensure saved campaign templates table exists.
+ */
+function ensureCampaignTemplatesTable() {
+    try {
+        dbExecute("
+            CREATE TABLE IF NOT EXISTS `campaign_templates` (
+                `id` INT AUTO_INCREMENT PRIMARY KEY,
+                `name` VARCHAR(255) NOT NULL,
+                `subject` VARCHAR(500) DEFAULT '',
+                `body_html` LONGTEXT NOT NULL,
+                `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                `updated_at` DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+                INDEX idx_name (`name`),
+                INDEX idx_created (`created_at`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        ");
+        return true;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
+/**
  * Add a 1x1 campaign open tracking pixel to the final email HTML.
  */
 function processOpenTracking($html, $campaignId, $contactId, $queueId) {
