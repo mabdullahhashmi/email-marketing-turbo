@@ -5,6 +5,8 @@
 $pageTitle = 'Campaigns';
 require_once __DIR__ . '/../includes/header.php';
 
+ensureCampaignBatchColumn();
+
 $statusFilter = $_GET['status'] ?? '';
 $whereClause = '1=1';
 $params = [];
@@ -97,7 +99,12 @@ $totalCount = array_sum($counts);
                                 <strong style="color: var(--text-primary);"><?= e($c['name']) ?></strong>
                                 <div class="text-muted fs-sm" style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?= e($c['subject']) ?></div>
                             </td>
-                            <td><?= e($c['list_name'] ?? '—') ?></td>
+                            <td>
+                                <?= e($c['list_name'] ?? '—') ?>
+                                <?php if (!empty($c['contact_batch'])): ?>
+                                    <div class="text-muted fs-sm">Batch <?= e($c['contact_batch']) ?></div>
+                                <?php endif; ?>
+                            </td>
                             <td><span class="text-muted fs-sm"><?= e($c['from_email'] ?? '—') ?></span></td>
                             <td><?= statusBadge($c['status']) ?></td>
                             <td style="min-width: 120px;">

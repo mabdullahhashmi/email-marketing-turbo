@@ -5,6 +5,8 @@
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/functions.php';
 
+ensureCampaignBatchColumn();
+
 $campaignId = (int)($_GET['id'] ?? 0);
 if (!$campaignId) {
     header('Location: campaigns.php');
@@ -109,6 +111,10 @@ $openRate = $sentCount > 0 ? round(($openCount / $sentCount) * 100, 1) : 0;
             <span class="text-muted fs-sm">From: <strong style="color: var(--text-primary);"><?= e($campaign['from_email'] ?? '—') ?></strong></span>
             <span class="text-muted">•</span>
             <span class="text-muted fs-sm">List: <strong style="color: var(--text-primary);"><?= e($campaign['list_name'] ?? '—') ?></strong></span>
+            <?php if (!empty($campaign['contact_batch'])): ?>
+                <span class="text-muted">•</span>
+                <span class="text-muted fs-sm">Batch: <strong style="color: var(--text-primary);"><?= e($campaign['contact_batch']) ?></strong></span>
+            <?php endif; ?>
             <?php if ($campaign['scheduled_at']): ?>
                 <span class="text-muted">•</span>
                 <span class="text-muted fs-sm">Scheduled: <strong style="color: var(--text-primary);"><?= formatDateTime($campaign['scheduled_at']) ?></strong></span>
@@ -356,6 +362,10 @@ $openRate = $sentCount > 0 ? round(($openCount / $sentCount) * 100, 1) : 0;
             <div>
                 <div class="text-muted fs-sm">Contact List</div>
                 <div style="color: var(--text-primary); font-weight: 500;"><?= e($campaign['list_name'] ?? '—') ?></div>
+            </div>
+            <div>
+                <div class="text-muted fs-sm">Batch</div>
+                <div style="color: var(--text-primary); font-weight: 500;"><?= e($campaign['contact_batch'] ?? 'All contacts') ?></div>
             </div>
             <div>
                 <div class="text-muted fs-sm">Delay Range</div>

@@ -5,6 +5,8 @@
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/functions.php';
 
+ensureCampaignBatchColumn();
+
 $loadTinyMCE = false;
 
 $editId = (int)($_GET['id'] ?? 0);
@@ -29,6 +31,29 @@ $contactLists = dbFetchAll("
     FROM contact_lists cl 
     ORDER BY cl.name
 ");
+
+$batchOptionsByList = [];
+$batchRows = dbFetchAll("
+    SELECT list_id, custom_fields
+    FROM contacts
+    WHERE is_unsubscribed = 0 AND custom_fields IS NOT NULL
+");
+foreach ($batchRows as $row) {
+    $batchValue = getContactBatchValue($row);
+    if ($batchValue === '') {
+        continue;
+    }
+    $listId = (string) $row['list_id'];
+    if (!isset($batchOptionsByList[$listId])) {
+        $batchOptionsByList[$listId] = [];
+    }
+    $batchOptionsByList[$listId][$batchValue] = true;
+}
+foreach ($batchOptionsByList as $listId => $values) {
+    $values = array_keys($values);
+    sort($values, SORT_NATURAL | SORT_FLAG_CASE);
+    $batchOptionsByList[$listId] = $values;
+}
 ?>
 
 <div class="page-header">
@@ -196,7 +221,7 @@ $contactLists = dbFetchAll("
                     
                     <div class="form-group">
                         <label>Contact List <span class="required">*</span></label>
-                        <select id="contactListId" class="form-control" required>
+                        <select id="contactListId" class="form-control" required onchange="updateBatchOptions()">
                             <option value="">— Select List —</option>
                             <?php foreach ($contactLists as $cl): ?>
                                 <option value="<?= $cl['id'] ?>" <?= ($campaign['contact_list_id'] ?? '') == $cl['id'] ? 'selected' : '' ?>>
@@ -204,6 +229,14 @@ $contactLists = dbFetchAll("
                                 </option>
                             <?php endforeach; ?>
                         </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Batch Number</label>
+                        <select id="contactBatch" class="form-control">
+                            <option value="">All contacts in selected list</option>
+                        </select>
+                        <div class="form-hint">Uses CSV custom fields named batch_number, batch, Batch Number, batch no, or badge_number.</div>
                     </div>
                 </div>
             </div>
@@ -264,6 +297,36 @@ $contactLists = dbFetchAll("
 
 <?php
 $pageScript = <<<'JS'
+const contactBatchOptions = __CONTACT_BATCH_OPTIONS__;
+const selectedContactBatch = __SELECTED_CONTACT_BATCH__;
+
+function updateBatchOptions() {
+    const listId = document.getElementById('contactListId').value;
+    const batchSelect = document.getElementById('contactBatch');
+    const options = contactBatchOptions[listId] || [];
+    const previousListId = batchSelect.dataset.listId || '';
+    const isSameList = !previousListId || previousListId === listId;
+    const currentValue = isSameList ? (batchSelect.value || selectedContactBatch || '') : '';
+    batchSelect.dataset.listId = listId;
+
+    batchSelect.innerHTML = '<option value="">All contacts in selected list</option>';
+    options.forEach((batch) => {
+        const option = document.createElement('option');
+        option.value = batch;
+        option.textContent = 'Batch ' + batch;
+        if (batch === currentValue) option.selected = true;
+        batchSelect.appendChild(option);
+    });
+
+    if (currentValue && isSameList && !options.includes(currentValue)) {
+        const option = document.createElement('option');
+        option.value = currentValue;
+        option.textContent = 'Batch ' + currentValue;
+        option.selected = true;
+        batchSelect.appendChild(option);
+    }
+}
+
 let builderState = {
     settings: { bg: '#f4f7fb', contentBg: '#ffffff', accent: '#2563eb', font: 'Poppins' },
     blocks: []
@@ -1050,6 +1113,7 @@ async function saveCampaign(e, andSchedule = false) {
             body_html: document.getElementById('emailBody').value,
             smtp_account_id: document.getElementById('smtpAccountId').value,
             contact_list_id: document.getElementById('contactListId').value,
+            contact_batch: document.getElementById('contactBatch').value,
             scheduled_at: document.getElementById('scheduledAt').value,
             min_delay_seconds: document.getElementById('minDelay').value,
             max_delay_seconds: document.getElementById('maxDelay').value,
@@ -1103,7 +1167,9 @@ async function scheduleCampaign() {
     
     Modal.confirm(
         'Schedule Campaign?',
-        'This will queue all emails from the selected contact list. Emails will start sending based on the schedule and delay settings.',
+        document.getElementById('contactBatch').value
+            ? 'This will queue only contacts from the selected list and batch. Emails will start sending based on the schedule and delay settings.'
+            : 'This will queue all emails from the selected contact list. Emails will start sending based on the schedule and delay settings.',
         () => saveCampaign(null, true)
     );
 }
@@ -1137,8 +1203,18 @@ async function sendTestEmail() {
     }
 }
 
+updateBatchOptions();
 builderInit();
 JS;
+
+$pageScript = str_replace(
+    ['__CONTACT_BATCH_OPTIONS__', '__SELECTED_CONTACT_BATCH__'],
+    [
+        json_encode($batchOptionsByList, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT),
+        json_encode((string)($campaign['contact_batch'] ?? ''), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT),
+    ],
+    $pageScript
+);
 
 require_once __DIR__ . '/../includes/footer.php';
 ?>

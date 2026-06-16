@@ -120,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step === 'install') {
                     `body_html` LONGTEXT,
                     `smtp_account_id` INT DEFAULT NULL,
                     `contact_list_id` INT DEFAULT NULL,
+                    `contact_batch` VARCHAR(100) DEFAULT NULL,
                     `status` ENUM('draft','scheduled','sending','completed','paused') NOT NULL DEFAULT 'draft',
                     `scheduled_at` DATETIME DEFAULT NULL,
                     `min_delay_seconds` INT NOT NULL DEFAULT 60,

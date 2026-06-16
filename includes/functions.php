@@ -168,6 +168,52 @@ function ensureCampaignTemplatesTable() {
 }
 
 /**
+ * Ensure campaigns can remember the selected contact batch.
+ */
+function ensureCampaignBatchColumn() {
+    try {
+        $exists = dbFetchValue("
+            SELECT COUNT(*)
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = DATABASE()
+              AND TABLE_NAME = 'campaigns'
+              AND COLUMN_NAME = 'contact_batch'
+        ");
+
+        if (!$exists) {
+            dbExecute("ALTER TABLE `campaigns` ADD COLUMN `contact_batch` VARCHAR(100) DEFAULT NULL AFTER `contact_list_id`");
+        }
+
+        return true;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
+/**
+ * Read the batch value from imported CSV custom fields.
+ * Accepts common headers like batch_number, batch, Batch Number, batch no, and badge_number.
+ */
+function getContactBatchValue($contact) {
+    if (empty($contact['custom_fields'])) {
+        return '';
+    }
+
+    $customFields = is_string($contact['custom_fields'])
+        ? json_decode($contact['custom_fields'], true) ?? []
+        : $contact['custom_fields'];
+
+    foreach ($customFields as $key => $value) {
+        $normalized = strtolower(preg_replace('/[^a-z0-9]+/', '', (string) $key));
+        if (in_array($normalized, ['batch', 'batchnumber', 'batchno', 'batchnum', 'badge', 'badgenumber', 'badgeno', 'badgenum'], true)) {
+            return trim((string) $value);
+        }
+    }
+
+    return '';
+}
+
+/**
  * Add a 1x1 campaign open tracking pixel to the final email HTML.
  */
 function processOpenTracking($html, $campaignId, $contactId, $queueId) {

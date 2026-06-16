@@ -22,6 +22,7 @@ if (!in_array($format, ['csv', 'xls'], true)) {
 }
 
 ensureCampaignOpenTrackingTable();
+ensureCampaignBatchColumn();
 
 $campaign = dbFetchOne("
     SELECT c.*, s.from_email, cl.name as list_name
@@ -61,6 +62,7 @@ $headers = [
     'campaign_name',
     'campaign_status',
     'list_name',
+    'batch',
     'from_email',
     'recipient_email',
     'recipient_name',
@@ -92,6 +94,7 @@ if ($format === 'csv') {
             $campaign['name'],
             $campaign['status'],
             $campaign['list_name'] ?? '',
+            $campaign['contact_batch'] ?? '',
             $campaign['from_email'] ?? '',
             $row['to_email'],
             $row['to_name'],
@@ -131,6 +134,7 @@ echo "\xEF\xBB\xBF";
                 <td><?= e($campaign['name']) ?></td>
                 <td><?= e($campaign['status']) ?></td>
                 <td><?= e($campaign['list_name'] ?? '') ?></td>
+                <td><?= e($campaign['contact_batch'] ?? '') ?></td>
                 <td><?= e($campaign['from_email'] ?? '') ?></td>
                 <td><?= e($row['to_email']) ?></td>
                 <td><?= e($row['to_name']) ?></td>

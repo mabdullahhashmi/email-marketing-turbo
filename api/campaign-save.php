@@ -8,6 +8,8 @@ require_once __DIR__ . '/../includes/functions.php';
 
 header('Content-Type: application/json');
 
+ensureCampaignBatchColumn();
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     jsonResponse(['success' => false, 'message' => 'Method not allowed'], 405);
 }
@@ -27,6 +29,10 @@ $subject = trim($input['subject'] ?? '');
 $bodyHtml = $input['body_html'] ?? '';
 $smtpAccountId = (int)($input['smtp_account_id'] ?? 0);
 $contactListId = (int)($input['contact_list_id'] ?? 0);
+$contactBatch = trim((string)($input['contact_batch'] ?? ''));
+if (strlen($contactBatch) > 100) {
+    $contactBatch = substr($contactBatch, 0, 100);
+}
 $scheduledAtRaw = trim($input['scheduled_at'] ?? '');
 // Normalise datetime-local format (YYYY-MM-DDTHH:MM) → MySQL DATETIME format
 $scheduledAt = '';
@@ -61,19 +67,19 @@ try {
         
         // Update
         dbExecute(
-            "UPDATE campaigns SET name = ?, subject = ?, body_html = ?, smtp_account_id = ?, contact_list_id = ?, 
+            "UPDATE campaigns SET name = ?, subject = ?, body_html = ?, smtp_account_id = ?, contact_list_id = ?, contact_batch = ?,
              scheduled_at = ?, min_delay_seconds = ?, max_delay_seconds = ?, updated_at = NOW() WHERE id = ?",
             [$name, $subject, $bodyHtml, $smtpAccountId ?: null, $contactListId ?: null,
-             $scheduledAt ?: null, $minDelay, $maxDelay, $id]
+             $contactBatch ?: null, $scheduledAt ?: null, $minDelay, $maxDelay, $id]
         );
     } else {
         // Create new
         $id = dbInsert(
-            "INSERT INTO campaigns (name, subject, body_html, smtp_account_id, contact_list_id, 
+            "INSERT INTO campaigns (name, subject, body_html, smtp_account_id, contact_list_id, contact_batch,
              scheduled_at, min_delay_seconds, max_delay_seconds, status) 
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'draft')",
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'draft')",
             [$name, $subject, $bodyHtml, $smtpAccountId ?: null, $contactListId ?: null,
-             $scheduledAt ?: null, $minDelay, $maxDelay]
+             $contactBatch ?: null, $scheduledAt ?: null, $minDelay, $maxDelay]
         );
     }
     
@@ -93,9 +99,18 @@ try {
              WHERE c.list_id = ? AND c.is_unsubscribed = 0",
             [$contactListId]
         );
+
+        if ($contactBatch !== '') {
+            $contacts = array_values(array_filter($contacts, function($contact) use ($contactBatch) {
+                return getContactBatchValue($contact) === $contactBatch;
+            }));
+        }
         
         if (empty($contacts)) {
-            jsonResponse(['success' => false, 'message' => 'No active contacts in the selected list.'], 400);
+            $message = $contactBatch !== ''
+                ? 'No active contacts found in the selected list for batch "' . $contactBatch . '".'
+                : 'No active contacts in the selected list.';
+            jsonResponse(['success' => false, 'message' => $message], 400);
         }
         
         // Clear any existing queue for this campaign
