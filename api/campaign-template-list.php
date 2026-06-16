@@ -5,6 +5,7 @@
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/hvac-cold-templates.php';
 
 header('Content-Type: application/json');
 
@@ -16,6 +17,8 @@ requireAuth();
 ensureCampaignTemplatesTable();
 
 try {
+    seedHVACColdOutreachTemplates();
+
     $templates = dbFetchAll("
         SELECT id, name, subject, body_html, created_at, updated_at
         FROM campaign_templates
