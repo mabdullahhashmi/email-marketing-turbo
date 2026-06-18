@@ -59,6 +59,7 @@ try {
         $email = trim($row['email'] ?? '');
         $city = trim($row['city'] ?? '');
         $state = trim($row['state'] ?? '');
+        $badgeNumber = trim($row['badge_number'] ?? '');
 
         if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $skipped++;
@@ -72,6 +73,9 @@ try {
         if ($state !== '') {
             $customFields['State'] = $state;
         }
+        if ($badgeNumber !== '') {
+            $customFields['Badge Number'] = $badgeNumber;
+        }
 
         $existing = dbFetchOne("SELECT id, custom_fields FROM contacts WHERE list_id = ? AND email = ? LIMIT 1", [$listId, $email]);
         if ($existing) {
@@ -81,7 +85,7 @@ try {
             }
             foreach (array_keys($existingCustom) as $key) {
                 $normalized = strtolower(preg_replace('/[^a-z0-9]+/', '', (string)$key));
-                if (in_array($normalized, ['city', 'state'], true)) {
+                if (in_array($normalized, ['city', 'state', 'badgenumber', 'badge'], true)) {
                     unset($existingCustom[$key]);
                 }
             }

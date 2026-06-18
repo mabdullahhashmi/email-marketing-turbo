@@ -43,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $name = trim($_POST['contact_name'] ?? '');
     $city = trim($_POST['city'] ?? '');
     $state = trim($_POST['state'] ?? '');
+    $badgeNumber = trim($_POST['badge_number'] ?? '');
 
     if ($email && filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $customFields = [];
@@ -51,6 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         }
         if ($state !== '') {
             $customFields['State'] = $state;
+        }
+        if ($badgeNumber !== '') {
+            $customFields['Badge Number'] = $badgeNumber;
         }
 
         dbInsert(
@@ -145,7 +149,7 @@ $contacts = dbFetchAll("
     <div class="card-body" style="padding: 16px 24px;">
         <form method="GET" action="" class="d-flex gap-2">
             <input type="hidden" name="id" value="<?= $listId ?>">
-            <input type="text" name="search" class="form-control" placeholder="Search by name, email, city, or state..." value="<?= e($search) ?>" style="max-width: 460px;">
+            <input type="text" name="search" class="form-control" placeholder="Search by name, email, city, state, or badge number..." value="<?= e($search) ?>" style="max-width: 520px;">
             <button type="submit" class="btn btn-outline">Search</button>
             <?php if ($search): ?>
                 <a href="?id=<?= $listId ?>" class="btn btn-ghost">Clear</a>
@@ -188,6 +192,7 @@ $contacts = dbFetchAll("
                                 <th>Email Address</th>
                                 <th>City</th>
                                 <th>State</th>
+                                <th>Badge Number</th>
                                 <th>Status</th>
                                 <th>Added</th>
                                 <th>Actions</th>
@@ -201,6 +206,7 @@ $contacts = dbFetchAll("
                                 }
                                 $city = contactCustomValue($customFields, 'City');
                                 $state = contactCustomValue($customFields, 'State');
+                                $badgeNumber = contactCustomValue($customFields, 'Badge Number');
                             ?>
                             <tr data-contact-id="<?= (int)$contact['id'] ?>">
                                 <td>
@@ -217,6 +223,9 @@ $contacts = dbFetchAll("
                                 </td>
                                 <td>
                                     <input type="text" class="form-control contact-inline-input" data-field="state" value="<?= e($state) ?>" placeholder="State" style="min-width: 110px;">
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control contact-inline-input" data-field="badge_number" value="<?= e($badgeNumber) ?>" placeholder="Badge Number" style="min-width: 140px;">
                                 </td>
                                 <td>
                                     <?php if ($contact['is_unsubscribed']): ?>
@@ -283,6 +292,10 @@ $contacts = dbFetchAll("
                     <label>State</label>
                     <input type="text" name="state" class="form-control" placeholder="TX">
                 </div>
+                <div class="form-group">
+                    <label>Badge Number</label>
+                    <input type="text" name="badge_number" class="form-control" placeholder="Batch 001">
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline" onclick="Modal.close('addContactModal')">Cancel</button>
@@ -302,8 +315,8 @@ $contacts = dbFetchAll("
         <div class="modal-body">
             <div class="form-group">
                 <label>Contact rows</label>
-                <textarea id="pasteContactsData" class="form-control" rows="12" placeholder="Name, Email Address, City, State&#10;John Doe, john@example.com, Dallas, TX"></textarea>
-                <div class="form-text">Paste CSV columns or spreadsheet rows in this order: Name, Email Address, City, State.</div>
+                <textarea id="pasteContactsData" class="form-control" rows="12" placeholder="Name, Email Address, City, State, Badge Number&#10;John Doe, john@example.com, Dallas, TX, Batch 001"></textarea>
+                <div class="form-text">Paste CSV columns or spreadsheet rows in this order: Name, Email Address, City, State, Badge Number.</div>
             </div>
             <div id="pasteContactsPreview" class="text-muted fs-sm"></div>
         </div>
@@ -446,13 +459,14 @@ function parsePastedContacts(text) {
     if (!lines.length) return [];
 
     let startIndex = 0;
-    let columnMap = { name: 0, email: 1, city: 2, state: 3 };
+    let columnMap = { name: 0, email: 1, city: 2, state: 3, badge_number: 4 };
     const firstLine = parseDelimitedLine(lines[0]).map(normalizeContactHeader);
     const headerIndexes = {
         name: firstLine.findIndex((value) => ['name', 'fullname', 'contactname'].includes(value)),
         email: firstLine.findIndex((value) => ['email', 'emailaddress', 'mail'].includes(value)),
         city: firstLine.findIndex((value) => value === 'city'),
         state: firstLine.findIndex((value) => ['state', 'province', 'region'].includes(value)),
+        badge_number: firstLine.findIndex((value) => ['badgenumber', 'badge', 'batchnumber', 'batch'].includes(value)),
     };
 
     if (headerIndexes.email !== -1) {
@@ -462,6 +476,7 @@ function parsePastedContacts(text) {
             email: headerIndexes.email,
             city: headerIndexes.city,
             state: headerIndexes.state,
+            badge_number: headerIndexes.badge_number,
         };
     }
 
@@ -472,6 +487,7 @@ function parsePastedContacts(text) {
             email: columnMap.email >= 0 ? (columns[columnMap.email] || '') : '',
             city: columnMap.city >= 0 ? (columns[columnMap.city] || '') : '',
             state: columnMap.state >= 0 ? (columns[columnMap.state] || '') : '',
+            badge_number: columnMap.badge_number >= 0 ? (columns[columnMap.badge_number] || '') : '',
         };
     }).filter((row) => row.email);
 }

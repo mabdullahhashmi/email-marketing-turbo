@@ -27,6 +27,7 @@ $email = trim($input['email'] ?? '');
 $name = trim($input['name'] ?? '');
 $city = trim($input['city'] ?? '');
 $state = trim($input['state'] ?? '');
+$badgeNumber = trim($input['badge_number'] ?? '');
 
 if (!$id || !$listId) {
     jsonResponse(['success' => false, 'message' => 'Contact and list are required.'], 400);
@@ -53,7 +54,7 @@ if (!is_array($customFields)) {
 
 foreach (array_keys($customFields) as $key) {
     $normalized = strtolower(preg_replace('/[^a-z0-9]+/', '', (string)$key));
-    if (in_array($normalized, ['city', 'state'], true)) {
+    if (in_array($normalized, ['city', 'state', 'badgenumber', 'badge'], true)) {
         unset($customFields[$key]);
     }
 }
@@ -63,6 +64,9 @@ if ($city !== '') {
 }
 if ($state !== '') {
     $customFields['State'] = $state;
+}
+if ($badgeNumber !== '') {
+    $customFields['Badge Number'] = $badgeNumber;
 }
 
 dbExecute(

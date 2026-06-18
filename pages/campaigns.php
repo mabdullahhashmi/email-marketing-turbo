@@ -39,6 +39,7 @@ $totalCount = array_sum($counts);
         <h1><span class="header-icon">📨</span>Campaigns</h1>
         <div class="subtitle"><?= $totalCount ?> total campaigns</div>
     </div>
+    <a href="<?= $basePath ?>/pages/campaign-bulk-schedule.php" class="btn btn-outline">Bulk Scheduler</a>
     <a href="<?= $basePath ?>/pages/campaign-create.php" class="btn btn-primary">
         ✚ New Campaign
     </a>

@@ -60,6 +60,10 @@ try {
                             <span class="nav-badge"><?= $activeCampaigns ?></span>
                         <?php endif; ?>
                     </a>
+                    <a href="<?= $basePath ?>/pages/campaign-bulk-schedule.php" class="nav-item <?= $currentPage === 'campaign-bulk-schedule' ? 'active' : '' ?>">
+                        <span class="nav-icon">Bulk</span>
+                        Bulk Scheduler
+                    </a>
                     <a href="<?= $basePath ?>/pages/contacts.php" class="nav-item <?= in_array($currentPage, ['contacts','contact-list']) ? 'active' : '' ?>">
                         <span class="nav-icon">👥</span>
                         Contacts
