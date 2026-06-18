@@ -6,7 +6,7 @@
 function seedHVACColdOutreachTemplates() {
     ensureCampaignTemplatesTable();
 
-    $version = '4';
+    $version = '5';
     $currentVersion = null;
     try {
         $currentVersion = dbFetchValue("SELECT setting_value FROM settings WHERE setting_key = 'hvac_template_pack_version' LIMIT 1");
@@ -121,6 +121,10 @@ function hvacWebsiteAuditTemplateState($number, $angle, $style, $theme, $auditUr
             'subtitle' => 'I help HVAC companies improve website and landing pages so more local visitors call, request a quote, or book service.',
             'buttonText' => 'Get Free Audit',
             'buttonUrl' => $auditUrl,
+            'secondaryButtonText' => 'See How It Works',
+            'secondaryButtonUrl' => $websiteUrl,
+            'secondaryButtonBg' => '#ffffff',
+            'secondaryButtonColor' => '#0f172a',
             'imageUrl' => '',
             'align' => 'left',
             'bg' => $theme['heroBg'],

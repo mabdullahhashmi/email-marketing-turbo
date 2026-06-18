@@ -412,6 +412,10 @@ function builderBlock(type, data = {}) {
             subtitle: 'Use this section for launches, offers, and high-impact announcements.',
             buttonText: 'Shop now',
             buttonUrl: '#',
+            secondaryButtonText: '',
+            secondaryButtonUrl: '',
+            secondaryButtonBg: '#ffffff',
+            secondaryButtonColor: '#111827',
             imageUrl: '',
             align: 'center',
             bg: '#eef4ff',
@@ -862,6 +866,7 @@ function builderBlockInnerHtml(block) {
                 <div style="font-size:34px; line-height:1.15; font-weight:800; margin-bottom:14px;">${builderEsc(block.title)}</div>
                 <div style="font-size:16px; line-height:1.65; margin-bottom:22px;">${builderLines(block.subtitle)}</div>
                 ${block.buttonText ? `<a href="${builderAttr(block.buttonUrl)}" style="display:inline-block; background:${builderAttr(builderState.settings.accent)}; color:#ffffff; text-decoration:none; padding:13px 22px; border-radius:4px; font-weight:700;">${builderEsc(block.buttonText)}</a>` : ''}
+                ${block.secondaryButtonText ? `<a href="${builderAttr(block.secondaryButtonUrl)}" style="display:inline-block; background:${builderAttr(block.secondaryButtonBg || '#ffffff')}; color:${builderAttr(block.secondaryButtonColor || '#111827')}; text-decoration:none; padding:12px 20px; border-radius:4px; font-weight:700; margin:4px;">${builderEsc(block.secondaryButtonText)}</a>` : ''}
             </div>
         `;
     }
@@ -1109,7 +1114,7 @@ function builderRenderInspector() {
     inspector.className = '';
     let html = `<div style="font-weight:700; color:var(--text-primary); margin-bottom:10px;">${builderEsc(block.type)}</div>`;
     if (block.type === 'hero') {
-        html += builderInput('Eyebrow', 'eyebrow') + builderInput('Title', 'title') + builderTextarea('Subtitle', 'subtitle') + builderInput('Button Text', 'buttonText') + builderInput('Button URL', 'buttonUrl') + builderImageControl('Image URL', 'imageUrl') + builderSelect('Alignment', 'align', ['left', 'center', 'right']) + builderColor('Background', 'bg') + builderColor('Text Color', 'textColor') + builderNumber('Padding', 'padding', 12, 90);
+        html += builderInput('Eyebrow', 'eyebrow') + builderInput('Title', 'title') + builderTextarea('Subtitle', 'subtitle') + builderInput('Button Text', 'buttonText') + builderInput('Button URL', 'buttonUrl') + builderInput('Secondary Button Text', 'secondaryButtonText') + builderInput('Secondary Button URL', 'secondaryButtonUrl') + builderColor('Secondary Button Background', 'secondaryButtonBg') + builderColor('Secondary Button Text', 'secondaryButtonColor') + builderImageControl('Image URL', 'imageUrl') + builderSelect('Alignment', 'align', ['left', 'center', 'right']) + builderColor('Background', 'bg') + builderColor('Text Color', 'textColor') + builderNumber('Padding', 'padding', 12, 90);
     } else if (block.type === 'brandHeader') {
         html += builderInput('Brand', 'brand') + builderInput('Right Label', 'label') + builderColor('Background', 'bg') + builderColor('Text Color', 'color') + builderNumber('Padding', 'padding', 8, 50);
     } else if (block.type === 'text') {
@@ -1199,6 +1204,7 @@ function builderEmailBlock(block) {
             <div style="font-size:34px; line-height:1.15; font-weight:bold; margin-bottom:14px;">${builderEsc(block.title)}</div>
             <div style="font-size:16px; line-height:1.65; margin-bottom:22px;">${builderLines(block.subtitle)}</div>
             ${block.buttonText ? `<a href="${builderAttr(block.buttonUrl)}" style="display:inline-block; background:${builderAttr(builderState.settings.accent)}; color:#ffffff; text-decoration:none; padding:13px 22px; border-radius:4px; font-weight:bold;">${builderEsc(block.buttonText)}</a>` : ''}
+            ${block.secondaryButtonText ? `<a href="${builderAttr(block.secondaryButtonUrl)}" style="display:inline-block; background:${builderAttr(block.secondaryButtonBg || '#ffffff')}; color:${builderAttr(block.secondaryButtonColor || '#111827')}; text-decoration:none; padding:12px 20px; border-radius:4px; font-weight:bold; margin:4px;">${builderEsc(block.secondaryButtonText)}</a>` : ''}
         </td></tr>`;
     }
     if (block.type === 'brandHeader') {

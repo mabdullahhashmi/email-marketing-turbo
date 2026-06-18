@@ -253,7 +253,7 @@ function importNext() {
             // Auto-detect common column names
             let autoMap = 'custom';
             const h = header.toLowerCase().trim();
-            if (['email', 'e-mail', 'email_address', 'emailaddress'].includes(h)) autoMap = 'email';
+            if (['email', 'e-mail', 'email_address', 'emailaddress', 'email address'].includes(h)) autoMap = 'email';
             else if (['name', 'full_name', 'fullname', 'contact_name'].includes(h)) autoMap = 'name';
             else if (['first_name', 'firstname', 'first name'].includes(h)) autoMap = 'name';
             
