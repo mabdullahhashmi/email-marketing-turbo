@@ -505,9 +505,13 @@ function builderBlock(type, data = {}) {
             text: 'I can send a quick free audit with 2-3 improvements that may help your HVAC website get more calls and quote requests.',
             buttonText: 'Get Free Website Audit',
             buttonUrl: '#',
+            secondaryButtonText: 'How It Works',
+            secondaryButtonUrl: '#',
             bg: '#eff6ff',
             border: '#bfdbfe',
             buttonBg: '#2563eb',
+            secondaryButtonBg: '#ffffff',
+            secondaryButtonColor: '#0f172a',
             color: '#0f172a',
             padding: 30,
         },
@@ -940,7 +944,8 @@ function builderBlockInnerHtml(block) {
             <div style="background:${builderAttr(block.bg)}; border:1px solid ${builderAttr(block.border)}; color:${builderAttr(block.color)}; border-radius:12px; padding:28px;">
                 <div style="font-size:24px; line-height:1.2; font-weight:800; margin-bottom:12px;">${builderEsc(block.title)}</div>
                 <div style="font-size:14px; line-height:1.7; margin-bottom:20px;">${builderLines(block.text)}</div>
-                <a href="${builderAttr(block.buttonUrl)}" style="display:inline-block; background:${builderAttr(block.buttonBg)}; color:#ffffff; text-decoration:none; padding:13px 24px; border-radius:7px; font-weight:800;">${builderEsc(block.buttonText)}</a>
+                <a href="${builderAttr(block.buttonUrl)}" style="display:inline-block; background:${builderAttr(block.buttonBg)}; color:#ffffff; text-decoration:none; padding:13px 22px; border-radius:7px; font-weight:800; margin:4px;">${builderEsc(block.buttonText)}</a>
+                ${block.secondaryButtonText ? `<a href="${builderAttr(block.secondaryButtonUrl)}" style="display:inline-block; background:${builderAttr(block.secondaryButtonBg || '#ffffff')}; color:${builderAttr(block.secondaryButtonColor || '#0f172a')}; border:1px solid ${builderAttr(block.border)}; text-decoration:none; padding:12px 20px; border-radius:7px; font-weight:800; margin:4px;">${builderEsc(block.secondaryButtonText)}</a>` : ''}
             </div>
         </div>`;
     }
@@ -1118,7 +1123,7 @@ function builderRenderInspector() {
     } else if (block.type === 'browserAudit') {
         html += builderInput('Label', 'label') + builderInput('Domain', 'domain') + builderInput('Score Badge', 'score') + builderInput('Issue 1', 'issue1') + builderInput('Issue 2', 'issue2') + builderInput('Issue 3', 'issue3') + builderInput('Issue 4', 'issue4') + builderColor('Background', 'bg') + builderColor('Warning Background', 'warningBg') + builderColor('Warning Text', 'warningColor') + builderColor('Browser Background', 'chromeBg') + builderNumber('Padding', 'padding', 8, 70);
     } else if (block.type === 'ctaPanel') {
-        html += builderInput('Title', 'title') + builderTextarea('Text', 'text', 4) + builderInput('Button Text', 'buttonText') + builderInput('Button URL', 'buttonUrl') + builderColor('Background', 'bg') + builderColor('Border', 'border') + builderColor('Button Background', 'buttonBg') + builderColor('Text Color', 'color') + builderNumber('Padding', 'padding', 8, 70);
+        html += builderInput('Title', 'title') + builderTextarea('Text', 'text', 4) + builderInput('Primary Button Text', 'buttonText') + builderInput('Primary Button URL', 'buttonUrl') + builderInput('Secondary Button Text', 'secondaryButtonText') + builderInput('Secondary Button URL', 'secondaryButtonUrl') + builderColor('Background', 'bg') + builderColor('Border', 'border') + builderColor('Primary Button Background', 'buttonBg') + builderColor('Secondary Button Background', 'secondaryButtonBg') + builderColor('Secondary Button Text', 'secondaryButtonColor') + builderColor('Text Color', 'color') + builderNumber('Padding', 'padding', 8, 70);
     } else if (block.type === 'image') {
         html += builderImageControl('Image URL', 'url') + builderInput('Alt Text', 'alt') + builderInput('Link URL', 'link') + builderNumber('Width %', 'width', 20, 100) + builderNumber('Padding', 'padding', 0, 70);
     } else if (block.type === 'button') {
@@ -1276,7 +1281,8 @@ function builderEmailBlock(block) {
                 <tr><td align="center" style="padding:28px; color:${builderAttr(block.color)};">
                     <div style="font-size:24px; line-height:1.2; font-weight:bold; margin-bottom:12px;">${builderEsc(block.title)}</div>
                     <div style="font-size:14px; line-height:1.7; margin-bottom:20px;">${builderLines(block.text)}</div>
-                    <a href="${builderAttr(block.buttonUrl)}" style="display:inline-block; background:${builderAttr(block.buttonBg)}; color:#ffffff; text-decoration:none; padding:13px 24px; border-radius:7px; font-weight:bold;">${builderEsc(block.buttonText)}</a>
+                    <a href="${builderAttr(block.buttonUrl)}" style="display:inline-block; background:${builderAttr(block.buttonBg)}; color:#ffffff; text-decoration:none; padding:13px 22px; border-radius:7px; font-weight:bold; margin:4px;">${builderEsc(block.buttonText)}</a>
+                    ${block.secondaryButtonText ? `<a href="${builderAttr(block.secondaryButtonUrl)}" style="display:inline-block; background:${builderAttr(block.secondaryButtonBg || '#ffffff')}; color:${builderAttr(block.secondaryButtonColor || '#0f172a')}; border:1px solid ${builderAttr(block.border)}; text-decoration:none; padding:12px 20px; border-radius:7px; font-weight:bold; margin:4px;">${builderEsc(block.secondaryButtonText)}</a>` : ''}
                 </td></tr>
             </table>
         </td></tr>`;

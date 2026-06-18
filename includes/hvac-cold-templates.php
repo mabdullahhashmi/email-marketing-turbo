@@ -6,7 +6,7 @@
 function seedHVACColdOutreachTemplates() {
     ensureCampaignTemplatesTable();
 
-    $version = '3';
+    $version = '4';
     $currentVersion = null;
     try {
         $currentVersion = dbFetchValue("SELECT setting_value FROM settings WHERE setting_key = 'hvac_template_pack_version' LIMIT 1");
@@ -48,7 +48,8 @@ function seedHVACColdOutreachTemplates() {
 }
 
 function getHVACColdOutreachTemplates() {
-    $ctaBaseUrl = 'https://abdullahhashmi.com/hvac-growth-expert/';
+    $websiteBaseUrl = 'https://abdullahhashmi.com/hvac-growth-expert/';
+    $calendlyBaseUrl = 'https://calendly.com/mu-abdullahhashmi/30min';
 
     $themes = [
         ['bg' => '#eaf1f8', 'contentBg' => '#ffffff', 'accent' => '#2563eb', 'heroBg' => '#0f2f63', 'heroText' => '#ffffff', 'panelBg' => '#eff6ff', 'panelBorder' => '#bfdbfe'],
@@ -90,8 +91,9 @@ function getHVACColdOutreachTemplates() {
             $count++;
             $number = str_pad((string) $count, 2, '0', STR_PAD_LEFT);
             $theme = $themes[($count - 1) % count($themes)];
-            $ctaUrl = $ctaBaseUrl . '?utm_source=mailpilot&utm_medium=email&utm_campaign=hvac_website_audit_' . $number;
-            $state = hvacWebsiteAuditTemplateState($number, $angle, $style, $theme, $ctaUrl);
+            $auditUrl = $calendlyBaseUrl . '?utm_source=mailpilot&utm_medium=email&utm_campaign=hvac_audit_booking_' . $number;
+            $websiteUrl = $websiteBaseUrl . '?utm_source=mailpilot&utm_medium=email&utm_campaign=hvac_how_it_works_' . $number;
+            $state = hvacWebsiteAuditTemplateState($number, $angle, $style, $theme, $auditUrl, $websiteUrl);
 
             $templates[] = [
                 'name' => 'HVAC Website Audit ' . $number . ' - ' . $angle['key'] . ' ' . $style['label'],
@@ -104,7 +106,7 @@ function getHVACColdOutreachTemplates() {
     return $templates;
 }
 
-function hvacWebsiteAuditTemplateState($number, $angle, $style, $theme, $ctaUrl) {
+function hvacWebsiteAuditTemplateState($number, $angle, $style, $theme, $auditUrl, $websiteUrl) {
     $blocks = [
         hvacWebsiteAuditBlock('brandHeader', $number, [
             'brand' => 'Abdullah Hashmi',
@@ -117,8 +119,8 @@ function hvacWebsiteAuditTemplateState($number, $angle, $style, $theme, $ctaUrl)
             'eyebrow' => 'FOR HVAC BUSINESS OWNERS',
             'title' => $style['title'],
             'subtitle' => 'I help HVAC companies improve website and landing pages so more local visitors call, request a quote, or book service.',
-            'buttonText' => $style['cta'],
-            'buttonUrl' => $ctaUrl,
+            'buttonText' => 'Get Free Audit',
+            'buttonUrl' => $auditUrl,
             'imageUrl' => '',
             'align' => 'left',
             'bg' => $theme['heroBg'],
@@ -151,11 +153,15 @@ function hvacWebsiteAuditTemplateState($number, $angle, $style, $theme, $ctaUrl)
     $blocks[] = hvacWebsiteAuditBlock('ctaPanel', $number, [
         'title' => 'Want me to check your website?',
         'text' => 'I can send a quick free audit with 2-3 improvements that may help your HVAC website get more calls and quote requests. You can also reply to this email with your website URL.',
-        'buttonText' => $style['cta'],
-        'buttonUrl' => $ctaUrl,
+        'buttonText' => 'Get Free Audit',
+        'buttonUrl' => $auditUrl,
+        'secondaryButtonText' => 'How It Works',
+        'secondaryButtonUrl' => $websiteUrl,
         'bg' => $theme['panelBg'],
         'border' => $theme['panelBorder'],
         'buttonBg' => $theme['accent'],
+        'secondaryButtonBg' => '#ffffff',
+        'secondaryButtonColor' => '#0f172a',
         'color' => '#0f172a',
         'padding' => 30,
     ]);
