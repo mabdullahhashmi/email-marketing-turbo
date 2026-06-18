@@ -131,7 +131,13 @@ foreach ($batchOptionsByList as $listId => $values) {
                             <div class="builder-panel-title">Blocks</div>
                             <div class="builder-block-grid">
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('hero')"><strong>Hero</strong><span>Headline + CTA</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('brandHeader')"><strong>Header</strong><span>Brand bar</span></button>
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('text')"><strong>Text</strong><span>Rich copy</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('auditGrid')"><strong>Audit Cards</strong><span>4 benefits</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('checklistPanel')"><strong>Checklist</strong><span>Dark proof panel</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('metricBars')"><strong>Metrics</strong><span>Mini bar chart</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('browserAudit')"><strong>Mockup</strong><span>Website audit</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('ctaPanel')"><strong>CTA Panel</strong><span>Audit offer</span></button>
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('image')"><strong>Image</strong><span>Upload visual</span></button>
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('button')"><strong>Button</strong><span>Action link</span></button>
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('twoColumn')"><strong>Columns</strong><span>Two sections</span></button>
@@ -412,12 +418,98 @@ function builderBlock(type, data = {}) {
             textColor: '#111827',
             padding: 42,
         },
+        brandHeader: {
+            brand: 'Abdullah Hashmi',
+            label: 'Website & Landing Page Specialist',
+            bg: '#0f172a',
+            color: '#ffffff',
+            padding: 18,
+        },
         text: {
             content: 'Hi {{first_name}},\n\nAdd your message here. Keep it clear, useful, and focused on one next action.',
             fontSize: 16,
             color: '#334155',
             align: 'left',
             padding: 28,
+        },
+        auditGrid: {
+            item1Title: 'More Calls',
+            item1Text: 'Clear call buttons and mobile-first page flow for visitors who need help fast.',
+            item1Icon: 'Phone',
+            item2Title: 'Quote Requests',
+            item2Text: 'Better forms and CTA sections to collect serious enquiries from homeowners.',
+            item2Icon: 'Quote',
+            item3Title: 'More Trust',
+            item3Text: 'Reviews, service areas, guarantees, and proof placed where visitors hesitate.',
+            item3Icon: 'Trust',
+            item4Title: 'Faster Action',
+            item4Text: 'Simple page sections so visitors understand the offer and contact quickly.',
+            item4Icon: 'Fast',
+            bg: '#ffffff',
+            cardBg: '#f8fafc',
+            border: '#dbe3ef',
+            iconBg: '#dbeafe',
+            iconColor: '#2563eb',
+            padding: 26,
+        },
+        checklistPanel: {
+            title: 'Small website changes can make a big difference.',
+            intro: 'Most HVAC websites already have the services listed. The real issue is how the page guides the visitor toward taking action.',
+            item1: 'Strong headline focused on customer problems',
+            item2: 'Emergency service CTA above the fold',
+            item3: 'Separate sections for repair, installation, maintenance, and tune-ups',
+            item4: 'Trust-building layout designed for local homeowners',
+            bg: '#0f172a',
+            color: '#ffffff',
+            lineColor: '#26364f',
+            accent: '#38bdf8',
+            padding: 28,
+        },
+        metricBars: {
+            title: 'Before vs After - Key Metrics',
+            subtitle: 'Illustrative page improvements after fixing the visitor journey',
+            metric1Label: 'Calls / Week',
+            metric1Before: '2',
+            metric1After: '9',
+            metric1Note: '4.5x more calls',
+            metric2Label: 'Page Speed',
+            metric2Before: '28',
+            metric2After: '96',
+            metric2Note: '3.4x higher score',
+            metric3Label: 'Quote Rate',
+            metric3Before: '1.1%',
+            metric3After: '5.8%',
+            metric3Note: '5x conversion lift',
+            bg: '#17345a',
+            color: '#ffffff',
+            muted: '#a8b5c7',
+            accent: '#fb923c',
+            padding: 32,
+        },
+        browserAudit: {
+            label: 'Typical HVAC Website Right Now',
+            domain: 'hvacrepairyourcity.com',
+            score: 'Speed: 28/100',
+            issue1: 'No clickable phone number found',
+            issue2: 'Not mobile-optimized',
+            issue3: 'No same-day service CTA',
+            issue4: 'Zero trust signals or reviews',
+            bg: '#ffffff',
+            warningBg: '#fef2f2',
+            warningColor: '#dc2626',
+            chromeBg: '#e5eaf1',
+            padding: 28,
+        },
+        ctaPanel: {
+            title: 'Want me to check your website?',
+            text: 'I can send a quick free audit with 2-3 improvements that may help your HVAC website get more calls and quote requests.',
+            buttonText: 'Get Free Website Audit',
+            buttonUrl: '#',
+            bg: '#eff6ff',
+            border: '#bfdbfe',
+            buttonBg: '#2563eb',
+            color: '#0f172a',
+            padding: 30,
         },
         image: {
             url: '',
@@ -467,6 +559,17 @@ function builderBlock(type, data = {}) {
             linkedin: '#',
             website: '#',
             align: 'center',
+            padding: 24,
+        },
+        signature: {
+            name: 'Abdullah Hashmi',
+            title: 'Website & Landing Page Specialist',
+            website: 'abdullahhashmi.com',
+            note: 'If this is not relevant, simply reply "not interested" and I will not contact you again.',
+            avatarText: 'AH',
+            bg: '#ffffff',
+            color: '#0f172a',
+            muted: '#64748b',
             padding: 24,
         },
         html: {
@@ -758,8 +861,88 @@ function builderBlockInnerHtml(block) {
             </div>
         `;
     }
+    if (block.type === 'brandHeader') {
+        return `<div style="display:flex; justify-content:space-between; gap:18px; align-items:center; background:${builderAttr(block.bg)}; color:${builderAttr(block.color)}; padding:${Number(block.padding) || 0}px 28px;">
+            <div style="font-size:17px; font-weight:800;">${builderEsc(block.brand)}</div>
+            <div style="font-size:13px;">${builderEsc(block.label)}</div>
+        </div>`;
+    }
     if (block.type === 'text') {
         return `<div style="padding:${Number(block.padding) || 0}px 34px; text-align:${builderAttr(block.align)}; color:${builderAttr(block.color)}; font-size:${Number(block.fontSize) || 16}px; line-height:1.7;">${builderLines(block.content)}</div>`;
+    }
+    if (block.type === 'auditGrid') {
+        const cards = [
+            [block.item1Icon, block.item1Title, block.item1Text],
+            [block.item2Icon, block.item2Title, block.item2Text],
+            [block.item3Icon, block.item3Title, block.item3Text],
+            [block.item4Icon, block.item4Title, block.item4Text],
+        ];
+        return `<div style="padding:${Number(block.padding) || 0}px 30px; background:${builderAttr(block.bg)};">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+                ${cards.map((card) => `<div style="border:1px solid ${builderAttr(block.border)}; background:${builderAttr(block.cardBg)}; border-radius:10px; padding:18px;">
+                    <div style="display:inline-block; background:${builderAttr(block.iconBg)}; color:${builderAttr(block.iconColor)}; border-radius:10px; padding:8px 10px; font-size:12px; font-weight:800; margin-bottom:14px;">${builderEsc(card[0])}</div>
+                    <div style="font-weight:800; color:#0f172a; margin-bottom:8px;">${builderEsc(card[1])}</div>
+                    <div style="font-size:13px; color:#475569; line-height:1.55;">${builderLines(card[2])}</div>
+                </div>`).join('')}
+            </div>
+        </div>`;
+    }
+    if (block.type === 'checklistPanel') {
+        const items = [block.item1, block.item2, block.item3, block.item4].filter(Boolean);
+        return `<div style="padding:${Number(block.padding) || 0}px 30px; background:#ffffff;">
+            <div style="background:${builderAttr(block.bg)}; color:${builderAttr(block.color)}; border-radius:12px; padding:24px;">
+                <div style="font-size:21px; font-weight:800; margin-bottom:12px;">${builderEsc(block.title)}</div>
+                <div style="font-size:14px; line-height:1.7; margin-bottom:16px;">${builderLines(block.intro)}</div>
+                ${items.map((item) => `<div style="border-top:1px solid ${builderAttr(block.lineColor)}; padding:12px 0; font-size:14px;"><span style="color:${builderAttr(block.accent)}; font-weight:800;">&#10003;</span> ${builderEsc(item)}</div>`).join('')}
+            </div>
+        </div>`;
+    }
+    if (block.type === 'metricBars') {
+        const metrics = [
+            [block.metric1Label, block.metric1Before, block.metric1After, block.metric1Note],
+            [block.metric2Label, block.metric2Before, block.metric2After, block.metric2Note],
+            [block.metric3Label, block.metric3Before, block.metric3After, block.metric3Note],
+        ];
+        return `<div style="padding:${Number(block.padding) || 0}px 30px; background:${builderAttr(block.bg)}; color:${builderAttr(block.color)};">
+            <div style="font-size:22px; font-weight:800; margin-bottom:8px;">${builderEsc(block.title)}</div>
+            <div style="font-size:13px; color:${builderAttr(block.muted)}; margin-bottom:24px;">${builderEsc(block.subtitle)}</div>
+            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:18px;">
+                ${metrics.map((metric) => `<div style="text-align:center;">
+                    <div style="font-size:11px; color:${builderAttr(block.muted)}; font-weight:800; letter-spacing:1px; text-transform:uppercase; margin-bottom:12px;">${builderEsc(metric[0])}</div>
+                    <div style="height:116px; display:flex; align-items:flex-end; justify-content:center; gap:10px; margin-bottom:12px;">
+                        <div style="width:34px; height:38px; background:#64748b; border-radius:5px 5px 0 0; color:#fff; font-size:11px; font-weight:800; padding-top:5px;">${builderEsc(metric[1])}</div>
+                        <div style="width:40px; height:92px; background:${builderAttr(block.accent)}; border-radius:5px 5px 0 0; color:#fff; font-size:11px; font-weight:800; padding-top:5px;">${builderEsc(metric[2])}</div>
+                    </div>
+                    <div style="display:inline-block; border:1px solid rgba(251,146,60,.45); background:rgba(251,146,60,.14); color:${builderAttr(block.accent)}; border-radius:20px; padding:7px 10px; font-size:12px; font-weight:800;">${builderEsc(metric[3])}</div>
+                </div>`).join('')}
+            </div>
+        </div>`;
+    }
+    if (block.type === 'browserAudit') {
+        const issues = [block.issue1, block.issue2, block.issue3, block.issue4].filter(Boolean);
+        return `<div style="padding:${Number(block.padding) || 0}px 30px; background:${builderAttr(block.bg)};">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px;">
+                <div style="font-size:12px; letter-spacing:2px; text-transform:uppercase; font-weight:800; color:#8aa0c8;">${builderEsc(block.label)}</div>
+                <div style="background:#ef4444; color:#fff; border-radius:7px; padding:9px 12px; font-weight:800;">${builderEsc(block.score)}</div>
+            </div>
+            <div style="border:1px solid #dbe3ef; background:${builderAttr(block.chromeBg)}; border-radius:10px; padding:14px; margin-bottom:16px;">
+                <div style="display:flex; gap:6px; margin-bottom:12px;"><span style="width:10px;height:10px;background:#ef4444;border-radius:50%;display:inline-block;"></span><span style="width:10px;height:10px;background:#f59e0b;border-radius:50%;display:inline-block;"></span><span style="width:10px;height:10px;background:#22c55e;border-radius:50%;display:inline-block;"></span><span style="background:#fff;border-radius:4px;padding:4px 12px;font-size:12px;color:#64748b;">${builderEsc(block.domain)}</span></div>
+                <div style="height:86px; background:#d5dce5; border-radius:8px; margin-bottom:12px;"></div>
+                <div style="height:8px; background:#d5dce5; border-radius:8px; margin-bottom:8px; width:96%;"></div>
+                <div style="height:8px; background:#d5dce5; border-radius:8px; margin-bottom:8px; width:74%;"></div>
+                <div style="height:8px; background:#d5dce5; border-radius:8px; width:56%;"></div>
+            </div>
+            ${issues.map((issue) => `<div style="background:${builderAttr(block.warningBg)}; color:${builderAttr(block.warningColor)}; border:1px solid #fecaca; border-radius:8px; padding:13px; font-size:14px; margin-bottom:10px;">&times; ${builderEsc(issue)}</div>`).join('')}
+        </div>`;
+    }
+    if (block.type === 'ctaPanel') {
+        return `<div style="padding:${Number(block.padding) || 0}px 30px; background:#ffffff; text-align:center;">
+            <div style="background:${builderAttr(block.bg)}; border:1px solid ${builderAttr(block.border)}; color:${builderAttr(block.color)}; border-radius:12px; padding:28px;">
+                <div style="font-size:24px; line-height:1.2; font-weight:800; margin-bottom:12px;">${builderEsc(block.title)}</div>
+                <div style="font-size:14px; line-height:1.7; margin-bottom:20px;">${builderLines(block.text)}</div>
+                <a href="${builderAttr(block.buttonUrl)}" style="display:inline-block; background:${builderAttr(block.buttonBg)}; color:#ffffff; text-decoration:none; padding:13px 24px; border-radius:7px; font-weight:800;">${builderEsc(block.buttonText)}</a>
+            </div>
+        </div>`;
     }
     if (block.type === 'image') {
         const img = block.url ? `<img src="${builderAttr(block.url)}" alt="${builderAttr(block.alt)}" style="display:block; width:${Number(block.width) || 100}%; max-width:100%; height:auto; border:0;">` : '<div style="padding:46px 20px; background:#f1f5f9; color:#64748b; text-align:center;">Select this block and upload an image</div>';
@@ -807,6 +990,19 @@ function builderBlockInnerHtml(block) {
             ['Website', block.website],
         ].filter((item) => item[1]);
         return `<div style="padding:${Number(block.padding) || 0}px 34px; text-align:${builderAttr(block.align)};">${links.map((item) => `<a href="${builderAttr(item[1])}" style="display:inline-block; margin:0 7px; color:${builderAttr(builderState.settings.accent)}; font-weight:700; text-decoration:none;">${builderEsc(item[0])}</a>`).join('')}</div>`;
+    }
+    if (block.type === 'signature') {
+        return `<div style="padding:${Number(block.padding) || 0}px 30px; background:${builderAttr(block.bg)}; color:${builderAttr(block.color)};">
+            <div style="display:flex; gap:12px; align-items:center; border-top:1px solid #e2e8f0; padding-top:20px;">
+                <div style="width:42px; height:42px; border-radius:50%; background:#0f172a; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800;">${builderEsc(block.avatarText)}</div>
+                <div>
+                    <div style="font-weight:800;">${builderEsc(block.name)}</div>
+                    <div style="font-size:13px; color:${builderAttr(block.muted)};">${builderEsc(block.title)}</div>
+                    <div style="font-size:13px; color:${builderAttr(builderState.settings.accent)};">${builderEsc(block.website)}</div>
+                </div>
+            </div>
+            <div style="font-size:11px; line-height:1.6; color:${builderAttr(block.muted)}; text-align:center; margin-top:22px;">${builderLines(block.note)}</div>
+        </div>`;
     }
     if (block.type === 'html') {
         return `<div style="padding:${Number(block.padding) || 0}px 34px;">${block.html || ''}</div>`;
@@ -909,8 +1105,20 @@ function builderRenderInspector() {
     let html = `<div style="font-weight:700; color:var(--text-primary); margin-bottom:10px;">${builderEsc(block.type)}</div>`;
     if (block.type === 'hero') {
         html += builderInput('Eyebrow', 'eyebrow') + builderInput('Title', 'title') + builderTextarea('Subtitle', 'subtitle') + builderInput('Button Text', 'buttonText') + builderInput('Button URL', 'buttonUrl') + builderImageControl('Image URL', 'imageUrl') + builderSelect('Alignment', 'align', ['left', 'center', 'right']) + builderColor('Background', 'bg') + builderColor('Text Color', 'textColor') + builderNumber('Padding', 'padding', 12, 90);
+    } else if (block.type === 'brandHeader') {
+        html += builderInput('Brand', 'brand') + builderInput('Right Label', 'label') + builderColor('Background', 'bg') + builderColor('Text Color', 'color') + builderNumber('Padding', 'padding', 8, 50);
     } else if (block.type === 'text') {
         html += builderTextarea('Content', 'content', 7) + builderNumber('Font Size', 'fontSize', 10, 28) + builderColor('Text Color', 'color') + builderSelect('Alignment', 'align', ['left', 'center', 'right']) + builderNumber('Padding', 'padding', 8, 70);
+    } else if (block.type === 'auditGrid') {
+        html += builderInput('Card 1 Icon', 'item1Icon') + builderInput('Card 1 Title', 'item1Title') + builderTextarea('Card 1 Text', 'item1Text', 3) + builderInput('Card 2 Icon', 'item2Icon') + builderInput('Card 2 Title', 'item2Title') + builderTextarea('Card 2 Text', 'item2Text', 3) + builderInput('Card 3 Icon', 'item3Icon') + builderInput('Card 3 Title', 'item3Title') + builderTextarea('Card 3 Text', 'item3Text', 3) + builderInput('Card 4 Icon', 'item4Icon') + builderInput('Card 4 Title', 'item4Title') + builderTextarea('Card 4 Text', 'item4Text', 3) + builderColor('Background', 'bg') + builderColor('Card Background', 'cardBg') + builderColor('Border', 'border') + builderColor('Icon Background', 'iconBg') + builderColor('Icon Text', 'iconColor') + builderNumber('Padding', 'padding', 8, 70);
+    } else if (block.type === 'checklistPanel') {
+        html += builderInput('Title', 'title') + builderTextarea('Intro', 'intro', 4) + builderInput('Item 1', 'item1') + builderInput('Item 2', 'item2') + builderInput('Item 3', 'item3') + builderInput('Item 4', 'item4') + builderColor('Background', 'bg') + builderColor('Text Color', 'color') + builderColor('Line Color', 'lineColor') + builderColor('Accent', 'accent') + builderNumber('Padding', 'padding', 8, 70);
+    } else if (block.type === 'metricBars') {
+        html += builderInput('Title', 'title') + builderTextarea('Subtitle', 'subtitle', 3) + builderInput('Metric 1 Label', 'metric1Label') + builderInput('Metric 1 Before', 'metric1Before') + builderInput('Metric 1 After', 'metric1After') + builderInput('Metric 1 Note', 'metric1Note') + builderInput('Metric 2 Label', 'metric2Label') + builderInput('Metric 2 Before', 'metric2Before') + builderInput('Metric 2 After', 'metric2After') + builderInput('Metric 2 Note', 'metric2Note') + builderInput('Metric 3 Label', 'metric3Label') + builderInput('Metric 3 Before', 'metric3Before') + builderInput('Metric 3 After', 'metric3After') + builderInput('Metric 3 Note', 'metric3Note') + builderColor('Background', 'bg') + builderColor('Text Color', 'color') + builderColor('Muted Text', 'muted') + builderColor('Accent', 'accent') + builderNumber('Padding', 'padding', 8, 80);
+    } else if (block.type === 'browserAudit') {
+        html += builderInput('Label', 'label') + builderInput('Domain', 'domain') + builderInput('Score Badge', 'score') + builderInput('Issue 1', 'issue1') + builderInput('Issue 2', 'issue2') + builderInput('Issue 3', 'issue3') + builderInput('Issue 4', 'issue4') + builderColor('Background', 'bg') + builderColor('Warning Background', 'warningBg') + builderColor('Warning Text', 'warningColor') + builderColor('Browser Background', 'chromeBg') + builderNumber('Padding', 'padding', 8, 70);
+    } else if (block.type === 'ctaPanel') {
+        html += builderInput('Title', 'title') + builderTextarea('Text', 'text', 4) + builderInput('Button Text', 'buttonText') + builderInput('Button URL', 'buttonUrl') + builderColor('Background', 'bg') + builderColor('Border', 'border') + builderColor('Button Background', 'buttonBg') + builderColor('Text Color', 'color') + builderNumber('Padding', 'padding', 8, 70);
     } else if (block.type === 'image') {
         html += builderImageControl('Image URL', 'url') + builderInput('Alt Text', 'alt') + builderInput('Link URL', 'link') + builderNumber('Width %', 'width', 20, 100) + builderNumber('Padding', 'padding', 0, 70);
     } else if (block.type === 'button') {
@@ -925,6 +1133,8 @@ function builderRenderInspector() {
         html += builderNumber('Height', 'height', 4, 120);
     } else if (block.type === 'social') {
         html += builderInput('Facebook URL', 'facebook') + builderInput('Instagram URL', 'instagram') + builderInput('LinkedIn URL', 'linkedin') + builderInput('Website URL', 'website') + builderSelect('Alignment', 'align', ['left', 'center', 'right']) + builderNumber('Padding', 'padding', 8, 70);
+    } else if (block.type === 'signature') {
+        html += builderInput('Name', 'name') + builderInput('Title', 'title') + builderInput('Website', 'website') + builderInput('Avatar Text', 'avatarText') + builderTextarea('Footer Note', 'note', 4) + builderColor('Background', 'bg') + builderColor('Text Color', 'color') + builderColor('Muted Text', 'muted') + builderNumber('Padding', 'padding', 8, 70);
     } else if (block.type === 'html') {
         html += builderTextarea('Custom HTML', 'html', 10) + builderNumber('Padding', 'padding', 0, 70);
     }
@@ -986,8 +1196,90 @@ function builderEmailBlock(block) {
             ${block.buttonText ? `<a href="${builderAttr(block.buttonUrl)}" style="display:inline-block; background:${builderAttr(builderState.settings.accent)}; color:#ffffff; text-decoration:none; padding:13px 22px; border-radius:4px; font-weight:bold;">${builderEsc(block.buttonText)}</a>` : ''}
         </td></tr>`;
     }
+    if (block.type === 'brandHeader') {
+        return `<tr><td style="background:${builderAttr(block.bg)}; color:${builderAttr(block.color)}; padding:${Number(block.padding) || 0}px 28px;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse;">
+                <tr>
+                    <td align="left" style="font-size:17px; font-weight:bold; color:${builderAttr(block.color)};">${builderEsc(block.brand)}</td>
+                    <td align="right" style="font-size:13px; color:${builderAttr(block.color)};">${builderEsc(block.label)}</td>
+                </tr>
+            </table>
+        </td></tr>`;
+    }
     if (block.type === 'text') {
         return `<tr><td align="${builderAttr(block.align)}" style="padding:${Number(block.padding) || 0}px 34px; text-align:${builderAttr(block.align)}; color:${builderAttr(block.color)}; font-size:${Number(block.fontSize) || 16}px; line-height:1.7;">${builderLines(block.content)}</td></tr>`;
+    }
+    if (block.type === 'auditGrid') {
+        const card = (icon, title, text) => `<td width="50%" valign="top" style="padding:7px;">
+            <div style="border:1px solid ${builderAttr(block.border)}; background:${builderAttr(block.cardBg)}; border-radius:10px; padding:18px;">
+                <div style="display:inline-block; background:${builderAttr(block.iconBg)}; color:${builderAttr(block.iconColor)}; border-radius:10px; padding:8px 10px; font-size:12px; font-weight:bold; margin-bottom:14px;">${builderEsc(icon)}</div>
+                <div style="font-weight:bold; color:#0f172a; margin-bottom:8px;">${builderEsc(title)}</div>
+                <div style="font-size:13px; color:#475569; line-height:1.55;">${builderLines(text)}</div>
+            </div>
+        </td>`;
+        return `<tr><td style="padding:${Number(block.padding) || 0}px 27px; background:${builderAttr(block.bg)};">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse;">
+                <tr>${card(block.item1Icon, block.item1Title, block.item1Text)}${card(block.item2Icon, block.item2Title, block.item2Text)}</tr>
+                <tr>${card(block.item3Icon, block.item3Title, block.item3Text)}${card(block.item4Icon, block.item4Title, block.item4Text)}</tr>
+            </table>
+        </td></tr>`;
+    }
+    if (block.type === 'checklistPanel') {
+        const items = [block.item1, block.item2, block.item3, block.item4].filter(Boolean).map((item) => `<tr><td style="border-top:1px solid ${builderAttr(block.lineColor)}; padding:12px 0; font-size:14px; color:${builderAttr(block.color)};"><span style="color:${builderAttr(block.accent)}; font-weight:bold;">&#10003;</span> ${builderEsc(item)}</td></tr>`).join('');
+        return `<tr><td style="padding:${Number(block.padding) || 0}px 30px; background:#ffffff;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:${builderAttr(block.bg)}; color:${builderAttr(block.color)}; border-radius:12px; border-collapse:separate;">
+                <tr><td style="padding:24px 24px 0 24px; font-size:21px; line-height:1.3; font-weight:bold; color:${builderAttr(block.color)};">${builderEsc(block.title)}</td></tr>
+                <tr><td style="padding:12px 24px 16px 24px; font-size:14px; line-height:1.7; color:${builderAttr(block.color)};">${builderLines(block.intro)}</td></tr>
+                <tr><td style="padding:0 24px 18px 24px;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">${items}</table></td></tr>
+            </table>
+        </td></tr>`;
+    }
+    if (block.type === 'metricBars') {
+        const metric = (label, before, after, note) => `<td width="33.33%" align="center" valign="top" style="padding:0 8px;">
+            <div style="font-size:11px; color:${builderAttr(block.muted)}; font-weight:bold; letter-spacing:1px; text-transform:uppercase; margin-bottom:12px;">${builderEsc(label)}</div>
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="height:116px;"><tr>
+                <td valign="bottom" style="padding:0 5px;"><div style="width:34px; height:38px; background:#64748b; border-radius:5px 5px 0 0; color:#ffffff; font-size:11px; font-weight:bold; padding-top:5px;">${builderEsc(before)}</div></td>
+                <td valign="bottom" style="padding:0 5px;"><div style="width:40px; height:92px; background:${builderAttr(block.accent)}; border-radius:5px 5px 0 0; color:#ffffff; font-size:11px; font-weight:bold; padding-top:5px;">${builderEsc(after)}</div></td>
+            </tr></table>
+            <div style="display:inline-block; border:1px solid rgba(251,146,60,.45); background:rgba(251,146,60,.14); color:${builderAttr(block.accent)}; border-radius:20px; padding:7px 10px; font-size:12px; font-weight:bold;">${builderEsc(note)}</div>
+        </td>`;
+        return `<tr><td style="padding:${Number(block.padding) || 0}px 30px; background:${builderAttr(block.bg)}; color:${builderAttr(block.color)};">
+            <div style="font-size:22px; font-weight:bold; margin-bottom:8px; color:${builderAttr(block.color)};">${builderEsc(block.title)}</div>
+            <div style="font-size:13px; color:${builderAttr(block.muted)}; margin-bottom:24px;">${builderEsc(block.subtitle)}</div>
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse;"><tr>
+                ${metric(block.metric1Label, block.metric1Before, block.metric1After, block.metric1Note)}
+                ${metric(block.metric2Label, block.metric2Before, block.metric2After, block.metric2Note)}
+                ${metric(block.metric3Label, block.metric3Before, block.metric3After, block.metric3Note)}
+            </tr></table>
+        </td></tr>`;
+    }
+    if (block.type === 'browserAudit') {
+        const issues = [block.issue1, block.issue2, block.issue3, block.issue4].filter(Boolean).map((issue) => `<div style="background:${builderAttr(block.warningBg)}; color:${builderAttr(block.warningColor)}; border:1px solid #fecaca; border-radius:8px; padding:13px; font-size:14px; margin-bottom:10px;">&times; ${builderEsc(issue)}</div>`).join('');
+        return `<tr><td style="padding:${Number(block.padding) || 0}px 30px; background:${builderAttr(block.bg)};">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse; margin-bottom:12px;"><tr>
+                <td align="left" style="font-size:12px; letter-spacing:2px; text-transform:uppercase; font-weight:bold; color:#8aa0c8;">${builderEsc(block.label)}</td>
+                <td align="right"><span style="background:#ef4444; color:#ffffff; border-radius:7px; padding:9px 12px; font-weight:bold;">${builderEsc(block.score)}</span></td>
+            </tr></table>
+            <div style="border:1px solid #dbe3ef; background:${builderAttr(block.chromeBg)}; border-radius:10px; padding:14px; margin-bottom:16px;">
+                <div style="font-size:12px; color:#64748b; background:#ffffff; display:inline-block; padding:5px 14px; border-radius:4px; margin-bottom:12px;">${builderEsc(block.domain)}</div>
+                <div style="height:86px; background:#d5dce5; border-radius:8px; margin-bottom:12px;"></div>
+                <div style="height:8px; background:#d5dce5; border-radius:8px; margin-bottom:8px; width:96%;"></div>
+                <div style="height:8px; background:#d5dce5; border-radius:8px; margin-bottom:8px; width:74%;"></div>
+                <div style="height:8px; background:#d5dce5; border-radius:8px; width:56%;"></div>
+            </div>
+            ${issues}
+        </td></tr>`;
+    }
+    if (block.type === 'ctaPanel') {
+        return `<tr><td align="center" style="padding:${Number(block.padding) || 0}px 30px; background:#ffffff;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:${builderAttr(block.bg)}; border:1px solid ${builderAttr(block.border)}; border-radius:12px; border-collapse:separate;">
+                <tr><td align="center" style="padding:28px; color:${builderAttr(block.color)};">
+                    <div style="font-size:24px; line-height:1.2; font-weight:bold; margin-bottom:12px;">${builderEsc(block.title)}</div>
+                    <div style="font-size:14px; line-height:1.7; margin-bottom:20px;">${builderLines(block.text)}</div>
+                    <a href="${builderAttr(block.buttonUrl)}" style="display:inline-block; background:${builderAttr(block.buttonBg)}; color:#ffffff; text-decoration:none; padding:13px 24px; border-radius:7px; font-weight:bold;">${builderEsc(block.buttonText)}</a>
+                </td></tr>
+            </table>
+        </td></tr>`;
     }
     if (block.type === 'image') {
         const img = block.url ? `<img src="${builderAttr(block.url)}" alt="${builderAttr(block.alt)}" width="${Math.round(572 * ((Number(block.width) || 100) / 100))}" style="display:block; width:${Number(block.width) || 100}%; max-width:100%; height:auto; border:0;">` : '';
@@ -1041,6 +1333,21 @@ function builderEmailBlock(block) {
             ['Website', block.website],
         ].filter((item) => item[1]).map((item) => `<a href="${builderAttr(item[1])}" style="display:inline-block; margin:0 7px; color:${builderAttr(builderState.settings.accent)}; font-weight:bold; text-decoration:none;">${builderEsc(item[0])}</a>`).join('');
         return `<tr><td align="${builderAttr(block.align)}" style="padding:${Number(block.padding) || 0}px 34px; text-align:${builderAttr(block.align)};">${links}</td></tr>`;
+    }
+    if (block.type === 'signature') {
+        return `<tr><td style="padding:${Number(block.padding) || 0}px 30px; background:${builderAttr(block.bg)}; color:${builderAttr(block.color)};">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-top:1px solid #e2e8f0; padding-top:20px; border-collapse:collapse;">
+                <tr>
+                    <td width="52" valign="top"><div style="width:42px; height:42px; border-radius:50%; background:#0f172a; color:#ffffff; text-align:center; line-height:42px; font-weight:bold;">${builderEsc(block.avatarText)}</div></td>
+                    <td valign="top">
+                        <div style="font-weight:bold; color:${builderAttr(block.color)};">${builderEsc(block.name)}</div>
+                        <div style="font-size:13px; color:${builderAttr(block.muted)};">${builderEsc(block.title)}</div>
+                        <div style="font-size:13px; color:${builderAttr(builderState.settings.accent)};">${builderEsc(block.website)}</div>
+                    </td>
+                </tr>
+            </table>
+            <div style="font-size:11px; line-height:1.6; color:${builderAttr(block.muted)}; text-align:center; margin-top:22px;">${builderLines(block.note)}</div>
+        </td></tr>`;
     }
     if (block.type === 'html') {
         return `<tr><td style="padding:${Number(block.padding) || 0}px 34px;">${block.html || ''}</td></tr>`;
