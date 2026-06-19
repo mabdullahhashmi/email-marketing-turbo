@@ -50,10 +50,54 @@ foreach (dbFetchAll("SELECT id, label, from_email FROM smtp_accounts WHERE is_ac
     $smtpByName[strtolower(trim((string)$row['from_email']))] = (int)$row['id'];
 }
 $listIds = [];
-$listByName = [];
+$listsByName = [];
 foreach (dbFetchAll("SELECT id, name FROM contact_lists") as $row) {
     $listIds[(string)$row['id']] = true;
-    $listByName[strtolower(trim((string)$row['name']))] = (int)$row['id'];
+    $listNameKey = strtolower(trim((string)$row['name']));
+    if (!isset($listsByName[$listNameKey])) {
+        $listsByName[$listNameKey] = [];
+    }
+    $listsByName[$listNameKey][] = $row;
+}
+
+function resolveBulkContactListId($contactListName, $contactBatch, $listsByName) {
+    $listNameKey = strtolower(trim((string)$contactListName));
+    if ($listNameKey === '' || empty($listsByName[$listNameKey])) {
+        return 0;
+    }
+
+    $matches = $listsByName[$listNameKey];
+    if (count($matches) === 1) {
+        return (int)$matches[0]['id'];
+    }
+
+    $contactBatch = trim((string)$contactBatch);
+    if ($contactBatch !== '') {
+        foreach ($matches as $match) {
+            $contacts = dbFetchAll(
+                "SELECT * FROM contacts WHERE list_id = ? AND is_unsubscribed = 0",
+                [(int)$match['id']]
+            );
+
+            foreach ($contacts as $contact) {
+                if (contactBatchMatches($contact, $contactBatch)) {
+                    return (int)$match['id'];
+                }
+            }
+        }
+    }
+
+    foreach ($matches as $match) {
+        $activeCount = (int)dbFetchValue(
+            "SELECT COUNT(*) FROM contacts WHERE list_id = ? AND is_unsubscribed = 0",
+            [(int)$match['id']]
+        );
+        if ($activeCount > 0) {
+            return (int)$match['id'];
+        }
+    }
+
+    return (int)$matches[0]['id'];
 }
 
 $created = 0;
@@ -91,7 +135,7 @@ foreach ($rows as $index => $row) {
         $smtpAccountId = $smtpByName[strtolower($smtpAccountName)] ?? 0;
     }
     if (!$contactListId && $contactListName !== '') {
-        $contactListId = $listByName[strtolower($contactListName)] ?? 0;
+        $contactListId = resolveBulkContactListId($contactListName, $contactBatch, $listsByName);
     }
 
     if (!$smtpAccountId || !isset($smtpIds[(string)$smtpAccountId])) {

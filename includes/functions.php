@@ -194,23 +194,119 @@ function ensureCampaignBatchColumn() {
  * Read the batch value from imported CSV custom fields.
  * Accepts common headers like batch_number, batch, Batch Number, batch no, and badge_number.
  */
-function getContactBatchValue($contact) {
-    if (empty($contact['custom_fields'])) {
+function normalizeContactFieldKey($key) {
+    return strtolower(preg_replace('/[^a-z0-9]+/', '', (string)$key));
+}
+
+function isContactBatchFieldKey($key) {
+    return in_array(normalizeContactFieldKey($key), [
+        'batch',
+        'batchnumber',
+        'batchno',
+        'batchnum',
+        'badge',
+        'badgenumber',
+        'badgeno',
+        'badgenum',
+        'contactbatch',
+        'contactbadge',
+    ], true);
+}
+
+function decodeContactCustomFields($customFields) {
+    if (is_array($customFields)) {
+        return $customFields;
+    }
+
+    if (!is_string($customFields) || trim($customFields) === '') {
+        return [];
+    }
+
+    $decoded = json_decode($customFields, true);
+    if (is_string($decoded)) {
+        $decoded = json_decode($decoded, true);
+    }
+
+    return is_array($decoded) ? $decoded : [];
+}
+
+function findContactBatchValue($fields) {
+    if (!is_array($fields)) {
         return '';
     }
 
-    $customFields = is_string($contact['custom_fields'])
-        ? json_decode($contact['custom_fields'], true) ?? []
-        : $contact['custom_fields'];
+    foreach ($fields as $key => $value) {
+        if (isContactBatchFieldKey($key) && !is_array($value)) {
+            return trim((string)$value);
+        }
+    }
 
-    foreach ($customFields as $key => $value) {
-        $normalized = strtolower(preg_replace('/[^a-z0-9]+/', '', (string) $key));
-        if (in_array($normalized, ['batch', 'batchnumber', 'batchno', 'batchnum', 'badge', 'badgenumber', 'badgeno', 'badgenum'], true)) {
-            return trim((string) $value);
+    foreach ($fields as $value) {
+        if (!is_array($value)) {
+            continue;
+        }
+
+        if (isset($value['name'], $value['value']) && isContactBatchFieldKey($value['name'])) {
+            return trim((string)$value['value']);
+        }
+
+        if (isset($value['label'], $value['value']) && isContactBatchFieldKey($value['label'])) {
+            return trim((string)$value['value']);
+        }
+
+        $nestedValue = findContactBatchValue($value);
+        if ($nestedValue !== '') {
+            return $nestedValue;
         }
     }
 
     return '';
+}
+
+/**
+ * Read the batch value from imported CSV custom fields or contact columns.
+ * Accepts common headers like batch_number, batch, Batch Number, batch no, and badge_number.
+ */
+function getContactBatchValue($contact) {
+    $value = findContactBatchValue($contact);
+    if ($value !== '') {
+        return $value;
+    }
+
+    if (array_key_exists('custom_fields', $contact)) {
+        return findContactBatchValue(decodeContactCustomFields($contact['custom_fields']));
+    }
+
+    return '';
+}
+
+function summarizeContactCustomFieldKeys($contacts, $limit = 12) {
+    $keys = [];
+
+    foreach ($contacts as $contact) {
+        foreach (decodeContactCustomFields($contact['custom_fields'] ?? null) as $key => $value) {
+            if (is_int($key) && is_array($value)) {
+                foreach (['name', 'label', 'key'] as $labelKey) {
+                    if (!empty($value[$labelKey])) {
+                        $keys[(string)$value[$labelKey]] = true;
+                    }
+                }
+                continue;
+            }
+
+            $keys[(string)$key] = true;
+        }
+
+        foreach ($contact as $key => $value) {
+            if (is_scalar($value) && isContactBatchFieldKey($key)) {
+                $keys[(string)$key] = true;
+            }
+        }
+    }
+
+    $keys = array_keys($keys);
+    natcasesort($keys);
+    return array_slice(array_values($keys), 0, $limit);
 }
 
 /**
