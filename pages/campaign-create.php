@@ -27,7 +27,7 @@ require_once __DIR__ . '/../includes/header.php';
 $smtpAccounts = dbFetchAll("SELECT id, label, from_email FROM smtp_accounts WHERE is_active = 1 ORDER BY label");
 $contactLists = dbFetchAll("
     SELECT cl.id, cl.name, 
-        (SELECT COUNT(*) FROM contacts c WHERE c.list_id = cl.id AND c.is_unsubscribed = 0) as active_count
+        (SELECT COUNT(*) FROM contacts c WHERE c.list_id = cl.id AND (c.is_unsubscribed = 0 OR c.is_unsubscribed IS NULL)) as active_count
     FROM contact_lists cl 
     ORDER BY cl.name
 ");
@@ -36,7 +36,7 @@ $batchOptionsByList = [];
 $batchRows = dbFetchAll("
     SELECT list_id, custom_fields
     FROM contacts
-    WHERE is_unsubscribed = 0 AND custom_fields IS NOT NULL
+    WHERE (is_unsubscribed = 0 OR is_unsubscribed IS NULL) AND custom_fields IS NOT NULL
 ");
 foreach ($batchRows as $row) {
     $batchValue = getContactBatchValue($row);

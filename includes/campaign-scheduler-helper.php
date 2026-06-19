@@ -7,7 +7,7 @@ function scheduleCampaignQueue($campaignId, $subject, $bodyHtml, $smtpAccountId,
     $contacts = dbFetchAll(
         "SELECT c.*, cl.name as list_name FROM contacts c
          JOIN contact_lists cl ON c.list_id = cl.id
-         WHERE c.list_id = ? AND c.is_unsubscribed = 0",
+         WHERE c.list_id = ? AND (c.is_unsubscribed = 0 OR c.is_unsubscribed IS NULL)",
         [$contactListId]
     );
 
@@ -22,15 +22,17 @@ function scheduleCampaignQueue($campaignId, $subject, $bodyHtml, $smtpAccountId,
         $allContacts = dbFetchAll(
             "SELECT c.*, cl.name as list_name FROM contacts c
              JOIN contact_lists cl ON c.list_id = cl.id
-             WHERE c.list_id = ? AND c.is_unsubscribed = 0",
+             WHERE c.list_id = ? AND (c.is_unsubscribed = 0 OR c.is_unsubscribed IS NULL)",
             [$contactListId]
         );
         $availableBatches = summarizeContactBatchValues($allContacts);
         $availableKeys = summarizeContactCustomFieldKeys($allContacts);
         $normalizedSearch = normalizeContactBatchValue($contactBatch);
-        $availableMessage = $availableBatches
+        $listName = $allContacts[0]['list_name'] ?? dbFetchValue("SELECT name FROM contact_lists WHERE id = ? LIMIT 1", [$contactListId]);
+        $availableMessage = ' Selected list: "' . (string)$listName . '" (#' . (int)$contactListId . '), active contacts loaded: ' . count($allContacts) . '.';
+        $availableMessage .= ($availableBatches
             ? ' Available badge/batch values include: ' . implode(', ', $availableBatches) . '.'
-            : ' No badge/batch values were found on active contacts in this list.';
+            : ' No badge/batch values were found on active contacts in this list.');
         if (!$availableBatches && $availableKeys) {
             $availableMessage .= ' Custom field keys found: ' . implode(', ', $availableKeys) . '.';
         }

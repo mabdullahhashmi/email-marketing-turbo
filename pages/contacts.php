@@ -32,7 +32,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
 $lists = dbFetchAll("
     SELECT cl.*, 
         (SELECT COUNT(*) FROM contacts c WHERE c.list_id = cl.id) as actual_count,
-        (SELECT COUNT(*) FROM contacts c WHERE c.list_id = cl.id AND c.is_unsubscribed = 0) as active_count
+        (SELECT COUNT(*) FROM contacts c WHERE c.list_id = cl.id AND (c.is_unsubscribed = 0 OR c.is_unsubscribed IS NULL)) as active_count
     FROM contact_lists cl 
     ORDER BY cl.created_at DESC
 ");

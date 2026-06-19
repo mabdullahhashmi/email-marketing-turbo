@@ -11,7 +11,7 @@ ensureCampaignTemplatesTable();
 $smtpAccounts = dbFetchAll("SELECT id, label, from_email FROM smtp_accounts WHERE is_active = 1 ORDER BY label");
 $contactLists = dbFetchAll("
     SELECT cl.id, cl.name,
-        (SELECT COUNT(*) FROM contacts c WHERE c.list_id = cl.id AND c.is_unsubscribed = 0) as active_count
+        (SELECT COUNT(*) FROM contacts c WHERE c.list_id = cl.id AND (c.is_unsubscribed = 0 OR c.is_unsubscribed IS NULL)) as active_count
     FROM contact_lists cl
     ORDER BY cl.name
 ");
@@ -135,9 +135,9 @@ function addBulkCampaignRow(data = {}) {
     tr.innerHTML = `
         <td><input type="text" class="form-control" data-field="campaign_name" value="${bulkEsc(data.campaign_name || '')}" placeholder="Campaign name" style="min-width:180px;"></td>
         <td><input type="text" class="form-control" data-field="subject" value="${bulkEsc(data.subject || '')}" placeholder="Subject line" style="min-width:220px;"></td>
-        <td><select class="form-control" data-field="template_id" style="min-width:220px;">${bulkOptions(bulkTemplates, data.template_id, (item) => item.name)}</select></td>
-        <td><select class="form-control" data-field="smtp_account_id" style="min-width:210px;">${bulkOptions(bulkSmtpAccounts, data.smtp_account_id, (item) => `${item.label} (${item.from_email})`)}</select></td>
-        <td><select class="form-control" data-field="contact_list_id" style="min-width:210px;">${bulkOptions(bulkContactLists, data.contact_list_id, (item) => `${item.name} (${item.active_count} contacts)`)}</select></td>
+        <td><select class="form-control" data-field="template_id" style="min-width:220px;">${bulkOptions(bulkTemplates, data.template_id, (item) => item.name)}</select><input type="hidden" data-field="template_name" value="${bulkEsc(data.template_name || '')}"></td>
+        <td><select class="form-control" data-field="smtp_account_id" style="min-width:210px;">${bulkOptions(bulkSmtpAccounts, data.smtp_account_id, (item) => `${item.label} (${item.from_email})`)}</select><input type="hidden" data-field="smtp_account" value="${bulkEsc(data.smtp_account || data.smtp_account_name || '')}"></td>
+        <td><select class="form-control" data-field="contact_list_id" style="min-width:210px;">${bulkOptions(bulkContactLists, data.contact_list_id, (item) => `${item.name} #${item.id} (${item.active_count} contacts)`)}</select><input type="hidden" data-field="contact_list" value="${bulkEsc(data.contact_list || data.contact_list_name || data.list_name || '')}"></td>
         <td><input type="text" class="form-control" data-field="contact_batch" value="${bulkEsc(data.contact_batch || data.badge_number || '')}" placeholder="Optional" style="min-width:130px;"></td>
         <td><input type="datetime-local" class="form-control" data-field="scheduled_at" value="${bulkEsc(toDatetimeLocal(data.scheduled_at || ''))}" style="min-width:180px;"></td>
         <td><input type="number" class="form-control" data-field="min_delay_seconds" value="${bulkEsc(data.min_delay_seconds || '60')}" min="10" style="min-width:95px;"></td>
@@ -218,6 +218,15 @@ function findBulkByName(items, name) {
     return match ? String(match.id) : '';
 }
 
+function resolveBulkItemId(items, rawId, rawName) {
+    const idText = String(rawId || '').trim();
+    if (idText && items.some((item) => String(item.id) === idText)) {
+        return idText;
+    }
+
+    return findBulkByName(items, rawName || idText);
+}
+
 function parseBulkCampaignCsv(text) {
     const lines = text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
     if (!lines.length) return [];
@@ -230,15 +239,21 @@ function parseBulkCampaignCsv(text) {
         const cols = parseBulkCsvLine(line);
         const raw = {};
         keys.forEach((key, index) => raw[key] = cols[index] || '');
-        const templateId = raw.templateid || findBulkByName(bulkTemplates, raw.templatename);
-        const smtpId = raw.smtpaccountid || findBulkByName(bulkSmtpAccounts, raw.smtpaccount || raw.smtpname);
-        const listId = raw.contactlistid || findBulkByName(bulkContactLists, raw.contactlist || raw.listname);
+        const templateName = raw.templatename || raw.template || '';
+        const smtpName = raw.smtpaccount || raw.smtpaccountname || raw.smtpname || raw.sender || '';
+        const contactListName = raw.contactlist || raw.contactlistname || raw.listname || raw.list || '';
+        const templateId = resolveBulkItemId(bulkTemplates, raw.templateid, templateName);
+        const smtpId = resolveBulkItemId(bulkSmtpAccounts, raw.smtpaccountid, smtpName);
+        const listId = resolveBulkItemId(bulkContactLists, raw.contactlistid, contactListName);
         return {
             campaign_name: raw.campaignname || raw.name || '',
             subject: raw.subject || '',
             template_id: templateId,
+            template_name: templateName || (!templateId ? raw.templateid : ''),
             smtp_account_id: smtpId,
+            smtp_account: smtpName || (!smtpId ? raw.smtpaccountid : ''),
             contact_list_id: listId,
+            contact_list: contactListName || (!listId ? raw.contactlistid : ''),
             contact_batch: raw.contactbatch || raw.badgenumber || raw.batchnumber || raw.batch || raw.badge || '',
             scheduled_at: raw.scheduledat || raw.starttime || raw.start || '',
             min_delay_seconds: raw.mindelayseconds || raw.mindelay || '60',
