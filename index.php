@@ -174,4 +174,46 @@ $recentCampaigns = dbFetchAll("
     </div>
 </div>
 
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php
+$pageScript = <<<'JS'
+document.addEventListener('DOMContentLoaded', () => {
+    const basePath = document.querySelector('meta[name="base-path"]')?.content || '';
+    const cards = document.querySelectorAll('.stat-cards .stat-card');
+    const drilldowns = [
+        { index: 3, url: basePath + '/pages/tracking-events.php?type=opens', title: 'View opened recipients' },
+        { index: 4, url: basePath + '/pages/tracking-events.php?type=clicks', title: 'View clicked recipients' },
+    ];
+
+    drilldowns.forEach(({ index, url, title }) => {
+        const card = cards[index];
+        if (!card) return;
+
+        card.classList.add('dashboard-drilldown-card');
+        card.setAttribute('role', 'link');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('title', title);
+
+        if (!card.querySelector('.stat-link-hint')) {
+            const hint = document.createElement('div');
+            hint.className = 'stat-link-hint';
+            hint.textContent = 'View recipients';
+            card.appendChild(hint);
+        }
+
+        const go = () => {
+            window.location.href = url;
+        };
+
+        card.addEventListener('click', go);
+        card.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                go();
+            }
+        });
+    });
+});
+JS;
+
+require_once __DIR__ . '/includes/footer.php';
+?>
