@@ -190,6 +190,22 @@ function ensureCampaignBatchColumn() {
     }
 }
 
+function deleteCampaignsByIds($ids) {
+    $ids = array_values(array_unique(array_filter(array_map('intval', $ids), fn($id) => $id > 0)));
+    if (empty($ids)) {
+        return 0;
+    }
+
+    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+
+    ensureCampaignOpenTrackingTable();
+    dbExecute("DELETE FROM click_tracking WHERE campaign_id IN ({$placeholders})", $ids);
+    dbExecute("DELETE FROM campaign_open_tracking WHERE campaign_id IN ({$placeholders})", $ids);
+    dbExecute("DELETE FROM email_queue WHERE campaign_id IN ({$placeholders})", $ids);
+
+    return dbExecute("DELETE FROM campaigns WHERE id IN ({$placeholders})", $ids);
+}
+
 /**
  * Read the batch value from imported CSV custom fields.
  * Accepts common headers like batch_number, batch, Batch Number, batch no, and badge_number.

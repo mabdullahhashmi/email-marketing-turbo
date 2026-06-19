@@ -78,10 +78,17 @@ $totalCount = array_sum($counts);
                 <a href="<?= $basePath ?>/pages/campaign-create.php" class="btn btn-primary">✚ Create Campaign</a>
             </div>
         <?php else: ?>
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:16px 24px 0; flex-wrap:wrap;">
+                <div class="text-muted fs-sm"><span id="campaignSelectedCount">0</span> selected</div>
+                <button type="button" class="btn btn-outline btn-sm" id="campaignBulkDeleteBtn" style="color: var(--color-danger); border-color: var(--color-danger);" onclick="deleteSelectedCampaigns()" disabled>Delete Selected</button>
+            </div>
             <div class="table-wrapper">
                 <table>
                     <thead>
                         <tr>
+                            <th style="width: 36px;">
+                                <input type="checkbox" id="campaignSelectAll" onchange="toggleAllCampaigns(this.checked)" style="width:auto;">
+                            </th>
                             <th>Campaign</th>
                             <th>List</th>
                             <th>SMTP</th>
@@ -96,6 +103,9 @@ $totalCount = array_sum($counts);
                             $pct = $c['total_emails'] > 0 ? round(($c['sent_count'] / $c['total_emails']) * 100) : 0;
                         ?>
                         <tr>
+                            <td>
+                                <input type="checkbox" class="campaign-checkbox" value="<?= (int)$c['id'] ?>" onchange="updateCampaignBulkDeleteState()" style="width:auto;">
+                            </td>
                             <td>
                                 <strong style="color: var(--text-primary);"><?= e($c['name']) ?></strong>
                                 <div class="text-muted fs-sm" style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?= e($c['subject']) ?></div>
@@ -136,4 +146,64 @@ $totalCount = array_sum($counts);
     </div>
 </div>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php
+$pageScript = <<<'JS'
+function getSelectedCampaignIds() {
+    return Array.from(document.querySelectorAll('.campaign-checkbox:checked'))
+        .map((checkbox) => parseInt(checkbox.value, 10))
+        .filter((id) => id > 0);
+}
+
+function updateCampaignBulkDeleteState() {
+    const selectedIds = getSelectedCampaignIds();
+    const countEl = document.getElementById('campaignSelectedCount');
+    const deleteBtn = document.getElementById('campaignBulkDeleteBtn');
+    const selectAll = document.getElementById('campaignSelectAll');
+    const allCheckboxes = Array.from(document.querySelectorAll('.campaign-checkbox'));
+
+    if (countEl) countEl.textContent = selectedIds.length;
+    if (deleteBtn) deleteBtn.disabled = selectedIds.length === 0;
+    if (selectAll) {
+        selectAll.checked = allCheckboxes.length > 0 && selectedIds.length === allCheckboxes.length;
+        selectAll.indeterminate = selectedIds.length > 0 && selectedIds.length < allCheckboxes.length;
+    }
+}
+
+function toggleAllCampaigns(checked) {
+    document.querySelectorAll('.campaign-checkbox').forEach((checkbox) => {
+        checkbox.checked = checked;
+    });
+    updateCampaignBulkDeleteState();
+}
+
+async function deleteSelectedCampaigns() {
+    const ids = getSelectedCampaignIds();
+    if (!ids.length) {
+        Toast.error('Please select at least one campaign.');
+        return;
+    }
+
+    const basePath = document.querySelector('meta[name="base-path"]')?.content || '';
+    Modal.confirm(
+        'Delete Selected Campaigns?',
+        `This will permanently delete ${ids.length} campaign(s), including queued emails and tracking data.`,
+        async () => {
+            const btn = document.getElementById('campaignBulkDeleteBtn');
+            try {
+                if (btn) btn.disabled = true;
+                const result = await apiCall(basePath + '/api/campaign-bulk-delete.php', { ids });
+                Toast.success(result.message || 'Campaigns deleted.');
+                setTimeout(() => location.reload(), 700);
+            } catch (err) {
+                Toast.error(err.message || 'Bulk delete failed.');
+                updateCampaignBulkDeleteState();
+            }
+        }
+    );
+}
+
+updateCampaignBulkDeleteState();
+JS;
+
+require_once __DIR__ . '/../includes/footer.php';
+?>
