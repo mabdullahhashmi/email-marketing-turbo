@@ -214,7 +214,7 @@ function normalizeBulkHeader(value) {
 function findBulkByName(items, name) {
     const target = String(name || '').trim().toLowerCase();
     if (!target) return '';
-    const match = items.find((item) => String(item.name || item.label || '').trim().toLowerCase() === target);
+    const match = items.find((item) => [item.name, item.label, item.from_email].some((value) => String(value || '').trim().toLowerCase() === target));
     return match ? String(match.id) : '';
 }
 
@@ -310,7 +310,7 @@ function downloadBulkCampaignSample() {
     const firstList = bulkContactLists[0] || {};
     downloadCsv('bulk-campaign-schedule-sample.csv', [
         ['campaign_name', 'subject', 'template_id', 'smtp_account_id', 'contact_list_id', 'badge_number', 'scheduled_at', 'min_delay_seconds', 'max_delay_seconds'],
-        ['HVAC Audit Batch 001', 'Quick idea for your website', firstTemplate.id || '', firstSmtp.id || '', firstList.id || '', 'Batch 001', '', '60', '3600'],
+        ['Plumber Audit Batch 001', 'Quick idea for your plumbing website', firstTemplate.id || '', firstSmtp.id || '', firstList.id || '', 'Batch 001', '', '60', '3600'],
     ]);
 }
 

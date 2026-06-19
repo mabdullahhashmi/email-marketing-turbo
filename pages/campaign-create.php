@@ -458,10 +458,10 @@ function builderBlock(type, data = {}) {
         },
         checklistPanel: {
             title: 'Small website changes can make a big difference.',
-            intro: 'Most HVAC websites already have the services listed. The real issue is how the page guides the visitor toward taking action.',
+            intro: 'Most plumbing websites already have the services listed. The real issue is how the page guides the visitor toward taking action.',
             item1: 'Strong headline focused on customer problems',
             item2: 'Emergency service CTA above the fold',
-            item3: 'Separate sections for repair, installation, maintenance, and tune-ups',
+            item3: 'Separate sections for drain cleaning, leak repair, water heaters, and emergency service',
             item4: 'Trust-building layout designed for local homeowners',
             bg: '#0f172a',
             color: '#ffffff',
@@ -491,8 +491,8 @@ function builderBlock(type, data = {}) {
             padding: 32,
         },
         browserAudit: {
-            label: 'Typical HVAC Website Right Now',
-            domain: 'hvacrepairyourcity.com',
+            label: 'Typical Plumbing Website Right Now',
+            domain: 'plumberyourcity.com',
             score: 'Speed: 28/100',
             issue1: 'No clickable phone number found',
             issue2: 'Not mobile-optimized',
@@ -506,7 +506,7 @@ function builderBlock(type, data = {}) {
         },
         ctaPanel: {
             title: 'Want me to check your website?',
-            text: 'I can send a quick free audit with 2-3 improvements that may help your HVAC website get more calls and quote requests.',
+            text: 'I can send a quick free audit with 2-3 improvements that may help your plumbing website get more calls and quote requests.',
             buttonText: 'Get Free Website Audit',
             buttonUrl: '#',
             secondaryButtonText: 'How It Works',

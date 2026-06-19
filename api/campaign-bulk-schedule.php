@@ -43,12 +43,17 @@ foreach ($templates as $template) {
 }
 
 $smtpIds = [];
-foreach (dbFetchAll("SELECT id FROM smtp_accounts WHERE is_active = 1") as $row) {
+$smtpByName = [];
+foreach (dbFetchAll("SELECT id, label, from_email FROM smtp_accounts WHERE is_active = 1") as $row) {
     $smtpIds[(string)$row['id']] = true;
+    $smtpByName[strtolower(trim((string)$row['label']))] = (int)$row['id'];
+    $smtpByName[strtolower(trim((string)$row['from_email']))] = (int)$row['id'];
 }
 $listIds = [];
-foreach (dbFetchAll("SELECT id FROM contact_lists") as $row) {
+$listByName = [];
+foreach (dbFetchAll("SELECT id, name FROM contact_lists") as $row) {
     $listIds[(string)$row['id']] = true;
+    $listByName[strtolower(trim((string)$row['name']))] = (int)$row['id'];
 }
 
 $created = 0;
@@ -69,7 +74,9 @@ foreach ($rows as $index => $row) {
     $templateId = trim((string)($row['template_id'] ?? ''));
     $templateName = trim((string)($row['template_name'] ?? ''));
     $smtpAccountId = (int)($row['smtp_account_id'] ?? 0);
+    $smtpAccountName = trim((string)($row['smtp_account'] ?? ''));
     $contactListId = (int)($row['contact_list_id'] ?? 0);
+    $contactListName = trim((string)($row['contact_list'] ?? ''));
     $contactBatch = trim((string)($row['contact_batch'] ?? ''));
     $scheduledAtRaw = trim((string)($row['scheduled_at'] ?? ''));
     $minDelay = max(10, (int)($row['min_delay_seconds'] ?? 60));
@@ -80,6 +87,13 @@ foreach ($rows as $index => $row) {
         $results[] = ['row' => $rowNumber, 'success' => false, 'message' => 'Campaign name is required.'];
         continue;
     }
+    if (!$smtpAccountId && $smtpAccountName !== '') {
+        $smtpAccountId = $smtpByName[strtolower($smtpAccountName)] ?? 0;
+    }
+    if (!$contactListId && $contactListName !== '') {
+        $contactListId = $listByName[strtolower($contactListName)] ?? 0;
+    }
+
     if (!$smtpAccountId || !isset($smtpIds[(string)$smtpAccountId])) {
         $failed++;
         $results[] = ['row' => $rowNumber, 'success' => false, 'message' => 'Valid SMTP account is required.'];

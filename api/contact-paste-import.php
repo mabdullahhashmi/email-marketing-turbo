@@ -44,14 +44,19 @@ if (count($rows) > 5000) {
 $inserted = 0;
 $updated = 0;
 $skipped = 0;
+$invalidRows = [];
+$duplicateRows = [];
+$seenEmails = [];
 
 $pdo = getDB();
 $pdo->beginTransaction();
 
 try {
-    foreach ($rows as $row) {
+    foreach ($rows as $index => $row) {
+        $rowNumber = (int)($row['source_row'] ?? ($index + 1));
         if (!is_array($row)) {
             $skipped++;
+            $invalidRows[] = ['row' => $rowNumber, 'email' => '', 'reason' => 'Invalid row data'];
             continue;
         }
 
@@ -63,8 +68,17 @@ try {
 
         if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $skipped++;
+            $invalidRows[] = ['row' => $rowNumber, 'email' => $email, 'reason' => 'Invalid or missing email'];
             continue;
         }
+
+        $emailKey = strtolower($email);
+        if (isset($seenEmails[$emailKey])) {
+            $skipped++;
+            $duplicateRows[] = ['row' => $rowNumber, 'email' => $email, 'reason' => 'Duplicate email in pasted rows'];
+            continue;
+        }
+        $seenEmails[$emailKey] = true;
 
         $customFields = [];
         if ($city !== '') {
@@ -109,10 +123,13 @@ try {
 
     jsonResponse([
         'success' => true,
-        'message' => "Imported {$inserted}, updated {$updated}, skipped {$skipped}.",
+        'message' => "Received " . count($rows) . " rows. Inserted {$inserted}, updated {$updated}, skipped {$skipped}.",
+        'received' => count($rows),
         'inserted' => $inserted,
         'updated' => $updated,
         'skipped' => $skipped,
+        'invalid_rows' => $invalidRows,
+        'duplicate_rows' => $duplicateRows,
     ]);
 } catch (Exception $e) {
     $pdo->rollBack();

@@ -90,6 +90,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'bulk_
     if (!empty($_POST['page'])) {
         $redirectUrl .= '&page=' . (int)$_POST['page'];
     }
+    if (!empty($_POST['per_page'])) {
+        $redirectUrl .= '&per_page=' . (int)$_POST['per_page'];
+    }
     redirect($redirectUrl);
 }
 
@@ -107,7 +110,11 @@ if (isset($_GET['delete_contact']) && is_numeric($_GET['delete_contact'])) {
 // Search
 $search = $_GET['search'] ?? '';
 $page = max(1, (int)($_GET['page'] ?? 1));
-$perPage = 50;
+$allowedPerPage = [50, 100, 300, 500, 1000, 1500];
+$perPage = (int)($_GET['per_page'] ?? 50);
+if (!in_array($perPage, $allowedPerPage, true)) {
+    $perPage = 50;
+}
 $offset = ($page - 1) * $perPage;
 
 $whereClause = "list_id = ?";
@@ -150,9 +157,14 @@ $contacts = dbFetchAll("
         <form method="GET" action="" class="d-flex gap-2">
             <input type="hidden" name="id" value="<?= $listId ?>">
             <input type="text" name="search" class="form-control" placeholder="Search by name, email, city, state, or badge number..." value="<?= e($search) ?>" style="max-width: 520px;">
+            <select name="per_page" class="form-control" style="max-width: 150px;" onchange="this.form.submit()">
+                <?php foreach ($allowedPerPage as $option): ?>
+                    <option value="<?= $option ?>" <?= $perPage === $option ? 'selected' : '' ?>><?= $option ?> / page</option>
+                <?php endforeach; ?>
+            </select>
             <button type="submit" class="btn btn-outline">Search</button>
             <?php if ($search): ?>
-                <a href="?id=<?= $listId ?>" class="btn btn-ghost">Clear</a>
+                <a href="?id=<?= $listId ?>&per_page=<?= $perPage ?>" class="btn btn-ghost">Clear</a>
             <?php endif; ?>
         </form>
     </div>
@@ -173,6 +185,7 @@ $contacts = dbFetchAll("
                 <input type="hidden" name="<?= CSRF_TOKEN_NAME ?>" value="<?= e(getCSRFToken()) ?>">
                 <input type="hidden" name="search" value="<?= e($search) ?>">
                 <input type="hidden" name="page" value="<?= $page ?>">
+                <input type="hidden" name="per_page" value="<?= $perPage ?>">
                 <div id="contactActionsBar" style="display:flex; justify-content: space-between; align-items:center; gap:12px; padding: 16px 24px 0; flex-wrap: wrap;">
                     <div class="text-muted fs-sm">Edit table cells directly. Changes save automatically.</div>
                     <div style="display:flex; align-items:center; gap: 10px;">
@@ -251,11 +264,11 @@ $contacts = dbFetchAll("
                 <?php if ($totalPages > 1): ?>
                 <div class="card-footer" style="justify-content: center; gap: 8px;">
                     <?php if ($page > 1): ?>
-                        <a href="?id=<?= $listId ?>&page=<?= $page - 1 ?>&search=<?= urlencode($search) ?>" class="btn btn-outline btn-sm">Prev</a>
+                        <a href="?id=<?= $listId ?>&page=<?= $page - 1 ?>&per_page=<?= $perPage ?>&search=<?= urlencode($search) ?>" class="btn btn-outline btn-sm">Prev</a>
                     <?php endif; ?>
                     <span class="text-muted fs-sm">Page <?= $page ?> of <?= $totalPages ?></span>
                     <?php if ($page < $totalPages): ?>
-                        <a href="?id=<?= $listId ?>&page=<?= $page + 1 ?>&search=<?= urlencode($search) ?>" class="btn btn-outline btn-sm">Next</a>
+                        <a href="?id=<?= $listId ?>&page=<?= $page + 1 ?>&per_page=<?= $perPage ?>&search=<?= urlencode($search) ?>" class="btn btn-outline btn-sm">Next</a>
                     <?php endif; ?>
                 </div>
                 <?php endif; ?>
@@ -480,16 +493,17 @@ function parsePastedContacts(text) {
         };
     }
 
-    return lines.slice(startIndex).map((line) => {
+    return lines.slice(startIndex).map((line, index) => {
         const columns = parseDelimitedLine(line);
         return {
+            source_row: startIndex + index + 1,
             name: columnMap.name >= 0 ? (columns[columnMap.name] || '') : '',
             email: columnMap.email >= 0 ? (columns[columnMap.email] || '') : '',
             city: columnMap.city >= 0 ? (columns[columnMap.city] || '') : '',
             state: columnMap.state >= 0 ? (columns[columnMap.state] || '') : '',
             badge_number: columnMap.badge_number >= 0 ? (columns[columnMap.badge_number] || '') : '',
         };
-    }).filter((row) => row.email);
+    });
 }
 
 function updatePasteContactsPreview() {
@@ -498,7 +512,40 @@ function updatePasteContactsPreview() {
     if (!textarea || !preview) return;
 
     const rows = parsePastedContacts(textarea.value);
-    preview.textContent = rows.length ? `${rows.length} contact row(s) ready to import.` : '';
+    const withEmail = rows.filter((row) => row.email).length;
+    preview.textContent = rows.length ? `${rows.length} row(s) detected. ${withEmail} row(s) have an email address.` : '';
+}
+
+function contactReportEsc(value) {
+    return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;',
+    }[char]));
+}
+
+function renderPasteImportReport(response) {
+    const preview = document.getElementById('pasteContactsPreview');
+    if (!preview) return;
+
+    const invalidRows = response.invalid_rows || [];
+    const duplicateRows = response.duplicate_rows || [];
+    const issueRows = [...invalidRows, ...duplicateRows].slice(0, 80);
+    const issueHtml = issueRows.length
+        ? `<div style="margin-top:10px; max-height:220px; overflow:auto; border:1px solid var(--border-color); border-radius:6px; padding:10px; background:#fff;">
+            ${issueRows.map((row) => `<div>Row ${contactReportEsc(row.row)}: ${contactReportEsc(row.email || 'no email')} - ${contactReportEsc(row.reason || 'Skipped')}</div>`).join('')}
+            ${(invalidRows.length + duplicateRows.length) > issueRows.length ? `<div class="text-muted">Showing first ${issueRows.length} issue rows.</div>` : ''}
+        </div>`
+        : '';
+
+    preview.innerHTML = `
+        <div><strong>${contactReportEsc(response.message || 'Import complete.')}</strong></div>
+        <div>Received: ${contactReportEsc(response.received || 0)} | Inserted: ${contactReportEsc(response.inserted || 0)} | Updated: ${contactReportEsc(response.updated || 0)} | Skipped: ${contactReportEsc(response.skipped || 0)}</div>
+        ${issueHtml}
+        <button type="button" class="btn btn-outline btn-sm" style="margin-top:10px;" onclick="window.location.reload()">Refresh Contact Table</button>
+    `;
 }
 
 async function importPastedContacts() {
@@ -520,8 +567,8 @@ async function importPastedContacts() {
         });
 
         if (response.success) {
+            renderPasteImportReport(response);
             Toast.success(response.message || 'Contacts imported.');
-            window.location.reload();
         } else {
             Toast.error(response.message || 'Import failed.');
         }

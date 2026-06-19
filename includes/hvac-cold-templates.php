@@ -1,12 +1,12 @@
 <?php
 /**
- * Default builder-compatible cold outreach templates for HVAC website/page audits.
+ * Default builder-compatible cold outreach templates for plumber website/page audits.
  */
 
 function seedHVACColdOutreachTemplates() {
     ensureCampaignTemplatesTable();
 
-    $version = '5';
+    $version = '6';
     $currentVersion = null;
     try {
         $currentVersion = dbFetchValue("SELECT setting_value FROM settings WHERE setting_key = 'hvac_template_pack_version' LIMIT 1");
@@ -15,7 +15,7 @@ function seedHVACColdOutreachTemplates() {
     }
 
     if ($currentVersion !== $version) {
-        dbExecute("DELETE FROM campaign_templates WHERE name LIKE 'HVAC Cold %' OR name LIKE 'HVAC Website Audit %'");
+        dbExecute("DELETE FROM campaign_templates WHERE name LIKE 'HVAC Cold %' OR name LIKE 'HVAC Website Audit %' OR name LIKE 'Plumber Website Audit %'");
         foreach (getHVACColdOutreachTemplates() as $template) {
             dbInsert(
                 "INSERT INTO campaign_templates (name, subject, body_html) VALUES (?, ?, ?)",
@@ -29,7 +29,7 @@ function seedHVACColdOutreachTemplates() {
         return;
     }
 
-    $existingRows = dbFetchAll("SELECT name FROM campaign_templates WHERE name LIKE 'HVAC Website Audit %'");
+    $existingRows = dbFetchAll("SELECT name FROM campaign_templates WHERE name LIKE 'Plumber Website Audit %'");
     $existingNames = [];
     foreach ($existingRows as $row) {
         $existingNames[$row['name']] = true;
@@ -48,7 +48,7 @@ function seedHVACColdOutreachTemplates() {
 }
 
 function getHVACColdOutreachTemplates() {
-    $websiteBaseUrl = 'https://abdullahhashmi.com/hvac-growth-expert/';
+    $websiteBaseUrl = 'https://abdullahhashmi.com/plumbers-growth-expert/';
     $calendlyBaseUrl = 'https://calendly.com/mu-abdullahhashmi/30min';
 
     $themes = [
@@ -63,25 +63,25 @@ function getHVACColdOutreachTemplates() {
     ];
 
     $angles = [
-        ['key' => 'Quote Requests', 'problem' => 'HVAC visitors are landing on the site, but not enough of them become quote requests.', 'promise' => 'Make the page clearer, faster, and easier to act on.', 'auditIssue' => 'Quote request path is too hidden', 'score' => 'CTA: 31/100'],
-        ['key' => 'Phone Calls', 'problem' => 'Customers who need HVAC help should not have to hunt for the phone number.', 'promise' => 'Put the call path, urgency, and trust cues where homeowners expect them.', 'auditIssue' => 'Clickable phone CTA is weak', 'score' => 'Calls: 42/100'],
+        ['key' => 'Quote Requests', 'problem' => 'Plumbing visitors are landing on the site, but not enough of them become quote requests.', 'promise' => 'Make the page clearer, faster, and easier to act on.', 'auditIssue' => 'Quote request path is too hidden', 'score' => 'CTA: 31/100'],
+        ['key' => 'Phone Calls', 'problem' => 'Customers who need plumbing help should not have to hunt for the phone number.', 'promise' => 'Put the call path, urgency, and trust cues where homeowners expect them.', 'auditIssue' => 'Clickable phone CTA is weak', 'score' => 'Calls: 42/100'],
         ['key' => 'Trust Signals', 'problem' => 'A visitor may leave if they do not see proof that the company is local, trusted, and reliable.', 'promise' => 'Place reviews, service areas, guarantees, and proof near the decision points.', 'auditIssue' => 'Trust proof is buried too low', 'score' => 'Trust: 38/100'],
-        ['key' => 'Emergency Service', 'problem' => 'Emergency HVAC visitors need fast confidence before they call.', 'promise' => 'Make same-day help, response expectations, and call buttons obvious above the fold.', 'auditIssue' => 'Emergency CTA not visible', 'score' => 'Urgency: 35/100'],
-        ['key' => 'Mobile Layout', 'problem' => 'Most local visitors check HVAC websites on mobile before calling.', 'promise' => 'Simplify the mobile layout so calls and forms are easy to reach.', 'auditIssue' => 'Mobile flow feels crowded', 'score' => 'Mobile: 44/100'],
-        ['key' => 'Service Pages', 'problem' => 'Repair, installation, maintenance, and tune-ups should not all compete in one unclear section.', 'promise' => 'Separate service intent so visitors quickly find the help they need.', 'auditIssue' => 'Services are not clearly separated', 'score' => 'Clarity: 40/100'],
+        ['key' => 'Emergency Service', 'problem' => 'Emergency plumbing visitors need fast confidence before they call.', 'promise' => 'Make urgent help, response expectations, and call buttons obvious above the fold.', 'auditIssue' => 'Emergency CTA not visible', 'score' => 'Urgency: 35/100'],
+        ['key' => 'Mobile Layout', 'problem' => 'Most local visitors check plumbing websites on mobile before calling.', 'promise' => 'Simplify the mobile layout so calls and forms are easy to reach.', 'auditIssue' => 'Mobile flow feels crowded', 'score' => 'Mobile: 44/100'],
+        ['key' => 'Service Pages', 'problem' => 'Drain cleaning, water heaters, leak repair, and emergency plumbing should not all compete in one unclear section.', 'promise' => 'Separate service intent so visitors quickly find the help they need.', 'auditIssue' => 'Services are not clearly separated', 'score' => 'Clarity: 40/100'],
         ['key' => 'Local Relevance', 'problem' => 'Homeowners want to know if the company actually serves their city or area.', 'promise' => 'Add local proof, service-area context, and page sections that feel relevant.', 'auditIssue' => 'Service area proof is weak', 'score' => 'Local: 36/100'],
         ['key' => 'Speed And Friction', 'problem' => 'A slow or cluttered page can lose a visitor before they ever contact the business.', 'promise' => 'Trim the page journey and guide visitors to one clear next step.', 'auditIssue' => 'Page journey has too much friction', 'score' => 'Speed: 28/100'],
         ['key' => 'Hero Section', 'problem' => 'The first screen should explain the offer, location fit, and next step instantly.', 'promise' => 'Rewrite and redesign the hero section so it pushes visitors toward action.', 'auditIssue' => 'Headline does not sell the next step', 'score' => 'Hero: 33/100'],
         ['key' => 'Form Flow', 'problem' => 'Forms often ask too much before the visitor trusts the company.', 'promise' => 'Use a lighter quote path backed by trust and clear response expectations.', 'auditIssue' => 'Form asks before trust is built', 'score' => 'Forms: 39/100'],
-        ['key' => 'Website Cleanup', 'problem' => 'Many HVAC websites have the right information, but the layout does not guide action.', 'promise' => 'Reorder the page so every section supports calls, trust, or quote requests.', 'auditIssue' => 'Important sections are in the wrong order', 'score' => 'Flow: 37/100'],
+        ['key' => 'Website Cleanup', 'problem' => 'Many plumber websites have the right information, but the layout does not guide action.', 'promise' => 'Reorder the page so every section supports calls, trust, or quote requests.', 'auditIssue' => 'Important sections are in the wrong order', 'score' => 'Flow: 37/100'],
         ['key' => 'Conversion Audit', 'problem' => 'Small page changes can sometimes make a noticeable difference in calls and enquiries.', 'promise' => 'Send a clear audit with 2-3 practical improvements for the current website.', 'auditIssue' => 'No clear conversion path', 'score' => 'Audit: 41/100'],
     ];
 
     $styles = [
-        ['label' => 'Direct Audit', 'subject' => 'Quick idea for your HVAC website', 'title' => 'Is your HVAC website turning visitors into real quote requests?', 'cta' => 'Get Free Website Audit', 'layout' => 'cards'],
-        ['label' => 'Visual Audit', 'subject' => 'I noticed a common HVAC website issue', 'title' => 'A stronger page can help more local visitors take action', 'cta' => 'View Website Example', 'layout' => 'mockup'],
-        ['label' => 'Fix List', 'subject' => 'Small HVAC website changes can add up', 'title' => 'Small website changes can make a big difference.', 'cta' => 'Get Free Page Audit', 'layout' => 'checklist'],
-        ['label' => 'Service Offer', 'subject' => 'Want me to check your HVAC website?', 'title' => 'I can send a practical HVAC website audit', 'cta' => 'Get Service', 'layout' => 'metrics'],
+        ['label' => 'Direct Audit', 'subject' => 'Quick idea for your plumbing website', 'title' => 'Is your plumbing website turning visitors into real quote requests?', 'cta' => 'Get Free Website Audit', 'layout' => 'cards'],
+        ['label' => 'Visual Audit', 'subject' => 'I noticed a common plumbing website issue', 'title' => 'A stronger page can help more local visitors take action', 'cta' => 'View Website Example', 'layout' => 'mockup'],
+        ['label' => 'Fix List', 'subject' => 'Small plumbing website changes can add up', 'title' => 'Small website changes can make a big difference.', 'cta' => 'Get Free Page Audit', 'layout' => 'checklist'],
+        ['label' => 'Service Offer', 'subject' => 'Want me to check your plumbing website?', 'title' => 'I can send a practical plumbing website audit', 'cta' => 'Get Service', 'layout' => 'metrics'],
     ];
 
     $templates = [];
@@ -91,12 +91,12 @@ function getHVACColdOutreachTemplates() {
             $count++;
             $number = str_pad((string) $count, 2, '0', STR_PAD_LEFT);
             $theme = $themes[($count - 1) % count($themes)];
-            $auditUrl = $calendlyBaseUrl . '?utm_source=mailpilot&utm_medium=email&utm_campaign=hvac_audit_booking_' . $number;
-            $websiteUrl = $websiteBaseUrl . '?utm_source=mailpilot&utm_medium=email&utm_campaign=hvac_how_it_works_' . $number;
+            $auditUrl = $calendlyBaseUrl . '?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_audit_booking_' . $number;
+            $websiteUrl = $websiteBaseUrl . '?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_how_it_works_' . $number;
             $state = hvacWebsiteAuditTemplateState($number, $angle, $style, $theme, $auditUrl, $websiteUrl);
 
             $templates[] = [
-                'name' => 'HVAC Website Audit ' . $number . ' - ' . $angle['key'] . ' ' . $style['label'],
+                'name' => 'Plumber Website Audit ' . $number . ' - ' . $angle['key'] . ' ' . $style['label'],
                 'subject' => $style['subject'] . ' - ' . $angle['key'],
                 'body_html' => hvacWebsiteAuditTemplateBodyHtml($state),
             ];
@@ -116,9 +116,9 @@ function hvacWebsiteAuditTemplateState($number, $angle, $style, $theme, $auditUr
             'padding' => 18,
         ]),
         hvacWebsiteAuditBlock('hero', $number, [
-            'eyebrow' => 'FOR HVAC BUSINESS OWNERS',
+            'eyebrow' => 'FOR PLUMBING BUSINESS OWNERS',
             'title' => $style['title'],
-            'subtitle' => 'I help HVAC companies improve website and landing pages so more local visitors call, request a quote, or book service.',
+            'subtitle' => 'I help plumbing companies improve website and landing pages so more local visitors call, request a quote, or book service.',
             'buttonText' => 'Get Free Audit',
             'buttonUrl' => $auditUrl,
             'secondaryButtonText' => 'See How It Works',
@@ -156,7 +156,7 @@ function hvacWebsiteAuditTemplateState($number, $angle, $style, $theme, $auditUr
 
     $blocks[] = hvacWebsiteAuditBlock('ctaPanel', $number, [
         'title' => 'Want me to check your website?',
-        'text' => 'I can send a quick free audit with 2-3 improvements that may help your HVAC website get more calls and quote requests. You can also reply to this email with your website URL.',
+        'text' => 'I can send a quick free audit with 2-3 improvements that may help your plumbing website get more calls and quote requests. You can also reply to this email with your website URL.',
         'buttonText' => 'Get Free Audit',
         'buttonUrl' => $auditUrl,
         'secondaryButtonText' => 'How It Works',
@@ -218,10 +218,10 @@ function hvacTemplateAuditGrid($number, $theme) {
 function hvacTemplateChecklist($number, $theme, $angle) {
     return hvacWebsiteAuditBlock('checklistPanel', $number, [
         'title' => 'Small website changes can make a big difference.',
-        'intro' => 'Most HVAC websites already have the services listed. The real issue is how the page guides the visitor toward taking action.',
+        'intro' => 'Most plumbing websites already have the services listed. The real issue is how the page guides the visitor toward taking action.',
         'item1' => 'Strong headline focused on customer problems',
         'item2' => 'Emergency service CTA above the fold',
-        'item3' => 'Separate sections for repair, installation, maintenance, and tune-ups',
+        'item3' => 'Separate sections for drain cleaning, leak repair, water heaters, and emergency service',
         'item4' => $angle['promise'],
         'bg' => '#0f172a',
         'color' => '#ffffff',
@@ -257,8 +257,8 @@ function hvacTemplateMetricBars($number, $theme) {
 
 function hvacTemplateBrowserAudit($number, $theme, $angle) {
     return hvacWebsiteAuditBlock('browserAudit', $number, [
-        'label' => 'Typical HVAC Website Right Now',
-        'domain' => 'hvacrepairyourcity.com',
+        'label' => 'Typical Plumbing Website Right Now',
+        'domain' => 'plumberyourcity.com',
         'score' => $angle['score'],
         'issue1' => $angle['auditIssue'],
         'issue2' => 'Not mobile-optimized',
@@ -288,7 +288,7 @@ function hvacWebsiteAuditTemplateBodyHtml($state) {
 }
 
 function hvacWebsiteAuditFallbackHtml($state) {
-    $title = 'HVAC Website Audit';
+    $title = 'Plumber Website Audit';
     foreach ($state['blocks'] as $block) {
         if (($block['type'] ?? '') === 'hero') {
             $title = $block['title'] ?? $title;
