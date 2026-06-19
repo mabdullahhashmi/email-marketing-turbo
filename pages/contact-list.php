@@ -22,9 +22,9 @@ function contactCustomValue($customFields, $field) {
         return '';
     }
 
-    $target = strtolower(preg_replace('/[^a-z0-9]+/', '', $field));
+    $target = normalizeContactFieldKey($field);
     foreach ($customFields as $key => $value) {
-        $normalized = strtolower(preg_replace('/[^a-z0-9]+/', '', (string)$key));
+        $normalized = normalizeContactFieldKey($key);
         if ($normalized === $target) {
             return (string)$value;
         }

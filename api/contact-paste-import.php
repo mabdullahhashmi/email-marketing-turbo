@@ -98,7 +98,7 @@ try {
                 $existingCustom = [];
             }
             foreach (array_keys($existingCustom) as $key) {
-                $normalized = strtolower(preg_replace('/[^a-z0-9]+/', '', (string)$key));
+                $normalized = normalizeContactFieldKey($key);
                 if (in_array($normalized, ['city', 'state', 'badgenumber', 'badge'], true)) {
                     unset($existingCustom[$key]);
                 }

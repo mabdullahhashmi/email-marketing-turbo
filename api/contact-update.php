@@ -53,7 +53,7 @@ if (!is_array($customFields)) {
 }
 
 foreach (array_keys($customFields) as $key) {
-    $normalized = strtolower(preg_replace('/[^a-z0-9]+/', '', (string)$key));
+    $normalized = normalizeContactFieldKey($key);
     if (in_array($normalized, ['city', 'state', 'badgenumber', 'badge'], true)) {
         unset($customFields[$key]);
     }

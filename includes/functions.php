@@ -195,7 +195,7 @@ function ensureCampaignBatchColumn() {
  * Accepts common headers like batch_number, batch, Batch Number, batch no, and badge_number.
  */
 function normalizeContactFieldKey($key) {
-    return strtolower(preg_replace('/[^a-z0-9]+/', '', (string)$key));
+    return preg_replace('/[^a-z0-9]+/', '', strtolower((string)$key));
 }
 
 function isContactBatchFieldKey($key) {
