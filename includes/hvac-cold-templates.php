@@ -6,7 +6,7 @@
 function seedHVACColdOutreachTemplates() {
     ensureCampaignTemplatesTable();
 
-    $version = '6';
+    $version = '7';
     $currentVersion = null;
     try {
         $currentVersion = dbFetchValue("SELECT setting_value FROM settings WHERE setting_key = 'hvac_template_pack_version' LIMIT 1");
@@ -15,12 +15,25 @@ function seedHVACColdOutreachTemplates() {
     }
 
     if ($currentVersion !== $version) {
-        dbExecute("DELETE FROM campaign_templates WHERE name LIKE 'HVAC Cold %' OR name LIKE 'HVAC Website Audit %' OR name LIKE 'Plumber Website Audit %'");
+        dbExecute("DELETE FROM campaign_templates WHERE name LIKE 'HVAC Cold %' OR name LIKE 'HVAC Website Audit %'");
+        $existingRows = dbFetchAll("SELECT id, name FROM campaign_templates WHERE name LIKE 'Plumber Website Audit %'");
+        $existingByName = [];
+        foreach ($existingRows as $row) {
+            $existingByName[$row['name']] = (int)$row['id'];
+        }
+
         foreach (getHVACColdOutreachTemplates() as $template) {
-            dbInsert(
-                "INSERT INTO campaign_templates (name, subject, body_html) VALUES (?, ?, ?)",
-                [$template['name'], $template['subject'], $template['body_html']]
-            );
+            if (isset($existingByName[$template['name']])) {
+                dbExecute(
+                    "UPDATE campaign_templates SET subject = ?, body_html = ?, updated_at = NOW() WHERE id = ?",
+                    [$template['subject'], $template['body_html'], $existingByName[$template['name']]]
+                );
+            } else {
+                dbInsert(
+                    "INSERT INTO campaign_templates (name, subject, body_html) VALUES (?, ?, ?)",
+                    [$template['name'], $template['subject'], $template['body_html']]
+                );
+            }
         }
         dbExecute(
             "INSERT INTO settings (setting_key, setting_value) VALUES ('hvac_template_pack_version', ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)",
@@ -283,8 +296,7 @@ function hvacWebsiteAuditBlock($type, $number, $data) {
 }
 
 function hvacWebsiteAuditTemplateBodyHtml($state) {
-    $encodedState = base64_encode(json_encode($state, JSON_UNESCAPED_SLASHES));
-    return '<!--MAILPILOT_BUILDER ' . $encodedState . "-->\n" . hvacWebsiteAuditFallbackHtml($state);
+    return mailpilotBuilderStateToHtml($state);
 }
 
 function hvacWebsiteAuditFallbackHtml($state) {

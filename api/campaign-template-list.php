@@ -24,6 +24,10 @@ try {
         FROM campaign_templates
         ORDER BY updated_at DESC, created_at DESC
     ");
+    foreach ($templates as &$template) {
+        $template['body_html'] = mailpilotRenderBuilderHtml($template['body_html'] ?? '');
+    }
+    unset($template);
 
     jsonResponse([
         'success' => true,

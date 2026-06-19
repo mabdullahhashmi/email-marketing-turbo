@@ -4,6 +4,8 @@
  */
 
 function scheduleCampaignQueue($campaignId, $subject, $bodyHtml, $smtpAccountId, $contactListId, $contactBatch, $scheduledAt, $minDelay, $maxDelay) {
+    $bodyHtml = mailpilotRenderBuilderHtml($bodyHtml);
+
     $contacts = dbFetchAll(
         "SELECT c.*, cl.name as list_name FROM contacts c
          JOIN contact_lists cl ON c.list_id = cl.id

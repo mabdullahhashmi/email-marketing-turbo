@@ -31,6 +31,13 @@ require_once __DIR__ . '/../includes/header.php';
 
 ensureCampaignOpenTrackingTable();
 
+$renderedCampaignBodyHtml = mailpilotRenderBuilderHtml($campaign['body_html'] ?? '');
+if ($renderedCampaignBodyHtml !== ($campaign['body_html'] ?? '')) {
+    dbExecute("UPDATE campaigns SET body_html = ?, updated_at = NOW() WHERE id = ?", [$renderedCampaignBodyHtml, $campaignId]);
+    dbExecute("UPDATE email_queue SET body_html = ? WHERE campaign_id = ? AND status = 'pending'", [$renderedCampaignBodyHtml, $campaignId]);
+    $campaign['body_html'] = $renderedCampaignBodyHtml;
+}
+
 // Queue status counts
 $pendingCount = getCount('email_queue', 'campaign_id = ? AND status = ?', [$campaignId, 'pending']);
 $sentCount = $campaign['sent_count'];

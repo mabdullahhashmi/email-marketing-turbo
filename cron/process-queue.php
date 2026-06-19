@@ -164,7 +164,10 @@ foreach ($pendingEmails as $email) {
         $mail->isHTML(true);
         $mail->Subject = $email['subject'];
         
-        $bodyHtml = $email['body_html'];
+        $bodyHtml = mailpilotRenderBuilderHtml($email['body_html']);
+        if ($bodyHtml !== $email['body_html']) {
+            dbExecute("UPDATE email_queue SET body_html = ? WHERE id = ?", [$bodyHtml, $email['id']]);
+        }
         
         // Process click tracking - replace URLs with tracking redirects
         $bodyHtml = processClickTracking($bodyHtml, $email['campaign_id'], $email['contact_id'], $email['id']);

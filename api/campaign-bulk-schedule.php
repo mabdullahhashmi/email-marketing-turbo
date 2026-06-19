@@ -6,6 +6,7 @@ require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/campaign-scheduler-helper.php';
+require_once __DIR__ . '/../includes/hvac-cold-templates.php';
 
 header('Content-Type: application/json');
 
@@ -24,6 +25,8 @@ if (!$input) {
 }
 
 validateCSRF($input['csrf_token'] ?? '');
+
+seedHVACColdOutreachTemplates();
 
 $rows = $input['rows'] ?? [];
 if (!is_array($rows) || empty($rows)) {
@@ -216,6 +219,8 @@ foreach ($rows as $index => $row) {
         continue;
     }
 
+    $templateBodyHtml = mailpilotRenderBuilderHtml($template['body_html'] ?? '');
+
     $scheduledAt = '';
     if ($scheduledAtRaw !== '') {
         $timestamp = strtotime($scheduledAtRaw);
@@ -233,7 +238,7 @@ foreach ($rows as $index => $row) {
             [
                 $campaignName,
                 $subject,
-                $template['body_html'],
+                $templateBodyHtml,
                 $smtpAccountId,
                 $contactListId,
                 $contactBatch !== '' ? substr($contactBatch, 0, 100) : null,
@@ -246,7 +251,7 @@ foreach ($rows as $index => $row) {
         $scheduleResult = scheduleCampaignQueue(
             $campaignId,
             $subject,
-            $template['body_html'],
+            $templateBodyHtml,
             $smtpAccountId,
             $contactListId,
             $contactBatch,

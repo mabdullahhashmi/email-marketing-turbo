@@ -107,7 +107,7 @@ if ($format === 'csv') {
             $row['scheduled_at'] ?? '',
             $row['sent_at'] ?? '',
             $row['error_message'] ?? '',
-            $row['body_html'] ?? $campaign['body_html'],
+            mailpilotRenderBuilderHtml($row['body_html'] ?? $campaign['body_html']),
         ]);
     }
 
@@ -147,7 +147,7 @@ echo "\xEF\xBB\xBF";
                 <td><?= e($row['scheduled_at'] ?? '') ?></td>
                 <td><?= e($row['sent_at'] ?? '') ?></td>
                 <td><?= e($row['error_message'] ?? '') ?></td>
-                <td><?= e($row['body_html'] ?? $campaign['body_html']) ?></td>
+                <td><?= e(mailpilotRenderBuilderHtml($row['body_html'] ?? $campaign['body_html'])) ?></td>
             </tr>
         <?php endforeach; ?>
     </tbody>

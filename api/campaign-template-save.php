@@ -24,6 +24,7 @@ validateCSRF($input['csrf_token'] ?? '');
 $name = trim($input['name'] ?? '');
 $subject = trim($input['subject'] ?? '');
 $bodyHtml = $input['body_html'] ?? '';
+$bodyHtml = mailpilotRenderBuilderHtml($bodyHtml);
 
 if ($name === '') {
     jsonResponse(['success' => false, 'message' => 'Template name is required.'], 400);

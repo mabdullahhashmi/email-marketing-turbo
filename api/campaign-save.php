@@ -27,6 +27,7 @@ $id = (int)($input['id'] ?? 0);
 $name = trim($input['name'] ?? '');
 $subject = trim($input['subject'] ?? '');
 $bodyHtml = $input['body_html'] ?? '';
+$bodyHtml = mailpilotRenderBuilderHtml($bodyHtml);
 $smtpAccountId = (int)($input['smtp_account_id'] ?? 0);
 $contactListId = (int)($input['contact_list_id'] ?? 0);
 $contactBatch = trim((string)($input['contact_batch'] ?? ''));

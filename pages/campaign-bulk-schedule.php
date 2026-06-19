@@ -4,9 +4,11 @@
  */
 $pageTitle = 'Bulk Campaign Scheduler';
 require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/hvac-cold-templates.php';
 
 ensureCampaignBatchColumn();
 ensureCampaignTemplatesTable();
+seedHVACColdOutreachTemplates();
 
 $smtpAccounts = dbFetchAll("SELECT id, label, from_email FROM smtp_accounts WHERE is_active = 1 ORDER BY label");
 $contactLists = dbFetchAll("
