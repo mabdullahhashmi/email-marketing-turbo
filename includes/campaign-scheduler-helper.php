@@ -26,9 +26,11 @@ function scheduleCampaignQueue($campaignId, $subject, $bodyHtml, $smtpAccountId,
             [$contactListId]
         );
         $availableBatches = summarizeContactBatchValues($allContacts);
+        $normalizedSearch = normalizeContactBatchValue($contactBatch);
         $availableMessage = $availableBatches
             ? ' Available badge/batch values include: ' . implode(', ', $availableBatches) . '.'
             : ' No badge/batch values were found on active contacts in this list.';
+        $availableMessage .= ' Normalized search value: ' . $normalizedSearch . '.';
 
         return [
             'success' => false,

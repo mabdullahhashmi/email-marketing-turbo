@@ -113,9 +113,11 @@ try {
                  WHERE c.list_id = ? AND c.is_unsubscribed = 0",
                 [$contactListId]
             ));
+            $normalizedSearch = normalizeContactBatchValue($contactBatch);
             $availableMessage = $availableBatches
                 ? ' Available badge/batch values include: ' . implode(', ', $availableBatches) . '.'
                 : ' No badge/batch values were found on active contacts in this list.';
+            $availableMessage .= ' Normalized search value: ' . $normalizedSearch . '.';
             $message = $contactBatch !== ''
                 ? 'No active contacts found in the selected list for batch "' . $contactBatch . '".' . $availableMessage
                 : 'No active contacts in the selected list.';

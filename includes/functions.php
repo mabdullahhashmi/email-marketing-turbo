@@ -218,18 +218,21 @@ function getContactBatchValue($contact) {
  * Examples that should match: "Batch 1", "batch1", "Batch 01", "1".
  */
 function normalizeContactBatchValue($value) {
-    $value = strtolower(trim((string)$value));
+    $value = html_entity_decode((string)$value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    $value = str_replace(["\xC2\xA0", "\xE2\x80\x8B", "\xEF\xBB\xBF"], ' ', $value);
+    $value = strtolower(trim($value));
     $value = preg_replace('/\s+/', ' ', $value);
+    $compact = preg_replace('/[^a-z0-9]+/', '', $value);
 
-    if (preg_match('/^(batch|badge)\s*0*([0-9]+)$/i', $value, $matches)) {
+    if (preg_match('/^(batch|badge)0*([0-9]+)$/', $compact, $matches)) {
         return 'batch' . (int)$matches[2];
     }
 
-    if (preg_match('/^0*([0-9]+)$/', $value, $matches)) {
+    if (preg_match('/^0*([0-9]+)$/', $compact, $matches)) {
         return 'batch' . (int)$matches[1];
     }
 
-    return preg_replace('/[^a-z0-9]+/', '', $value);
+    return $compact;
 }
 
 function contactBatchMatches($contact, $expectedBatch) {
