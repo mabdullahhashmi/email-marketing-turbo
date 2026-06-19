@@ -102,13 +102,22 @@ try {
 
         if ($contactBatch !== '') {
             $contacts = array_values(array_filter($contacts, function($contact) use ($contactBatch) {
-                return getContactBatchValue($contact) === $contactBatch;
+                return contactBatchMatches($contact, $contactBatch);
             }));
         }
         
         if (empty($contacts)) {
+            $availableBatches = summarizeContactBatchValues(dbFetchAll(
+                "SELECT c.*, cl.name as list_name FROM contacts c
+                 JOIN contact_lists cl ON c.list_id = cl.id
+                 WHERE c.list_id = ? AND c.is_unsubscribed = 0",
+                [$contactListId]
+            ));
+            $availableMessage = $availableBatches
+                ? ' Available badge/batch values include: ' . implode(', ', $availableBatches) . '.'
+                : ' No badge/batch values were found on active contacts in this list.';
             $message = $contactBatch !== ''
-                ? 'No active contacts found in the selected list for batch "' . $contactBatch . '".'
+                ? 'No active contacts found in the selected list for batch "' . $contactBatch . '".' . $availableMessage
                 : 'No active contacts in the selected list.';
             jsonResponse(['success' => false, 'message' => $message], 400);
         }

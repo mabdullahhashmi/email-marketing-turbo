@@ -214,6 +214,51 @@ function getContactBatchValue($contact) {
 }
 
 /**
+ * Normalize badge/batch labels for matching imported contacts to campaigns.
+ * Examples that should match: "Batch 1", "batch1", "Batch 01", "1".
+ */
+function normalizeContactBatchValue($value) {
+    $value = strtolower(trim((string)$value));
+    $value = preg_replace('/\s+/', ' ', $value);
+
+    if (preg_match('/^(batch|badge)\s*0*([0-9]+)$/i', $value, $matches)) {
+        return 'batch' . (int)$matches[2];
+    }
+
+    if (preg_match('/^0*([0-9]+)$/', $value, $matches)) {
+        return 'batch' . (int)$matches[1];
+    }
+
+    return preg_replace('/[^a-z0-9]+/', '', $value);
+}
+
+function contactBatchMatches($contact, $expectedBatch) {
+    return normalizeContactBatchValue(getContactBatchValue($contact)) === normalizeContactBatchValue($expectedBatch);
+}
+
+function summarizeContactBatchValues($contacts, $limit = 12) {
+    $counts = [];
+    foreach ($contacts as $contact) {
+        $value = getContactBatchValue($contact);
+        if ($value === '') {
+            continue;
+        }
+        $counts[$value] = ($counts[$value] ?? 0) + 1;
+    }
+
+    uksort($counts, 'strnatcasecmp');
+    $summary = [];
+    foreach ($counts as $value => $count) {
+        $summary[] = $value . ' (' . $count . ')';
+        if (count($summary) >= $limit) {
+            break;
+        }
+    }
+
+    return $summary;
+}
+
+/**
  * Add a 1x1 campaign open tracking pixel to the final email HTML.
  */
 function processOpenTracking($html, $campaignId, $contactId, $queueId) {
