@@ -236,8 +236,17 @@ function findContactBatchValue($fields) {
     }
 
     foreach ($fields as $key => $value) {
-        if (isContactBatchFieldKey($key) && !is_array($value)) {
+        if (!isContactBatchFieldKey($key)) {
+            continue;
+        }
+
+        if (!is_array($value)) {
             return trim((string)$value);
+        }
+
+        $nestedValues = collectContactScalarValues($value);
+        if (!empty($nestedValues)) {
+            return trim((string)$nestedValues[0]);
         }
     }
 
@@ -263,6 +272,36 @@ function findContactBatchValue($fields) {
     return '';
 }
 
+function collectContactScalarValues($value) {
+    $values = [];
+
+    if (is_array($value)) {
+        foreach ($value as $nestedValue) {
+            $values = array_merge($values, collectContactScalarValues($nestedValue));
+        }
+        return $values;
+    }
+
+    if (is_scalar($value)) {
+        $trimmed = trim((string)$value);
+        if ($trimmed !== '') {
+            $values[] = $trimmed;
+        }
+    }
+
+    return $values;
+}
+
+function findContactBatchValueByValue($fields) {
+    foreach (collectContactScalarValues($fields) as $value) {
+        if (preg_match('/^batch[0-9]+$/', normalizeContactBatchValue($value))) {
+            return $value;
+        }
+    }
+
+    return '';
+}
+
 /**
  * Read the batch value from imported CSV custom fields or contact columns.
  * Accepts common headers like batch_number, batch, Batch Number, batch no, and badge_number.
@@ -274,7 +313,13 @@ function getContactBatchValue($contact) {
     }
 
     if (array_key_exists('custom_fields', $contact)) {
-        return findContactBatchValue(decodeContactCustomFields($contact['custom_fields']));
+        $customFields = decodeContactCustomFields($contact['custom_fields']);
+        $value = findContactBatchValue($customFields);
+        if ($value !== '') {
+            return $value;
+        }
+
+        return findContactBatchValueByValue($customFields);
     }
 
     return '';
@@ -332,7 +377,23 @@ function normalizeContactBatchValue($value) {
 }
 
 function contactBatchMatches($contact, $expectedBatch) {
-    return normalizeContactBatchValue(getContactBatchValue($contact)) === normalizeContactBatchValue($expectedBatch);
+    $expected = normalizeContactBatchValue($expectedBatch);
+    if ($expected === '') {
+        return true;
+    }
+
+    $batchValue = getContactBatchValue($contact);
+    if ($batchValue !== '' && normalizeContactBatchValue($batchValue) === $expected) {
+        return true;
+    }
+
+    foreach (collectContactScalarValues(decodeContactCustomFields($contact['custom_fields'] ?? null)) as $value) {
+        if (normalizeContactBatchValue($value) === $expected) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function summarizeContactBatchValues($contacts, $limit = 12) {
