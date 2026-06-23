@@ -122,6 +122,7 @@ foreach ($batchOptionsByList as $listId => $values) {
                             <option value="">Saved templates...</option>
                         </select>
                         <button type="button" class="btn btn-outline btn-sm" onclick="builderPreviewHtml()">Preview HTML</button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="builderStartRawHtmlMode()">Full HTML Mode</button>
                     </div>
 
                     <textarea id="emailBody" name="body" style="display:none;"><?= e($campaign['body_html'] ?? '') ?></textarea>
@@ -146,6 +147,7 @@ foreach ($batchOptionsByList as $listId => $values) {
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('spacer')"><strong>Spacer</strong><span>Vertical gap</span></button>
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('social')"><strong>Social</strong><span>Profile links</span></button>
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('html')"><strong>HTML</strong><span>Custom code</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderStartRawHtmlMode()"><strong>Full HTML</strong><span>Complete email source</span></button>
                             </div>
 
                             <div class="builder-panel-title" style="margin-top:18px;">Shortcodes</div>
@@ -168,6 +170,7 @@ foreach ($batchOptionsByList as $listId => $values) {
                             <select id="builderFont" class="builder-control" onchange="builderUpdateSettings()">
                                 <option value="Poppins">Poppins</option>
                                 <option value="Montserrat">Montserrat</option>
+                                <option value="DM Sans">DM Sans</option>
                                 <option value="Arial">Arial</option>
                                 <option value="Helvetica">Helvetica</option>
                                 <option value="Verdana">Verdana</option>
@@ -183,7 +186,11 @@ foreach ($batchOptionsByList as $listId => $values) {
                                     <strong>Canvas</strong>
                                     <span class="text-muted fs-sm">Email-safe 640px layout</span>
                                 </div>
-                                <button type="button" class="btn btn-outline btn-sm" onclick="builderUndo()">Undo</button>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-primary btn-sm" id="builderDesktopPreviewBtn" onclick="builderSetPreviewMode('desktop')">Desktop</button>
+                                    <button type="button" class="btn btn-outline btn-sm" id="builderMobilePreviewBtn" onclick="builderSetPreviewMode('mobile')">Mobile</button>
+                                    <button type="button" class="btn btn-outline btn-sm" onclick="builderUndo()">Undo</button>
+                                </div>
                             </div>
                             <div class="builder-preview-wrap" id="builderPreviewWrap">
                                 <div class="builder-email-preview" id="builderCanvas"></div>
@@ -341,6 +348,7 @@ let builderSelectedId = null;
 let builderHistory = [];
 let builderFocusedField = null;
 let builderSavedTemplates = [];
+let builderPreviewMode = 'desktop';
 
 function builderId() {
     return 'blk_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
@@ -367,6 +375,7 @@ function builderFontStack(font = builderState.settings.font) {
     const stacks = {
         'Poppins': "'Poppins', Arial, Helvetica, sans-serif",
         'Montserrat': "'Montserrat', Arial, Helvetica, sans-serif",
+        'DM Sans': "'DM Sans', Arial, Helvetica, sans-serif",
         'Arial': 'Arial, Helvetica, sans-serif',
         'Helvetica': 'Helvetica, Arial, sans-serif',
         'Verdana': 'Verdana, Geneva, sans-serif',
@@ -384,7 +393,70 @@ function builderFontImport() {
     if (builderState.settings.font === 'Montserrat') {
         return "<link href=\"https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap\" rel=\"stylesheet\">";
     }
+    if (builderState.settings.font === 'DM Sans') {
+        return "<link href=\"https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap\" rel=\"stylesheet\">";
+    }
     return '';
+}
+
+function builderIsRawHtmlMode() {
+    return builderState?.settings?.mode === 'rawHtml';
+}
+
+function builderLooksLikeFullHtml(html) {
+    const value = String(html || '').trim();
+    return /<!doctype\s+html/i.test(value) || /<html[\s>]/i.test(value) || (/<head[\s>]/i.test(value) && /<body[\s>]/i.test(value));
+}
+
+function builderSetRawHtmlState(html) {
+    builderState = {
+        settings: {
+            bg: '#f7f9fc',
+            contentBg: '#ffffff',
+            accent: '#f47c20',
+            font: 'DM Sans',
+            mode: 'rawHtml',
+        },
+        rawHtml: String(html || ''),
+        blocks: [],
+    };
+    builderSelectedId = null;
+}
+
+function builderStartRawHtmlMode() {
+    if (!builderIsRawHtmlMode() && builderState.blocks.length) {
+        const ok = confirm('Switch to Full HTML Mode? This keeps one complete email source instead of editable blocks.');
+        if (!ok) return;
+    }
+
+    builderSnapshot();
+    const currentHtml = builderIsRawHtmlMode() ? builderState.rawHtml : builderGenerateHtml();
+    builderSetRawHtmlState(currentHtml);
+    builderApplyStateSettingsToControls();
+    builderRender();
+}
+
+function builderSetRawHtml(value) {
+    if (!builderIsRawHtmlMode()) return;
+    builderState.rawHtml = value;
+    builderRenderCanvas();
+}
+
+function builderSetPreviewMode(mode) {
+    builderPreviewMode = mode === 'mobile' ? 'mobile' : 'desktop';
+    const wrap = document.getElementById('builderPreviewWrap');
+    if (wrap) {
+        wrap.classList.toggle('builder-preview-mobile', builderPreviewMode === 'mobile');
+    }
+
+    const desktopBtn = document.getElementById('builderDesktopPreviewBtn');
+    const mobileBtn = document.getElementById('builderMobilePreviewBtn');
+    if (desktopBtn && mobileBtn) {
+        desktopBtn.className = 'btn btn-sm ' + (builderPreviewMode === 'desktop' ? 'btn-primary' : 'btn-outline');
+        mobileBtn.className = 'btn btn-sm ' + (builderPreviewMode === 'mobile' ? 'btn-primary' : 'btn-outline');
+    }
+
+    builderRenderCanvas();
 }
 
 function builderSnapshot() {
@@ -646,6 +718,8 @@ function builderTemplates() {
 
 function builderLoadTemplate(name) {
     builderSnapshot();
+    delete builderState.settings.mode;
+    delete builderState.rawHtml;
     builderState.blocks = builderTemplates()[name] || builderTemplates().newsletter;
     builderSelectedId = builderState.blocks[0]?.id || null;
     builderRender();
@@ -727,8 +801,12 @@ function builderApplySavedTemplate(templateId) {
 
     builderSnapshot();
     const savedState = builderParseStateFromHtml(template.body_html);
-    if (savedState && Array.isArray(savedState.blocks)) {
+    if (savedState && savedState.settings?.mode === 'rawHtml') {
         builderState = savedState;
+    } else if (savedState && Array.isArray(savedState.blocks)) {
+        builderState = savedState;
+    } else if (builderLooksLikeFullHtml(template.body_html)) {
+        builderSetRawHtmlState(template.body_html);
     } else {
         builderState = {
             settings: { bg: '#f4f7fb', contentBg: '#ffffff', accent: '#2563eb', font: 'Poppins' },
@@ -751,8 +829,12 @@ function builderInit() {
     const hidden = document.getElementById('emailBody');
     const existing = hidden.value.trim();
     const savedState = builderParseStateFromHtml(existing);
-    if (savedState && Array.isArray(savedState.blocks)) {
+    if (savedState && savedState.settings?.mode === 'rawHtml') {
         builderState = savedState;
+    } else if (savedState && Array.isArray(savedState.blocks)) {
+        builderState = savedState;
+    } else if (builderLooksLikeFullHtml(existing)) {
+        builderSetRawHtmlState(existing);
     } else if (existing) {
         builderState.blocks = [builderBlock('html', { html: existing, padding: 0 })];
     } else {
@@ -776,6 +858,16 @@ function builderUpdateSettings() {
 }
 
 function builderAddBlock(type) {
+    if (builderIsRawHtmlMode()) {
+        const ok = confirm('Leave Full HTML Mode and use editable blocks instead?');
+        if (!ok) return;
+
+        builderSnapshot();
+        delete builderState.settings.mode;
+        delete builderState.rawHtml;
+        builderState.blocks = [];
+    }
+
     builderSnapshot();
     const block = builderBlock(type);
     const selectedIndex = builderState.blocks.findIndex((item) => item.id === builderSelectedId);
@@ -1022,9 +1114,21 @@ function builderBlockInnerHtml(block) {
 
 function builderRenderCanvas() {
     const canvas = document.getElementById('builderCanvas');
-    document.getElementById('builderPreviewWrap').style.background = builderState.settings.bg;
+    const wrap = document.getElementById('builderPreviewWrap');
+    wrap.style.background = builderState.settings.bg;
+    wrap.classList.toggle('builder-preview-mobile', builderPreviewMode === 'mobile');
     canvas.style.background = builderState.settings.contentBg;
     canvas.style.fontFamily = builderFontStack();
+    canvas.classList.toggle('builder-email-preview-raw', builderIsRawHtmlMode());
+
+    if (builderIsRawHtmlMode()) {
+        canvas.innerHTML = '<iframe class="builder-raw-preview" title="Full HTML email preview" sandbox="allow-popups allow-popups-to-escape-sandbox"></iframe>';
+        const iframe = canvas.querySelector('iframe');
+        iframe.srcdoc = builderState.rawHtml || '';
+        builderSyncHtml();
+        return;
+    }
+
     canvas.innerHTML = builderState.blocks.length
         ? builderState.blocks.map(builderPreviewBlock).join('')
         : '<div class="builder-empty-state">Choose a template or add a block to start building.</div>';
@@ -1105,6 +1209,22 @@ function builderImageControl(label, key) {
 function builderRenderInspector() {
     const block = builderGetBlock();
     const inspector = document.getElementById('builderInspector');
+    if (builderIsRawHtmlMode()) {
+        inspector.className = '';
+        inspector.innerHTML = `
+            <div style="font-weight:700; color:var(--text-primary); margin-bottom:10px;">Full HTML Email</div>
+            <div class="form-hint" style="grid-column:1/-1; margin-bottom:8px;">Edit the complete email source. This mode preserves the document head, font imports, responsive CSS, and exact HTML structure.</div>
+            <div class="builder-field builder-field-wide">
+                <label class="builder-control-label">Complete HTML Source</label>
+                <textarea class="builder-control" rows="18" oninput="builderSetRawHtml(this.value)">${builderEsc(builderState.rawHtml || '')}</textarea>
+            </div>
+            <div class="builder-field builder-field-wide">
+                <button type="button" class="btn btn-outline btn-sm" onclick="builderPreviewHtml()">View Source</button>
+            </div>
+        `;
+        return;
+    }
+
     if (!block) {
         inspector.className = 'builder-empty-inspector';
         inspector.innerHTML = 'Select a block to edit its content and styling.';
@@ -1368,6 +1488,10 @@ function builderEmailBlock(block) {
 }
 
 function builderGenerateHtml() {
+    if (builderIsRawHtmlMode()) {
+        return String(builderState.rawHtml || '');
+    }
+
     const rows = builderState.blocks.map(builderEmailBlock).join('');
     return `<!doctype html>
 <html>
@@ -1393,6 +1517,11 @@ function builderEncodeState() {
 function builderSyncHtml() {
     const hidden = document.getElementById('emailBody');
     if (!hidden) return '';
+    if (builderIsRawHtmlMode()) {
+        hidden.value = builderGenerateHtml();
+        return hidden.value;
+    }
+
     const html = `<!--MAILPILOT_BUILDER ${builderEncodeState()}-->\n${builderGenerateHtml()}`;
     hidden.value = html;
     return html;

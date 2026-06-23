@@ -178,7 +178,15 @@ function mailpilotBuilderExtractState($html) {
     }
 
     $state = json_decode($json, true);
-    return is_array($state) && !empty($state['blocks']) && is_array($state['blocks']) ? $state : null;
+    if (!is_array($state)) {
+        return null;
+    }
+
+    if (($state['settings']['mode'] ?? '') === 'rawHtml' && array_key_exists('rawHtml', $state)) {
+        return $state;
+    }
+
+    return !empty($state['blocks']) && is_array($state['blocks']) ? $state : null;
 }
 
 function mailpilotBuilderEncodeState($state) {
@@ -209,6 +217,7 @@ function mailpilotBuilderFontStack($font) {
     $stacks = [
         'Poppins' => "'Poppins', Arial, Helvetica, sans-serif",
         'Montserrat' => "'Montserrat', Arial, Helvetica, sans-serif",
+        'DM Sans' => "'DM Sans', Arial, Helvetica, sans-serif",
         'Arial' => 'Arial, Helvetica, sans-serif',
         'Helvetica' => 'Helvetica, Arial, sans-serif',
         'Verdana' => 'Verdana, Geneva, sans-serif',
@@ -225,6 +234,9 @@ function mailpilotBuilderFontImport($font) {
     }
     if ($font === 'Montserrat') {
         return '<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">';
+    }
+    if ($font === 'DM Sans') {
+        return '<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">';
     }
     return '';
 }
@@ -385,6 +397,10 @@ function mailpilotBuilderBlockHtml($block, $state) {
 
 function mailpilotBuilderGenerateHtml($state) {
     $settings = $state['settings'] ?? [];
+    if (($settings['mode'] ?? '') === 'rawHtml') {
+        return (string)($state['rawHtml'] ?? '');
+    }
+
     $font = $settings['font'] ?? 'Poppins';
     $fontStack = mailpilotBuilderFontStack($font);
     $bg = $settings['bg'] ?? '#f4f7fb';
@@ -419,6 +435,10 @@ function mailpilotRenderBuilderHtml($html, $force = false) {
     $state = mailpilotBuilderExtractState($html);
     if (!$state) {
         return $html;
+    }
+
+    if (($state['settings']['mode'] ?? '') === 'rawHtml') {
+        return mailpilotBuilderGenerateHtml($state);
     }
 
     $hasPlaceholder = strpos((string)$html, 'Open this saved template in the Mailpilot builder') !== false;

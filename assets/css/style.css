@@ -1493,6 +1493,23 @@ table tbody tr:last-child td {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.builder-preview-mobile .builder-email-preview {
+    width: 390px;
+    max-width: 390px;
+}
+
+.builder-email-preview-raw {
+    overflow: hidden;
+}
+
+.builder-raw-preview {
+    display: block;
+    width: 100%;
+    min-height: 760px;
+    border: 0;
+    background: #ffffff;
+}
+
 .builder-empty-state {
     padding: 70px 24px;
     text-align: center;
@@ -1752,6 +1769,11 @@ textarea.builder-control {
 
     .builder-preview-wrap {
         padding: 14px;
+    }
+
+    .builder-preview-mobile .builder-email-preview {
+        width: 100%;
+        max-width: 390px;
     }
 
     #builderInspector {

@@ -6,7 +6,7 @@
 function seedHVACColdOutreachTemplates() {
     ensureCampaignTemplatesTable();
 
-    $version = '7';
+    $version = '8';
     $currentVersion = null;
     try {
         $currentVersion = dbFetchValue("SELECT setting_value FROM settings WHERE setting_key = 'hvac_template_pack_version' LIMIT 1");
@@ -16,7 +16,7 @@ function seedHVACColdOutreachTemplates() {
 
     if ($currentVersion !== $version) {
         dbExecute("DELETE FROM campaign_templates WHERE name LIKE 'HVAC Cold %' OR name LIKE 'HVAC Website Audit %'");
-        $existingRows = dbFetchAll("SELECT id, name FROM campaign_templates WHERE name LIKE 'Plumber Website Audit %'");
+        $existingRows = dbFetchAll("SELECT id, name FROM campaign_templates WHERE name LIKE 'Plumber Website Audit %' OR name LIKE 'Plumber Landing Page Premium %'");
         $existingByName = [];
         foreach ($existingRows as $row) {
             $existingByName[$row['name']] = (int)$row['id'];
@@ -42,7 +42,7 @@ function seedHVACColdOutreachTemplates() {
         return;
     }
 
-    $existingRows = dbFetchAll("SELECT name FROM campaign_templates WHERE name LIKE 'Plumber Website Audit %'");
+    $existingRows = dbFetchAll("SELECT name FROM campaign_templates WHERE name LIKE 'Plumber Website Audit %' OR name LIKE 'Plumber Landing Page Premium %'");
     $existingNames = [];
     foreach ($existingRows as $row) {
         $existingNames[$row['name']] = true;
@@ -116,7 +116,45 @@ function getHVACColdOutreachTemplates() {
         }
     }
 
+    $premiumTemplateHtml = plumberPremiumLandingPageTemplateHtml($calendlyBaseUrl, $websiteBaseUrl);
+    if ($premiumTemplateHtml !== '') {
+        $templates[] = [
+            'name' => 'Plumber Landing Page Premium 01 - Leak Audit Visual',
+            'subject' => 'Stop losing jobs to a weak landing page',
+            'body_html' => $premiumTemplateHtml,
+        ];
+    }
+
     return $templates;
+}
+
+function plumberPremiumLandingPageTemplateHtml($calendlyBaseUrl, $websiteBaseUrl) {
+    $templatePath = __DIR__ . '/templates/plumber-landing-page-premium.html';
+    if (!is_readable($templatePath)) {
+        return '';
+    }
+
+    $html = file_get_contents($templatePath);
+    if (!is_string($html) || trim($html) === '') {
+        return '';
+    }
+
+    $auditUrl = $calendlyBaseUrl . '?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_leak_audit';
+    $websiteUrl = $websiteBaseUrl . '?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_how_it_works';
+
+    return str_replace(
+        [
+            'https://yourwebsite.com/audit',
+            'https://portfolio.abdullahhashmi.dev/coolbreeze/',
+            'href="#" style="color:#4a6080;text-decoration:underline;">Unsubscribe',
+        ],
+        [
+            $auditUrl,
+            $websiteUrl,
+            'href="{{unsubscribe_link}}" style="color:#4a6080;text-decoration:underline;">Unsubscribe',
+        ],
+        $html
+    );
 }
 
 function hvacWebsiteAuditTemplateState($number, $angle, $style, $theme, $auditUrl, $websiteUrl) {
