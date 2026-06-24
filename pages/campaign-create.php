@@ -122,7 +122,9 @@ foreach ($batchOptionsByList as $listId => $values) {
                         <select id="savedTemplateSelect" class="builder-template-select" onchange="builderApplySavedTemplate(this.value)">
                             <option value="">Saved templates...</option>
                         </select>
-                        <button type="button" class="btn btn-outline btn-sm" onclick="builderPreviewHtml()">Preview HTML</button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="builderPreviewEmail()">Clean Preview</button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="builderPreviewHtml()">View Source</button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="builderImportFullHtml()">Paste Full HTML</button>
                         <button type="button" class="btn btn-outline btn-sm" onclick="builderStartRawHtmlMode()">Full HTML Mode</button>
                     </div>
 
@@ -131,36 +133,7 @@ foreach ($batchOptionsByList as $listId => $values) {
                     <div class="email-builder-shell">
                         <aside class="builder-panel builder-panel-left">
                             <div class="builder-panel-title">Blocks</div>
-                            <div class="builder-block-grid">
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('hero')"><strong>Hero</strong><span>Headline + CTA</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('brandHeader')"><strong>Header</strong><span>Brand bar</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('text')"><strong>Text</strong><span>Rich copy</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('auditGrid')"><strong>Audit Cards</strong><span>4 benefits</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('checklistPanel')"><strong>Checklist</strong><span>Dark proof panel</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('metricBars')"><strong>Metrics</strong><span>Mini bar chart</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('browserAudit')"><strong>Mockup</strong><span>Website audit</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('ctaPanel')"><strong>CTA Panel</strong><span>Audit offer</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumPlumberHeader')"><strong>LP Header</strong><span>Plumber kit</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumPlumberHeroScore')"><strong>LP Hero</strong><span>Scorecard</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumPlumberFindings')"><strong>Findings</strong><span>Dark wins</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumPlumberProcess')"><strong>Process</strong><span>4 steps</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumPlumberIncludes')"><strong>Included</strong><span>4 features</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumLeakHero')"><strong>Premium Hero</strong><span>Audit graphic</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumFunnel')"><strong>Funnel Leak</strong><span>Traffic flow</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumImpactDice')"><strong>Impact Grid</strong><span>Dice visual</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumCompare')"><strong>Convert Card</strong><span>Results compare</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumPlumberFinalCta')"><strong>Final CTA</strong><span>Book audit</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumPlumberFooter')"><strong>Footer</strong><span>Signature</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('image')"><strong>Image</strong><span>Upload visual</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('button')"><strong>Button</strong><span>Action link</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('twoColumn')"><strong>Columns</strong><span>Two sections</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('product')"><strong>Product</strong><span>Offer card</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('divider')"><strong>Divider</strong><span>Separator</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('spacer')"><strong>Spacer</strong><span>Vertical gap</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('social')"><strong>Social</strong><span>Profile links</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderAddBlock('html')"><strong>HTML</strong><span>Custom code</span></button>
-                                <button type="button" class="builder-block-button" onclick="builderStartRawHtmlMode()"><strong>Full HTML</strong><span>Complete email source</span></button>
-                            </div>
+                            <div class="builder-block-library" id="builderBlockLibrary"></div>
 
                             <div class="builder-panel-title" style="margin-top:18px;">Shortcodes</div>
                             <div class="shortcode-list">
@@ -201,6 +174,8 @@ foreach ($batchOptionsByList as $listId => $values) {
                                     <span class="text-muted fs-sm">Email-safe responsive layout</span>
                                 </div>
                                 <div class="btn-group">
+                                    <button type="button" class="btn btn-primary btn-sm" id="builderEditModeBtn" onclick="builderSetCanvasMode('edit')">Edit</button>
+                                    <button type="button" class="btn btn-outline btn-sm" id="builderPreviewModeBtn" onclick="builderSetCanvasMode('preview')">Preview</button>
                                     <button type="button" class="btn btn-primary btn-sm" id="builderDesktopPreviewBtn" onclick="builderSetPreviewMode('desktop')">Desktop</button>
                                     <button type="button" class="btn btn-outline btn-sm" id="builderMobilePreviewBtn" onclick="builderSetPreviewMode('mobile')">Mobile</button>
                                     <button type="button" class="btn btn-outline btn-sm" onclick="builderUndo()">Undo</button>
@@ -363,6 +338,83 @@ let builderHistory = [];
 let builderFocusedField = null;
 let builderSavedTemplates = [];
 let builderPreviewMode = 'desktop';
+let builderCanvasMode = 'edit';
+
+const builderBlockGroups = [
+    {
+        title: 'Core Elements',
+        blocks: [
+            ['hero', 'Hero', 'Headline + CTA'],
+            ['brandHeader', 'Header', 'Brand bar'],
+            ['text', 'Text', 'Rich copy'],
+            ['image', 'Image', 'Upload visual'],
+            ['button', 'Button', 'Action link'],
+            ['divider', 'Divider', 'Separator'],
+            ['spacer', 'Spacer', 'Vertical gap'],
+        ],
+    },
+    {
+        title: 'Layout',
+        blocks: [
+            ['twoColumn', 'Columns', 'Two sections'],
+            ['product', 'Offer Card', 'Image + CTA'],
+            ['ctaPanel', 'CTA Panel', 'Audit offer'],
+            ['social', 'Social', 'Profile links'],
+        ],
+    },
+    {
+        title: 'Proof + Visuals',
+        blocks: [
+            ['auditGrid', 'Audit Cards', '4 benefits'],
+            ['checklistPanel', 'Checklist', 'Dark proof panel'],
+            ['metricBars', 'Metrics', 'Mini bar chart'],
+            ['browserAudit', 'Mockup', 'Website audit'],
+        ],
+    },
+    {
+        title: 'Premium Sections',
+        blocks: [
+            ['premiumPlumberHeader', 'LP Header', 'Plumber kit'],
+            ['premiumPlumberHeroScore', 'LP Hero', 'Scorecard'],
+            ['premiumPlumberFindings', 'Findings', 'Dark wins'],
+            ['premiumPlumberProcess', 'Process', '4 steps'],
+            ['premiumPlumberIncludes', 'Included', '4 features'],
+            ['premiumLeakHero', 'Audit Hero', 'Pipe graphic'],
+            ['premiumFunnel', 'Funnel Leak', 'Traffic flow'],
+            ['premiumImpactDice', 'Impact Grid', 'Dice visual'],
+            ['premiumCompare', 'Convert Card', 'Results compare'],
+            ['premiumPlumberFinalCta', 'Final CTA', 'Book audit'],
+            ['premiumPlumberFooter', 'Footer', 'Signature'],
+        ],
+    },
+    {
+        title: 'Advanced',
+        blocks: [
+            ['html', 'HTML', 'Partial snippet'],
+            ['fullHtml', 'Full HTML', 'Complete email source'],
+        ],
+    },
+];
+
+function builderRenderBlockLibrary() {
+    const library = document.getElementById('builderBlockLibrary');
+    if (!library) return;
+
+    library.innerHTML = builderBlockGroups.map((group) => `
+        <div class="builder-block-group">
+            <button type="button" class="builder-block-group-toggle" onclick="this.closest('.builder-block-group').classList.toggle('collapsed')">
+                <span>${builderEsc(group.title)}</span>
+                <span>Toggle</span>
+            </button>
+            <div class="builder-block-grid">
+                ${group.blocks.map(([type, label, help]) => {
+                    const action = type === 'fullHtml' ? 'builderStartRawHtmlMode()' : `builderAddBlock('${type}')`;
+                    return `<button type="button" class="builder-block-button" onclick="${action}"><strong>${builderEsc(label)}</strong><span>${builderEsc(help)}</span></button>`;
+                }).join('')}
+            </div>
+        </div>
+    `).join('');
+}
 
 function builderId() {
     return 'blk_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
@@ -466,6 +518,49 @@ function builderStartRawHtmlMode() {
     builderRender();
 }
 
+function builderImportFullHtml() {
+    const modal = document.createElement('div');
+    modal.className = 'builder-source-modal';
+    modal.innerHTML = `
+        <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px;">
+                <h3 style="margin:0;">Paste Full HTML Email</h3>
+                <button type="button" class="btn btn-outline btn-sm" onclick="this.closest('.builder-source-modal').remove()">Close</button>
+            </div>
+            <div class="form-hint" style="margin-bottom:10px;">Use this only for a complete email document with doctype/html/head/body. Partial snippets belong in an HTML block.</div>
+            <textarea class="builder-control" id="builderFullHtmlImport" placeholder="Paste complete email HTML here..."></textarea>
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:12px;">
+                <button type="button" class="btn btn-outline btn-sm" onclick="this.closest('.builder-source-modal').remove()">Cancel</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="builderApplyFullHtmlImport(this)">Use Full HTML</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    modal.querySelector('textarea').focus();
+}
+
+function builderApplyFullHtmlImport(button) {
+    const modal = button.closest('.builder-source-modal');
+    const html = modal.querySelector('#builderFullHtmlImport')?.value || '';
+    if (!html.trim()) {
+        Toast.warning('Paste complete email HTML first.');
+        return;
+    }
+
+    if (!builderLooksLikeFullHtml(html)) {
+        Toast.warning('That does not look like a complete HTML email. Use an HTML block for partial snippets.');
+        return;
+    }
+
+    builderSnapshot();
+    builderSetRawHtmlState(html);
+    builderApplyStateSettingsToControls();
+    builderRender();
+    builderSyncHtml();
+    modal.remove();
+    Toast.success('Full HTML email loaded.');
+}
+
 function builderSetRawHtml(value) {
     if (!builderIsRawHtmlMode()) return;
     builderState.rawHtml = value;
@@ -486,6 +581,21 @@ function builderSetPreviewMode(mode) {
         mobileBtn.className = 'btn btn-sm ' + (builderPreviewMode === 'mobile' ? 'btn-primary' : 'btn-outline');
     }
 
+    builderRenderCanvas();
+}
+
+function builderUpdateCanvasModeButtons() {
+    const editBtn = document.getElementById('builderEditModeBtn');
+    const previewBtn = document.getElementById('builderPreviewModeBtn');
+    if (!editBtn || !previewBtn) return;
+
+    editBtn.className = 'btn btn-sm ' + (builderCanvasMode === 'edit' ? 'btn-primary' : 'btn-outline');
+    previewBtn.className = 'btn btn-sm ' + (builderCanvasMode === 'preview' ? 'btn-primary' : 'btn-outline');
+}
+
+function builderSetCanvasMode(mode) {
+    builderCanvasMode = mode === 'preview' ? 'preview' : 'edit';
+    builderUpdateCanvasModeButtons();
     builderRenderCanvas();
 }
 
@@ -1060,6 +1170,7 @@ function builderApplySavedTemplate(templateId) {
 }
 
 function builderInit() {
+    builderRenderBlockLibrary();
     const hidden = document.getElementById('emailBody');
     const existing = hidden.value.trim();
     const savedState = builderParseStateFromHtml(existing);
@@ -1127,6 +1238,20 @@ function builderGetBlock(id = builderSelectedId) {
 }
 
 function builderSet(id, key, value) {
+    if (key === 'html' && builderLooksLikeFullHtml(value)) {
+        const ok = confirm('This is a complete HTML document. Switch to Full HTML Mode so it sends as the full email instead of placing it inside a block?');
+        if (ok) {
+            builderSnapshot();
+            builderSetRawHtmlState(value);
+            builderApplyStateSettingsToControls();
+            builderRender();
+            builderSyncHtml();
+            return;
+        }
+        Toast.warning('Full email source was not inserted into a partial HTML block.');
+        return;
+    }
+
     const block = builderGetBlock(id);
     if (!block) return;
     block[key] = value;
@@ -1737,11 +1862,20 @@ function builderRenderCanvas() {
     canvas.style.fontFamily = builderFontStack();
     canvas.style.maxWidth = `${Number(builderState.settings.width) || 640}px`;
     canvas.classList.toggle('builder-email-preview-raw', builderIsRawHtmlMode());
+    canvas.classList.toggle('builder-email-preview-clean', builderCanvasMode === 'preview' && !builderIsRawHtmlMode());
 
     if (builderIsRawHtmlMode()) {
         canvas.innerHTML = '<iframe class="builder-raw-preview" title="Full HTML email preview" sandbox="allow-popups allow-popups-to-escape-sandbox"></iframe>';
         const iframe = canvas.querySelector('iframe');
         iframe.srcdoc = builderState.rawHtml || '';
+        builderSyncHtml();
+        return;
+    }
+
+    if (builderCanvasMode === 'preview') {
+        canvas.innerHTML = '<iframe class="builder-raw-preview builder-canvas-clean-frame" title="Generated email preview" sandbox="allow-popups allow-popups-to-escape-sandbox"></iframe>';
+        const iframe = canvas.querySelector('iframe');
+        iframe.srcdoc = builderGenerateHtml();
         builderSyncHtml();
         return;
     }
@@ -1753,6 +1887,7 @@ function builderRenderCanvas() {
 }
 
 function builderRender() {
+    builderUpdateCanvasModeButtons();
     builderRenderCanvas();
     builderRenderInspector();
 }
@@ -2214,6 +2349,23 @@ function builderPreviewHtml() {
         </div>
     `;
     document.body.appendChild(modal);
+}
+
+function builderPreviewEmail() {
+    const html = builderGenerateHtml();
+    const modal = document.createElement('div');
+    modal.className = 'builder-source-modal builder-email-preview-modal';
+    modal.innerHTML = `
+        <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px;">
+                <h3 style="margin:0;">Clean Email Preview</h3>
+                <button type="button" class="btn btn-outline btn-sm" onclick="this.closest('.builder-source-modal').remove()">Close</button>
+            </div>
+            <iframe class="builder-clean-preview-frame" title="Clean email preview" sandbox="allow-popups allow-popups-to-escape-sandbox"></iframe>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    modal.querySelector('iframe').srcdoc = html;
 }
 
 async function saveCampaign(e, andSchedule = false) {

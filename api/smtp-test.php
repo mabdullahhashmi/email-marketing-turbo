@@ -44,6 +44,7 @@ try {
 
     $subject = $input['subject'] ?? 'Test Email from ' . APP_NAME;
     $body = $input['body_html'] ?? '<h2>Test Email</h2><p>This is a test email sent from ' . APP_NAME . '.</p><p>If you received this, your SMTP configuration is working correctly! ✅</p>';
+    $body = mailpilotRenderBuilderHtml($body);
     $toEmail = $input['to_email'] ?? $account['from_email'];
 
     $result = smtpTestRun($account, $toEmail, $subject, $body);
