@@ -140,10 +140,17 @@ foreach ($batchOptionsByList as $listId => $values) {
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('metricBars')"><strong>Metrics</strong><span>Mini bar chart</span></button>
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('browserAudit')"><strong>Mockup</strong><span>Website audit</span></button>
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('ctaPanel')"><strong>CTA Panel</strong><span>Audit offer</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumPlumberHeader')"><strong>LP Header</strong><span>Plumber kit</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumPlumberHeroScore')"><strong>LP Hero</strong><span>Scorecard</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumPlumberFindings')"><strong>Findings</strong><span>Dark wins</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumPlumberProcess')"><strong>Process</strong><span>4 steps</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumPlumberIncludes')"><strong>Included</strong><span>4 features</span></button>
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumLeakHero')"><strong>Premium Hero</strong><span>Audit graphic</span></button>
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumFunnel')"><strong>Funnel Leak</strong><span>Traffic flow</span></button>
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumImpactDice')"><strong>Impact Grid</strong><span>Dice visual</span></button>
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumCompare')"><strong>Convert Card</strong><span>Results compare</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumPlumberFinalCta')"><strong>Final CTA</strong><span>Book audit</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumPlumberFooter')"><strong>Footer</strong><span>Signature</span></button>
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('image')"><strong>Image</strong><span>Upload visual</span></button>
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('button')"><strong>Button</strong><span>Action link</span></button>
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('twoColumn')"><strong>Columns</strong><span>Two sections</span></button>
@@ -183,13 +190,15 @@ foreach ($batchOptionsByList as $listId => $values) {
                                 <option value="Georgia">Georgia</option>
                                 <option value="Times New Roman">Times New Roman</option>
                             </select>
+                            <label class="builder-control-label">Email Width</label>
+                            <input type="number" id="builderWidth" class="builder-control" value="640" min="320" max="720" step="10" oninput="builderUpdateSettings()">
                         </aside>
 
                         <section class="builder-stage">
                             <div class="builder-toolbar">
                                 <div>
                                     <strong>Canvas</strong>
-                                    <span class="text-muted fs-sm">Email-safe 640px layout</span>
+                                    <span class="text-muted fs-sm">Email-safe responsive layout</span>
                                 </div>
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-primary btn-sm" id="builderDesktopPreviewBtn" onclick="builderSetPreviewMode('desktop')">Desktop</button>
@@ -409,11 +418,13 @@ function builderResponsiveCss() {
 @media screen and (max-width:680px) {
     .mp-container { width:100% !important; max-width:100% !important; }
     .mp-stack { display:block !important; width:100% !important; max-width:100% !important; }
+    .mp-hide-mobile { display:none !important; }
     .mp-mobile-edge { padding-left:0 !important; padding-right:0 !important; }
     .mp-pad-mobile { padding-left:22px !important; padding-right:22px !important; }
     .mp-center-mobile { text-align:center !important; }
     .mp-mobile-top { padding-top:20px !important; }
     .mp-mobile-gap { padding-top:12px !important; }
+    .mp-process-border { border-right:none !important; border-bottom:1px solid #dde5f0 !important; padding-top:16px !important; padding-bottom:16px !important; }
 }
 </style>`;
 }
@@ -610,6 +621,85 @@ function builderBlock(type, data = {}) {
             color: '#0f172a',
             padding: 30,
         },
+        premiumPlumberHeader: {
+            brand: 'Abdullah',
+            tagline: 'GROWTH EXPERT',
+            rightText: 'Helping Plumbers Get More Jobs Online',
+            dotColor: '#f47c20',
+            bg: '#ffffff',
+            color: '#0b1d3a',
+            muted: '#8fa3bf',
+            padding: 26,
+        },
+        premiumPlumberHeroScore: {
+            pill: 'A quick idea for you',
+            title: 'Your landing page could be costing you',
+            titleAccent: 'new customers.',
+            text: 'We help plumbing businesses turn more traffic into booked jobs with high-converting landing pages built for calls, quote requests and emergency leads.',
+            stat1Title: 'More Leads',
+            stat1Text: 'from the same traffic',
+            stat2Title: 'Lower Cost',
+            stat2Text: 'per qualified lead',
+            stat3Title: 'More Booked',
+            stat3Text: 'jobs on calendar',
+            note: 'No obligation. Just value.',
+            cardPill: 'Free audit preview',
+            cardMeta: '2-min scan',
+            cardTitle: 'Landing Page\nLeak Scorecard',
+            cardText: 'A quick plumbing-focused check to show where leads may be dropping off.',
+            score: '62',
+            scoreLabel: 'Lead leak score',
+            check1Title: 'CTA Visibility',
+            check1Text: 'Is the call button obvious?',
+            check2Title: 'Mobile Quote Flow',
+            check2Text: 'Can users request fast?',
+            check3Title: 'Trust Proof',
+            check3Text: 'Reviews before the CTA?',
+            bottom1: 'Calls',
+            bottom2: 'Quotes',
+            bottom3: 'Bookings',
+            bg: '#0b1d3a',
+            bg2: '#0f2a55',
+            accent: '#f47c20',
+            muted: '#8fa3bf',
+            padding: 28,
+        },
+        premiumPlumberFindings: {
+            eyebrow: 'What we found',
+            title: 'Small changes.\nBig results.',
+            text: 'These quick wins can make a big difference when local customers are ready to book.',
+            item1: 'Stronger headline could increase conversions by improving first-click clarity',
+            item2: 'Mobile experience issues may be losing emergency plumbing leads',
+            item3: 'Shorter, trust-driven form can increase quote submissions',
+            bg: '#0b1d3a',
+            bg2: '#0f2a55',
+            accent: '#f47c20',
+            padding: 32,
+        },
+        premiumPlumberProcess: {
+            eyebrow: 'Our Process',
+            title: 'Strategy. Design. Results.',
+            text: 'We design and optimize landing pages specifically for plumbing businesses so you get more calls, more leads, and more booked jobs.',
+            item1Title: 'Conversion Focused',
+            item1Text: 'Every element is built to convert visitors into leads.',
+            item2Title: 'Speed Optimized',
+            item2Text: 'Fast-loading pages that rank better and convert more.',
+            item3Title: 'Trust Built-In',
+            item3Text: 'Proof signals that turn visitors into buyers.',
+            item4Title: 'Data Driven',
+            item4Text: 'Continuous testing and optimization for maximum results.',
+            accent: '#f47c20',
+            padding: 32,
+        },
+        premiumPlumberIncludes: {
+            title: "What's Included",
+            item1: 'Conversion-Focused\nDesign',
+            item2: 'Mobile-Friendly\nPages',
+            item3: 'Fast Load\nSpeed',
+            item4: 'Clear CTAs\nThat Convert',
+            accent: '#f47c20',
+            padding: 28,
+        },
         premiumLeakHero: {
             titleLine1: 'Stop Losing Jobs',
             titleLine2: 'to a',
@@ -672,6 +762,29 @@ function builderBlock(type, data = {}) {
             bg: '#0a1f3d',
             accent: '#ff8a32',
             padding: 18,
+        },
+        premiumPlumberFinalCta: {
+            title: 'Ready to turn more clicks into booked plumbing jobs?',
+            text: "Send us your landing page and we'll show the biggest conversion leaks.",
+            buttonText: 'Book Free Audit',
+            buttonUrl: '#',
+            note: 'No pressure. No hard pitch.',
+            bg: '#fff5eb',
+            border: '#fbd6bd',
+            accent: '#f47c20',
+            padding: 28,
+        },
+        premiumPlumberFooter: {
+            brand: 'Abdullah',
+            tagline: 'GROWTH EXPERT',
+            text: 'Specialized landing pages for plumbers who want more calls and fewer lost leads.',
+            title: "Let's Grow Your Plumbing Business",
+            phone: '+92 308 7667665',
+            note: "You're receiving this email because we thought your business could benefit from a better landing page. Unsubscribe: {{unsubscribe_link}}",
+            bg: '#f7f9fc',
+            accent: '#f47c20',
+            muted: '#4a6080',
+            padding: 26,
         },
         image: {
             url: '',
@@ -796,30 +909,30 @@ function builderTemplates() {
             builderBlock('button', { text: 'Learn more', bg: '#059669' }),
         ],
         premiumLeakAudit: {
-            settings: { bg: '#eef4fb', contentBg: '#ffffff', accent: '#ff7a1a', font: 'DM Sans' },
+            settings: { bg: '#f7f9fc', contentBg: '#ffffff', accent: '#f47c20', font: 'DM Sans', width: 580 },
             blocks: [
+                builderBlock('premiumPlumberHeader'),
+                builderBlock('premiumPlumberHeroScore'),
+                builderBlock('premiumPlumberFindings'),
+                builderBlock('premiumPlumberProcess'),
+                builderBlock('premiumPlumberIncludes'),
+                builderBlock('premiumFunnel'),
                 builderBlock('premiumLeakHero', {
                     buttonUrl: 'https://calendly.com/mu-abdullahhashmi/30min?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_leak_audit',
+                    bg: '#0b1d3a',
+                    accent: '#f47c20',
+                    buttonBg: '#f47c20',
+                    padding: 0,
                 }),
-                builderBlock('premiumFunnel'),
                 builderBlock('premiumImpactDice', {
                     buttonUrl: 'https://calendly.com/mu-abdullahhashmi/30min?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_leak_audit',
+                    accent: '#f47c20',
                 }),
                 builderBlock('premiumCompare'),
-                builderBlock('ctaPanel', {
-                    title: 'Want me to check your landing page?',
-                    text: 'I can send 2-3 clear improvements that may help more plumbing visitors call, request a quote, or book a job.',
-                    buttonText: 'Get Free Audit',
+                builderBlock('premiumPlumberFinalCta', {
                     buttonUrl: 'https://calendly.com/mu-abdullahhashmi/30min?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_leak_audit',
-                    secondaryButtonText: 'See How It Works',
-                    secondaryButtonUrl: 'https://abdullahhashmi.com/plumbers-growth-expert/?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_how_it_works',
-                    bg: '#eef5ff',
-                    border: '#bfd7ff',
-                    buttonBg: '#ff7a1a',
-                    secondaryButtonBg: '#ffffff',
-                    secondaryButtonColor: '#0a1f3d',
                 }),
-                builderBlock('signature'),
+                builderBlock('premiumPlumberFooter'),
             ],
         },
     };
@@ -856,13 +969,15 @@ function builderParseStateFromHtml(html) {
 
 function builderApplyStateSettingsToControls() {
     builderState.settings = Object.assign(
-        { bg: '#f4f7fb', contentBg: '#ffffff', accent: '#2563eb', font: 'Poppins' },
+        { bg: '#f4f7fb', contentBg: '#ffffff', accent: '#2563eb', font: 'Poppins', width: 640 },
         builderState.settings || {}
     );
     document.getElementById('builderBg').value = builderState.settings.bg || '#f4f7fb';
     document.getElementById('builderContentBg').value = builderState.settings.contentBg || '#ffffff';
     document.getElementById('builderAccent').value = builderState.settings.accent || '#2563eb';
     document.getElementById('builderFont').value = builderState.settings.font || 'Poppins';
+    const widthInput = document.getElementById('builderWidth');
+    if (widthInput) widthInput.value = Number(builderState.settings.width) || 640;
 }
 
 function builderRenderTemplateSelect() {
@@ -970,9 +1085,12 @@ function builderUpdateSettings() {
     builderState.settings.contentBg = document.getElementById('builderContentBg').value;
     builderState.settings.accent = document.getElementById('builderAccent').value;
     builderState.settings.font = document.getElementById('builderFont').value;
+    const widthInput = document.getElementById('builderWidth');
+    builderState.settings.width = Math.min(720, Math.max(320, Number(widthInput?.value) || 640));
     document.getElementById('builderPreviewWrap').style.background = builderState.settings.bg;
     document.getElementById('builderCanvas').style.background = builderState.settings.contentBg;
     document.getElementById('builderCanvas').style.fontFamily = builderFontStack();
+    document.getElementById('builderCanvas').style.maxWidth = `${builderState.settings.width}px`;
     builderRenderCanvas();
 }
 
@@ -1068,30 +1186,212 @@ function builderPreviewBlock(block) {
     `;
 }
 
+function builderPremiumMiniIcon(label, bg = '#fff5eb', color = '#f47c20') {
+    return `<div style="width:42px;height:42px;border-radius:14px;background:${builderAttr(bg)};color:${builderAttr(color)};font-size:16px;line-height:42px;text-align:center;font-weight:800;margin:0 auto 10px auto;">${builderEsc(label)}</div>`;
+}
+
+function builderPremiumPlumberHeaderHtml(block) {
+    const pad = Number(block.padding) || 0;
+    return `
+        <div style="padding:${pad}px 28px 6px 28px;background:${builderAttr(block.bg || '#ffffff')};">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                    <td align="left" style="font-family:${builderAttr(builderFontStack())};">
+                        <div style="font-size:24px;font-weight:800;letter-spacing:0;color:${builderAttr(block.color || '#0b1d3a')};line-height:.72;">${builderEsc(block.brand)}<span style="color:${builderAttr(block.dotColor || '#f47c20')};">.</span><br><span style="font-size:7px;font-weight:700;letter-spacing:.28em;color:${builderAttr(block.muted || '#8fa3bf')};text-transform:uppercase;">${builderEsc(block.tagline)}</span></div>
+                    </td>
+                    <td align="right" class="mp-hide-mobile" style="font-size:12px;color:${builderAttr(block.muted || '#4a6080')};font-weight:700;">${builderEsc(block.rightText)}</td>
+                </tr>
+            </table>
+        </div>
+    `;
+}
+
+function builderPremiumPlumberHeroScoreHtml(block) {
+    const pad = Number(block.padding) || 0;
+    const accent = builderAttr(block.accent || '#f47c20');
+    const muted = builderAttr(block.muted || '#8fa3bf');
+    const row = (title, text, icon, border = true) => `
+        <tr>
+            <td style="padding:8px 0;${border ? 'border-bottom:1px solid #dde5f0;' : ''}">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                    <tr>
+                        <td width="32"><div style="width:26px;height:26px;line-height:26px;border-radius:8px;background:#fff5eb;color:${accent};text-align:center;font-size:11px;font-weight:800;">${builderEsc(icon)}</div></td>
+                        <td><div style="font-size:11px;font-weight:800;color:#0b1d3a;line-height:1.25;">${builderEsc(title)}</div><div style="font-size:9px;color:#4a6080;line-height:1.35;">${builderEsc(text)}</div></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    `;
+    const stat = (title, text, icon) => `
+        <td width="33.33%" align="left" valign="top" style="padding-right:8px;">
+            <div style="width:42px;height:42px;border-radius:14px;background:#fff5eb;color:${accent};font-size:15px;line-height:42px;text-align:center;font-weight:800;margin:0 0 10px 0;">${builderEsc(icon)}</div>
+            <div style="font-size:12px;font-weight:800;color:#ffffff;">${builderEsc(title)}</div>
+            <div style="font-size:10px;line-height:1.45;color:${muted};">${builderEsc(text)}</div>
+        </td>
+    `;
+    return `
+        <div style="background:${builderAttr(block.bg || '#0b1d3a')};background-image:linear-gradient(140deg,${builderAttr(block.bg || '#0b1d3a')} 0%,${builderAttr(block.bg2 || '#0f2a55')} 58%,#0e1e3e 100%);color:#ffffff;padding:${pad}px 28px 32px 28px;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                    <td class="mp-stack" width="54%" valign="top" style="padding-right:20px;">
+                        <span style="display:inline-block;padding:7px 13px;border-radius:999px;background:#fff5eb;color:${accent};font-size:10px;font-weight:800;line-height:1;letter-spacing:.12em;text-transform:uppercase;border:1px solid #fbd6bd;">${builderEsc(block.pill)}</span>
+                        <div style="font-size:24px;line-height:1.10;font-weight:800;letter-spacing:-1.2px;margin:0;padding-top:22px;color:#ffffff;">${builderEsc(block.title)} <span style="color:#f99148;">${builderEsc(block.titleAccent)}</span></div>
+                        <div style="font-size:14px;line-height:1.72;margin:0;padding-top:18px;color:#dbeafe;">${builderLines(block.text)}</div>
+                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top:30px;"><tr>${stat(block.stat1Title, block.stat1Text, '+')}${stat(block.stat2Title, block.stat2Text, '$')}${stat(block.stat3Title, block.stat3Text, 'B')}</tr></table>
+                        <div style="margin-top:28px;height:1px;background:rgba(255,255,255,.14);line-height:1px;font-size:1px;">&nbsp;</div>
+                        <div style="padding-top:14px;color:${muted};font-size:12px;line-height:1.55;"><span style="width:7px;height:7px;display:inline-block;border-radius:50%;background:#fb923c;vertical-align:middle;margin-right:8px;"></span>${builderEsc(block.note)}</div>
+                    </td>
+                    <td class="mp-stack mp-mobile-top" width="46%" valign="top">
+                        <div style="background:#ffffff;border:1px solid #dde5f0;border-radius:18px;overflow:hidden;box-shadow:0 20px 55px rgba(8,24,50,.14);">
+                            <div style="padding:17px 20px 16px 20px;background:#0b1d3a;background-image:linear-gradient(90deg,rgba(11,29,58,.98),rgba(11,29,58,.82));">
+                                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td><span style="display:inline-block;background:rgba(244,124,32,.16);color:#fb923c;border:1px solid rgba(251,146,60,.22);padding:6px 9px;border-radius:999px;font-size:8px;letter-spacing:.11em;font-weight:800;text-transform:uppercase;">${builderEsc(block.cardPill)}</span></td><td align="right" style="font-size:10px;color:${muted};font-weight:700;">${builderEsc(block.cardMeta)}</td></tr></table>
+                                <div style="font-size:20px;line-height:1.14;margin:13px 0 0 0;font-weight:800;letter-spacing:-.7px;color:#ffffff;max-width:165px;">${builderLines(block.cardTitle)}</div>
+                                <div style="font-size:11px;line-height:1.48;margin:8px 0 0 0;color:${muted};max-width:175px;">${builderLines(block.cardText)}</div>
+                            </div>
+                            <div style="padding:18px 18px 14px 18px;background:#ffffff;">
+                                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                                    <tr>
+                                        <td width="38%" align="center" valign="middle" style="padding-right:12px;">
+                                            <div style="width:98px;height:98px;border-radius:50%;background:${accent};padding:7px;box-shadow:0 18px 40px rgba(244,124,32,.18);"><div style="width:84px;height:84px;border-radius:50%;background:#ffffff;text-align:center;padding-top:22px;"><div style="font-size:24px;line-height:1;font-weight:800;letter-spacing:-1px;color:#0b1d3a;">${builderEsc(block.score)}</div><div style="font-size:11px;font-weight:800;color:#4a6080;">/ 100</div></div></div>
+                                            <div style="font-size:8px;color:#4a6080;font-weight:800;padding-top:8px;letter-spacing:.08em;text-transform:uppercase;line-height:1.3;">${builderEsc(block.scoreLabel)}</div>
+                                        </td>
+                                        <td width="62%" valign="middle"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">${row(block.check1Title, block.check1Text, 'C')}${row(block.check2Title, block.check2Text, 'M')}${row(block.check3Title, block.check3Text, 'T', false)}</table></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#0d2347;color:#ffffff;">
+                                <tr>
+                                    <td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:800;color:#ffffff;"><span style="color:${accent};">P</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom1)}</span></td>
+                                    <td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:800;color:#ffffff;"><span style="color:${accent};">Q</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom2)}</span></td>
+                                    <td align="center" style="padding:11px 8px;font-size:10px;font-weight:800;color:#ffffff;"><span style="color:${accent};">B</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom3)}</span></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    `;
+}
+
+function builderPremiumPlumberFindingsHtml(block) {
+    const item = (text, label) => `<tr><td style="background:rgba(255,255,255,.065);border-radius:12px;padding:15px 16px;color:#ffffff;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td width="56"><div style="width:44px;height:44px;border-radius:50%;background:#fff5eb;color:${builderAttr(block.accent || '#f47c20')};line-height:44px;text-align:center;font-size:15px;font-weight:800;">${label}</div></td><td style="font-size:13px;line-height:1.45;color:#ffffff;font-weight:800;">${builderEsc(text)}</td></tr></table></td></tr><tr><td height="10" style="font-size:1px;line-height:10px;">&nbsp;</td></tr>`;
+    return `
+        <div style="padding:${Number(block.padding) || 0}px 28px;background:${builderAttr(block.bg || '#0b1d3a')};background-image:linear-gradient(145deg,${builderAttr(block.bg || '#0b1d3a')} 0%,${builderAttr(block.bg2 || '#0f2a55')} 100%);border-radius:0 0 8px 8px;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                    <td class="mp-stack" width="36%" valign="middle" style="padding-right:22px;">
+                        <div style="font-size:10px;color:#fb923c;font-weight:800;letter-spacing:.16em;text-transform:uppercase;">${builderEsc(block.eyebrow)}</div>
+                        <div style="font-size:15px;line-height:1.18;font-weight:800;letter-spacing:-.45px;color:#ffffff;padding-top:12px;">${builderLines(block.title)}</div>
+                        <div style="width:66px;height:2px;background:${builderAttr(block.accent || '#f47c20')};margin:15px 0 18px 0;line-height:1px;font-size:1px;">&nbsp;</div>
+                        <div style="font-size:12px;line-height:1.55;color:#dde5f0;">${builderLines(block.text)}</div>
+                    </td>
+                    <td class="mp-stack mp-mobile-top" width="64%" valign="middle"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">${item(block.item1, '1')}${item(block.item2, '2')}${item(block.item3, '3').replace('<tr><td height="10" style="font-size:1px;line-height:10px;">&nbsp;</td></tr>', '')}</table></td>
+                </tr>
+            </table>
+        </div>
+    `;
+}
+
+function builderPremiumPlumberProcessHtml(block) {
+    const accent = builderAttr(block.accent || '#f47c20');
+    const card = (title, text, icon, last = false) => `<td class="mp-stack ${last ? '' : 'mp-process-border'}" width="25%" align="center" valign="top" style="padding:0 11px;${last ? '' : 'border-right:1px solid #dde5f0;'}">${builderPremiumMiniIcon(icon, '#fff5eb', accent)}<div style="font-size:11px;font-weight:800;color:#1e3048;">${builderEsc(title)}</div><div style="font-size:10px;line-height:1.45;color:#4a6080;padding-top:5px;">${builderLines(text)}</div></td>`;
+    return `
+        <div style="padding:${Number(block.padding) || 0}px 28px;background:#ffffff;text-align:center;">
+            <div style="font-size:10px;color:#fb923c;font-weight:800;letter-spacing:.18em;text-transform:uppercase;">${builderEsc(block.eyebrow)}</div>
+            <div style="font-size:15px;line-height:1.18;font-weight:800;letter-spacing:-.45px;color:#1e3048;padding-top:9px;">${builderEsc(block.title)}</div>
+            <div style="font-size:14px;line-height:1.72;color:#4a6080;padding:14px 28px 26px 28px;">${builderLines(block.text)}</div>
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr>${card(block.item1Title, block.item1Text, 'C')}${card(block.item2Title, block.item2Text, 'S')}${card(block.item3Title, block.item3Text, 'T')}${card(block.item4Title, block.item4Text, 'D', true)}</tr></table>
+        </div>
+    `;
+}
+
+function builderPremiumPlumberIncludesHtml(block) {
+    const accent = builderAttr(block.accent || '#f47c20');
+    const item = (text, icon, last = false) => `<td width="25%" align="center" valign="top" style="${last ? '' : 'border-right:1px solid #dde5f0;'}padding:0 7px;"><div style="font-size:24px;line-height:1;color:${accent};font-weight:800;">${builderEsc(icon)}</div><div style="font-size:10px;line-height:1.45;font-weight:800;color:#0b1d3a;padding-top:8px;">${builderLines(text)}</div></td>`;
+    return `
+        <div style="padding:0 28px ${Number(block.padding) || 0}px 28px;background:#ffffff;">
+            <div style="border:1px solid #dde5f0;border-radius:14px;padding:20px 12px;background:#ffffff;box-shadow:0 10px 34px rgba(9,17,22,.04);text-align:center;">
+                <div style="font-size:16px;line-height:1.35;font-weight:800;color:#1e3048;padding-bottom:17px;">${builderEsc(block.title)}</div>
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr>${item(block.item1, '+')}${item(block.item2, 'M')}${item(block.item3, 'F')}${item(block.item4, 'C', true)}</tr></table>
+            </div>
+        </div>
+    `;
+}
+
+function builderPremiumPipeGraphicHtml(block) {
+    const accent = builderAttr(block.accent || '#f47c20');
+    return `
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#102641;background-image:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,0));">
+            <tr>
+                <td align="center" style="padding:24px 10px;">
+                    <table role="presentation" width="218" cellspacing="0" cellpadding="0" border="0" style="width:218px;max-width:100%;border-collapse:separate;">
+                        <tr>
+                            <td width="86">&nbsp;</td>
+                            <td align="center" colspan="2" style="padding:0 0 0 0;">
+                                <div style="height:20px;line-height:20px;border-radius:999px;background:#cfd7df;background-image:linear-gradient(#f1f5f9,#aeb8c1);box-shadow:0 5px 0 rgba(0,0,0,.18);font-size:1px;">&nbsp;</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="112" align="center" valign="top" style="padding-top:8px;">
+                                <div style="width:104px;height:84px;border-radius:999px;background:#ffffff;color:#0b1d3a;text-align:center;padding-top:20px;box-shadow:0 20px 42px rgba(0,0,0,.22);">
+                                    <div style="font-size:24px;color:${accent};font-weight:800;line-height:1;">${builderEsc(block.visualTop || 'FREE')}</div>
+                                    <div style="font-size:12px;font-weight:800;padding-top:5px;line-height:1.25;">${builderEsc(block.visualLine1 || 'Landing Page')}<br>${builderEsc(block.visualLine2 || 'Audit')}</div>
+                                </div>
+                            </td>
+                            <td width="106" align="center" valign="top">
+                                <div style="width:62px;height:74px;border-left:22px solid #b7c0c7;border-right:22px solid #b7c0c7;border-bottom:22px solid #b7c0c7;border-top:0;border-radius:0 0 58px 58px;line-height:1px;font-size:1px;">&nbsp;</div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    `;
+}
+
+function builderPremiumDiceFaceHtml(pips) {
+    const pipSet = new Set(pips);
+    const cells = Array.from({ length: 9 }, (_, index) => {
+        const pip = pipSet.has(index + 1) ? '<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#111111;line-height:14px;font-size:1px;">&nbsp;</span>' : '&nbsp;';
+        return `<td align="center" valign="middle" width="33.33%" height="27" style="font-size:1px;line-height:1px;">${pip}</td>`;
+    });
+
+    return `
+        <table role="presentation" width="98" height="98" cellspacing="0" cellpadding="0" border="0" style="width:98px;height:98px;background:#ffffff;border-radius:18px;box-shadow:0 18px 32px rgba(31,55,84,.15);border-collapse:separate;">
+            <tr>${cells.slice(0, 3).join('')}</tr>
+            <tr>${cells.slice(3, 6).join('')}</tr>
+            <tr>${cells.slice(6, 9).join('')}</tr>
+        </table>
+    `;
+}
+
+function builderPremiumSparkBarsHtml(color, heights) {
+    return `
+        <table role="presentation" width="100%" height="86" cellspacing="0" cellpadding="0" border="0" style="height:86px;border-left:2px solid rgba(255,255,255,.6);border-bottom:2px solid rgba(255,255,255,.28);">
+            <tr>
+                ${heights.map((height) => `<td valign="bottom" align="center" style="padding:0 3px;"><div style="width:18px;height:${height}px;background:${color};border-radius:6px 6px 0 0;line-height:${height}px;font-size:1px;">&nbsp;</div></td>`).join('')}
+            </tr>
+        </table>
+    `;
+}
+
 function builderPremiumLeakHeroHtml(block) {
     const padding = Number(block.padding) || 0;
     const bg = builderAttr(block.bg || '#0a1f3d');
     const accent = builderAttr(block.accent || '#ff7a1a');
     const buttonBg = builderAttr(block.buttonBg || block.accent || '#ff7a1a');
-    const textColor = builderAttr(block.textColor || '#ffffff');
     return `
-        <div style="padding:${padding}px 28px 18px 28px; background:#ffffff;">
-            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:${bg}; border-radius:24px; border-collapse:separate; overflow:hidden;">
+        <div style="padding:${padding}px 28px 28px 28px; background:#ffffff;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:${bg};border-radius:18px;border-collapse:separate;overflow:hidden;color:#ffffff;">
                 <tr>
-                    <td class="mp-stack mp-pad-mobile" width="52%" valign="middle" style="padding:34px 12px 34px 28px; color:${textColor};">
-                        <div style="font-size:25px; line-height:1.08; font-weight:800; color:${textColor}; margin-bottom:22px;">${builderEsc(block.titleLine1)}<br>${builderEsc(block.titleLine2)} <span style="color:${accent};">${builderEsc(block.titleAccent)}</span></div>
-                        <div style="font-size:17px; line-height:1.65; color:${builderAttr(block.muted || '#d9e6f8')}; margin-bottom:26px;">${builderLines(block.text)}</div>
-                        <a href="${builderAttr(block.buttonUrl)}" style="display:inline-block; background:${buttonBg}; color:#ffffff; text-decoration:none; padding:16px 24px; border-radius:8px; font-size:15px; line-height:1; font-weight:800;">${builderEsc(block.buttonText)} &#8594;</a>
+                    <td class="mp-stack" width="55%" valign="middle" style="padding:30px 26px;">
+                        <div style="font-size:15px;line-height:1.18;font-weight:800;letter-spacing:-.45px;color:#ffffff;">${builderEsc(block.titleLine1)}<br>${builderEsc(block.titleLine2)} <span style="color:${accent};">${builderEsc(block.titleAccent)}</span></div>
+                        <div style="font-size:14px;line-height:1.72;color:#dde5f0;padding-top:14px;">${builderLines(block.text)}</div>
+                        <div style="padding-top:20px;"><a href="${builderAttr(block.buttonUrl)}" style="display:inline-block;background:${buttonBg};color:#ffffff;text-decoration:none;padding:15px 23px;border-radius:8px;font-size:10px;font-weight:800;letter-spacing:.01em;box-shadow:0 12px 30px rgba(244,124,32,.24);">${builderEsc(block.buttonText)} &#8594;</a></div>
                     </td>
-                    <td class="mp-stack mp-pad-mobile mp-mobile-top" width="48%" valign="middle" style="padding:24px 28px 24px 0;">
-                        <div style="position:relative; min-height:178px; background:#102641; overflow:hidden;">
-                            <div style="position:absolute; right:20px; top:46px; width:160px; height:17px; border-radius:20px; background:#cfd7df; box-shadow:0 3px 0 rgba(0,0,0,.35) inset;"></div>
-                            <div style="position:absolute; right:53px; top:60px; width:70px; height:88px; border:26px solid #b8c3cc; border-top:0; border-radius:0 0 62px 62px;"></div>
-                            <div style="position:absolute; left:28px; top:60px; width:118px; height:118px; border-radius:70px; background:#ffffff; text-align:center;">
-                                <div style="padding-top:27px; color:${accent}; font-size:26px; line-height:1; font-weight:800;">${builderEsc(block.visualTop || 'FREE')}</div>
-                                <div style="margin-top:6px; color:#0a1f3d; font-size:15px; line-height:1.25; font-weight:800;">${builderEsc(block.visualLine1 || 'Landing Page')}<br>${builderEsc(block.visualLine2 || 'Audit')}</div>
-                            </div>
-                        </div>
+                    <td class="mp-stack" width="45%" valign="middle">
+                        ${builderPremiumPipeGraphicHtml(block)}
                     </td>
                 </tr>
             </table>
@@ -1105,23 +1405,23 @@ function builderPremiumFunnelHtml(block) {
     const accent = builderAttr(block.accent || '#ff7a1a');
     const blue = builderAttr(block.blue || '#3367ff');
     return `
-        <div style="padding:${padding}px 28px; background:#ffffff;">
-            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:${bg}; border-radius:24px; border-collapse:separate; overflow:hidden;">
+        <div style="padding:0 28px 28px 28px; background:#ffffff;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:${bg}; border-radius:18px; border-collapse:separate; overflow:hidden;color:#ffffff;">
                 <tr>
-                    <td class="mp-stack mp-pad-mobile" width="32%" valign="middle" style="padding:38px 12px 38px 28px;">
-                        <div style="font-size:23px; line-height:1.14; font-weight:800; color:#ffffff; margin-bottom:24px;">${builderEsc(block.titleLine1)}<br><span style="color:${accent};">${builderEsc(block.titleAccent)}</span></div>
-                        <div style="font-size:19px; line-height:1.65; color:#9fb1ca;">${builderLines(block.text)}</div>
+                    <td class="mp-stack" width="38%" valign="middle" style="padding:28px 24px;">
+                        <div style="font-size:15px;line-height:1.18;font-weight:800;letter-spacing:-.45px;color:#ffffff;">${builderEsc(block.titleLine1)} <span style="color:${accent};">${builderEsc(block.titleAccent)}</span></div>
+                        <div style="font-size:14px;line-height:1.72;color:#8fa3bf;padding-top:16px;">${builderLines(block.text)}</div>
                     </td>
-                    <td class="mp-stack mp-pad-mobile mp-mobile-top" width="35%" valign="middle" align="center" style="padding:28px 6px;">
-                        <div style="position:relative; width:220px; max-width:100%; height:178px; margin:0 auto;">
-                            <div style="position:absolute; left:25px; top:20px; width:170px; height:118px; background:${blue}; clip-path:polygon(0 0,100% 0,68% 100%,32% 100%);"></div>
-                            <div style="position:absolute; left:82px; top:118px; width:56px; height:58px; border-radius:0 0 20px 20px; background:#123b96;"></div>
-                            <div style="position:absolute; left:17px; top:13px; transform:rotate(-6deg); background:#ffffff; color:#0f172a; border-radius:5px; padding:10px 17px; font-size:14px; font-weight:800;">${builderEsc(block.labelOne)}</div>
-                            <div style="position:absolute; right:0; top:14px; transform:rotate(5deg); background:#ffffff; color:#0f172a; border-radius:5px; padding:10px 17px; font-size:14px; font-weight:800;">${builderEsc(block.labelTwo)}</div>
-                            <div style="position:absolute; left:78px; top:70px; transform:rotate(-3deg); background:#ffffff; color:#0f172a; border-radius:5px; padding:10px 18px; font-size:14px; font-weight:800;">${builderEsc(block.labelThree)}</div>
-                        </div>
+                    <td class="mp-stack mp-mobile-top" width="34%" valign="middle" align="center" style="padding:22px 0;">
+                        <table role="presentation" width="218" cellspacing="0" cellpadding="0" border="0" align="center" style="width:218px;max-width:100%;">
+                            <tr><td align="center"><span style="display:inline-block;background:#ffffff;color:#0b1d3a;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:800;margin:0 8px 8px 0;">${builderEsc(block.labelOne)}</span><span style="display:inline-block;background:#ffffff;color:#0b1d3a;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:800;margin:0 0 8px 8px;">${builderEsc(block.labelTwo)}</span></td></tr>
+                            <tr><td align="center" style="height:30px;background:${blue};border-radius:12px 12px 4px 4px;"></td></tr>
+                            <tr><td align="center"><div style="width:154px;height:30px;background:#2b60eb;"></div></td></tr>
+                            <tr><td align="center"><span style="display:inline-block;background:#ffffff;color:#0b1d3a;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:800;margin:0 0 8px 0;">${builderEsc(block.labelThree)}</span></td></tr>
+                            <tr><td align="center"><div style="width:72px;height:58px;background:#122444;border-radius:0 0 18px 18px;"></div></td></tr>
+                        </table>
                     </td>
-                    <td class="mp-stack mp-pad-mobile mp-mobile-top" width="33%" valign="middle" style="padding:34px 28px 34px 12px;">
+                    <td class="mp-stack mp-mobile-top" width="28%" valign="middle" style="padding:28px 24px 28px 4px;">
                         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse;">
                             <tr><td style="padding:0 0 12px 0; border-bottom:1px solid rgba(255,255,255,.12);"><div style="font-size:13px; color:#ffffff; font-weight:800;">${builderEsc(block.step1Title)}</div><div style="font-size:12px; color:#9fb1ca;">${builderEsc(block.step1Text)}</div></td></tr>
                             <tr><td style="padding:12px 0; border-bottom:1px solid rgba(255,255,255,.12);"><div style="font-size:13px; color:#ffffff; font-weight:800;">${builderEsc(block.step2Title)}</div><div style="font-size:12px; color:#9fb1ca;">${builderEsc(block.step2Text)}</div></td></tr>
@@ -1146,21 +1446,12 @@ function builderPremiumImpactDiceHtml(block) {
                     <div style="font-size:34px; line-height:1.14; font-weight:800; color:#20334f; margin-bottom:18px;"><span style="font-style:italic;">${builderEsc(block.smallWord)}</span> ${builderEsc(block.smallTail)}<br><span style="font-style:italic; color:${accent};">${builderEsc(block.bigWord)}</span>${builderEsc(block.bigTail)}</div>
                     <div style="font-size:17px; line-height:1.7; color:#4d6485; margin:0 auto 28px auto; max-width:470px;">${builderLines(block.text)}</div>
                     <a href="${builderAttr(block.buttonUrl)}" style="display:inline-block; background:${buttonBg}; color:#ffffff; text-decoration:none; padding:16px 24px; border-radius:8px; font-size:15px; line-height:1; font-weight:800;">${builderEsc(block.buttonText)}</a>
-                    <div style="position:relative; height:168px; max-width:270px; margin:26px auto 0 auto;">
-                        <div style="position:absolute; left:20px; top:25px; width:116px; height:116px; border-radius:18px; background:#ffffff; box-shadow:0 18px 32px rgba(31,55,84,.15); transform:rotate(-11deg);">
-                            <span style="position:absolute; left:28px; top:31px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
-                            <span style="position:absolute; right:28px; top:20px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
-                            <span style="position:absolute; left:56px; top:59px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
-                            <span style="position:absolute; left:31px; bottom:23px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
-                            <span style="position:absolute; right:21px; bottom:30px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
-                        </div>
-                        <div style="position:absolute; right:22px; top:28px; width:116px; height:116px; border-radius:18px; background:#ffffff; box-shadow:0 18px 32px rgba(31,55,84,.15); transform:rotate(7deg);">
-                            <span style="position:absolute; left:28px; top:26px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
-                            <span style="position:absolute; right:25px; top:40px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
-                            <span style="position:absolute; left:23px; bottom:33px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
-                            <span style="position:absolute; right:34px; bottom:24px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
-                        </div>
-                    </div>
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin:30px auto 0 auto;">
+                        <tr>
+                            <td style="padding:10px 0 0 0;">${builderPremiumDiceFaceHtml([1, 3, 5, 7, 9])}</td>
+                            <td style="padding:0 0 0 10px;">${builderPremiumDiceFaceHtml([1, 3, 7, 9])}</td>
+                        </tr>
+                    </table>
                 </td></tr>
             </table>
         </div>
@@ -1182,30 +1473,61 @@ function builderPremiumCompareHtml(block) {
                                 <div style="background:#294360; border:1px solid rgba(255,255,255,.12); border-radius:18px; padding:24px 22px; color:#ffffff;">
                                     <div style="font-size:19px; font-weight:800; color:${accent}; margin-bottom:22px;">${builderEsc(block.leftLabel)}</div>
                                     <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr><td width="82"><div style="width:58px; height:58px; border:10px solid ${accent}; border-radius:50%; text-align:center; line-height:58px; font-size:20px; font-weight:800;">${builderEsc(block.leftPercent)}</div></td><td><div style="font-size:18px; line-height:1.18; font-weight:800;">${builderEsc(block.leftTitle)}</div><div style="font-size:14px; line-height:1.45; color:#cbd7e8;">${builderEsc(block.leftText)}</div></td></tr></table>
-                                    <div style="position:relative; height:86px; margin-top:24px; border-left:2px solid rgba(255,255,255,.6); border-bottom:2px solid rgba(255,255,255,.25);">
-                                        <div style="position:absolute; left:0; bottom:12px; width:58px; height:4px; background:${accent}; transform:rotate(-25deg); transform-origin:left center;"></div>
-                                        <div style="position:absolute; left:52px; bottom:32px; width:72px; height:4px; background:${accent}; transform:rotate(-6deg); transform-origin:left center;"></div>
-                                        <div style="position:absolute; left:118px; bottom:40px; width:54px; height:4px; background:${accent}; transform:rotate(-18deg); transform-origin:left center;"></div>
-                                        <div style="position:absolute; left:165px; bottom:57px; width:76px; height:4px; background:${accent}; transform:rotate(-7deg); transform-origin:left center;"></div>
-                                    </div>
+                                    <div style="margin-top:24px;">${builderPremiumSparkBarsHtml(accent, [16, 28, 34, 39, 55, 48, 61, 66, 78])}</div>
                                 </div>
                             </td>
                             <td class="mp-stack mp-mobile-edge mp-mobile-gap" width="50%" valign="top" style="padding:0 0 0 12px;">
                                 <div style="background:#294360; border:1px solid rgba(255,255,255,.12); border-radius:18px; padding:24px 22px; color:#ffffff;">
                                     <div style="font-size:19px; font-weight:800; color:#d5deeb; margin-bottom:22px;">${builderEsc(block.rightLabel)}</div>
                                     <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr><td width="82"><div style="width:58px; height:58px; border:10px solid #9aa8ba; border-radius:50%; text-align:center; line-height:58px; font-size:20px; font-weight:800;">${builderEsc(block.rightPercent)}</div></td><td><div style="font-size:18px; line-height:1.18; font-weight:800;">${builderEsc(block.rightTitle)}</div><div style="font-size:14px; line-height:1.45; color:#cbd7e8;">${builderEsc(block.rightText)}</div></td></tr></table>
-                                    <div style="position:relative; height:86px; margin-top:24px; border-left:2px solid rgba(255,255,255,.6); border-bottom:2px solid rgba(255,255,255,.55);">
-                                        <div style="position:absolute; left:0; bottom:68px; width:52px; height:4px; background:#ffffff; transform:rotate(25deg); transform-origin:left center;"></div>
-                                        <div style="position:absolute; left:46px; bottom:48px; width:70px; height:4px; background:#ffffff; transform:rotate(6deg); transform-origin:left center;"></div>
-                                        <div style="position:absolute; left:111px; bottom:39px; width:57px; height:4px; background:#ffffff; transform:rotate(18deg); transform-origin:left center;"></div>
-                                        <div style="position:absolute; left:160px; bottom:23px; width:78px; height:4px; background:#ffffff; transform:rotate(7deg); transform-origin:left center;"></div>
-                                    </div>
+                                    <div style="margin-top:24px;">${builderPremiumSparkBarsHtml('#ffffff', [76, 61, 56, 47, 38, 31, 23, 18, 10])}</div>
                                 </div>
                             </td>
                         </tr>
                     </table>
                 </td></tr>
             </table>
+        </div>
+    `;
+}
+
+function builderPremiumPlumberFinalCtaHtml(block) {
+    return `
+        <div style="padding:0 28px ${Number(block.padding) || 0}px 28px;background:#ffffff;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:${builderAttr(block.bg || '#fff5eb')};border-radius:18px;border:1px solid ${builderAttr(block.border || '#fbd6bd')};border-collapse:separate;">
+                <tr>
+                    <td class="mp-stack" width="62%" style="padding:24px 22px;">
+                        <div style="font-size:15px;line-height:1.18;font-weight:800;letter-spacing:-.45px;color:#1e3048;">${builderEsc(block.title)}</div>
+                        <div style="font-size:12px;line-height:1.55;color:#4a6080;padding-top:8px;">${builderLines(block.text)}</div>
+                    </td>
+                    <td class="mp-stack mp-center-mobile" align="right" style="padding:24px 22px;">
+                        <a href="${builderAttr(block.buttonUrl)}" style="display:inline-block;background:${builderAttr(block.accent || '#f47c20')};color:#ffffff;text-decoration:none;padding:15px 23px;border-radius:8px;font-size:10px;font-weight:800;letter-spacing:.01em;box-shadow:0 12px 30px rgba(244,124,32,.24);">${builderEsc(block.buttonText)} &#8594;</a>
+                        <div style="font-size:10px;line-height:1.45;color:#4a6080;padding-top:8px;">${builderEsc(block.note)}</div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    `;
+}
+
+function builderPremiumPlumberFooterHtml(block) {
+    const accent = builderAttr(block.accent || '#f47c20');
+    return `
+        <div style="padding:${Number(block.padding) || 0}px 28px 20px 28px;background:${builderAttr(block.bg || '#f7f9fc')};border-top:1px solid #dde5f0;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                    <td class="mp-stack" width="48%" valign="top" style="padding-right:18px;">
+                        <div style="font-size:23px;font-weight:800;letter-spacing:0;color:#0b1d3a;line-height:.72;">${builderEsc(block.brand)}<span style="color:${accent};">.</span><br><span style="font-size:7px;font-weight:700;letter-spacing:.28em;color:#8fa3bf;text-transform:uppercase;">${builderEsc(block.tagline)}</span></div>
+                        <div style="font-size:12px;line-height:1.55;color:${builderAttr(block.muted || '#4a6080')};padding-top:14px;">${builderLines(block.text)}</div>
+                    </td>
+                    <td class="mp-hide-mobile" width="4%" style="border-left:1px solid #dde5f0;font-size:1px;line-height:1px;">&nbsp;</td>
+                    <td class="mp-stack mp-mobile-top" width="48%" valign="top" style="padding-left:24px;">
+                        <div style="font-size:16px;line-height:1.35;font-weight:800;color:#1e3048;">${builderEsc(block.title)}</div>
+                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-top:12px;"><tr><td style="font-size:14px;padding:4px 9px 4px 0;color:${accent};font-weight:800;">P</td><td style="font-size:12px;line-height:1.55;color:#0d2347;">${builderEsc(block.phone)}</td></tr></table>
+                    </td>
+                </tr>
+            </table>
+            <div style="font-size:10px;line-height:1.45;color:${builderAttr(block.muted || '#4a6080')};text-align:center;padding-top:24px;margin:0;">${builderLines(block.note)}</div>
         </div>
     `;
 }
@@ -1307,6 +1629,21 @@ function builderBlockInnerHtml(block) {
             </div>
         </div>`;
     }
+    if (block.type === 'premiumPlumberHeader') {
+        return builderPremiumPlumberHeaderHtml(block);
+    }
+    if (block.type === 'premiumPlumberHeroScore') {
+        return builderPremiumPlumberHeroScoreHtml(block);
+    }
+    if (block.type === 'premiumPlumberFindings') {
+        return builderPremiumPlumberFindingsHtml(block);
+    }
+    if (block.type === 'premiumPlumberProcess') {
+        return builderPremiumPlumberProcessHtml(block);
+    }
+    if (block.type === 'premiumPlumberIncludes') {
+        return builderPremiumPlumberIncludesHtml(block);
+    }
     if (block.type === 'premiumLeakHero') {
         return builderPremiumLeakHeroHtml(block);
     }
@@ -1318,6 +1655,12 @@ function builderBlockInnerHtml(block) {
     }
     if (block.type === 'premiumCompare') {
         return builderPremiumCompareHtml(block);
+    }
+    if (block.type === 'premiumPlumberFinalCta') {
+        return builderPremiumPlumberFinalCtaHtml(block);
+    }
+    if (block.type === 'premiumPlumberFooter') {
+        return builderPremiumPlumberFooterHtml(block);
     }
     if (block.type === 'image') {
         const img = block.url ? `<img src="${builderAttr(block.url)}" alt="${builderAttr(block.alt)}" style="display:block; width:${Number(block.width) || 100}%; max-width:100%; height:auto; border:0;">` : '<div style="padding:46px 20px; background:#f1f5f9; color:#64748b; text-align:center;">Select this block and upload an image</div>';
@@ -1392,6 +1735,7 @@ function builderRenderCanvas() {
     wrap.classList.toggle('builder-preview-mobile', builderPreviewMode === 'mobile');
     canvas.style.background = builderState.settings.contentBg;
     canvas.style.fontFamily = builderFontStack();
+    canvas.style.maxWidth = `${Number(builderState.settings.width) || 640}px`;
     canvas.classList.toggle('builder-email-preview-raw', builderIsRawHtmlMode());
 
     if (builderIsRawHtmlMode()) {
@@ -1522,6 +1866,16 @@ function builderRenderInspector() {
         html += builderInput('Label', 'label') + builderInput('Domain', 'domain') + builderInput('Score Badge', 'score') + builderInput('Issue 1', 'issue1') + builderInput('Issue 2', 'issue2') + builderInput('Issue 3', 'issue3') + builderInput('Issue 4', 'issue4') + builderColor('Background', 'bg') + builderColor('Warning Background', 'warningBg') + builderColor('Warning Text', 'warningColor') + builderColor('Browser Background', 'chromeBg') + builderNumber('Padding', 'padding', 8, 70);
     } else if (block.type === 'ctaPanel') {
         html += builderInput('Title', 'title') + builderTextarea('Text', 'text', 4) + builderInput('Primary Button Text', 'buttonText') + builderInput('Primary Button URL', 'buttonUrl') + builderInput('Secondary Button Text', 'secondaryButtonText') + builderInput('Secondary Button URL', 'secondaryButtonUrl') + builderColor('Background', 'bg') + builderColor('Border', 'border') + builderColor('Primary Button Background', 'buttonBg') + builderColor('Secondary Button Background', 'secondaryButtonBg') + builderColor('Secondary Button Text', 'secondaryButtonColor') + builderColor('Text Color', 'color') + builderNumber('Padding', 'padding', 8, 70);
+    } else if (block.type === 'premiumPlumberHeader') {
+        html += builderInput('Brand', 'brand') + builderInput('Tagline', 'tagline') + builderInput('Right Text', 'rightText') + builderColor('Background', 'bg') + builderColor('Text Color', 'color') + builderColor('Dot / Accent', 'dotColor') + builderColor('Muted Text', 'muted') + builderNumber('Padding', 'padding', 8, 60);
+    } else if (block.type === 'premiumPlumberHeroScore') {
+        html += builderInput('Pill', 'pill') + builderInput('Title', 'title') + builderInput('Orange Title Text', 'titleAccent') + builderTextarea('Intro Text', 'text', 4) + builderInput('Stat 1 Title', 'stat1Title') + builderInput('Stat 1 Text', 'stat1Text') + builderInput('Stat 2 Title', 'stat2Title') + builderInput('Stat 2 Text', 'stat2Text') + builderInput('Stat 3 Title', 'stat3Title') + builderInput('Stat 3 Text', 'stat3Text') + builderInput('Note', 'note') + builderInput('Card Pill', 'cardPill') + builderInput('Card Meta', 'cardMeta') + builderTextarea('Card Title', 'cardTitle', 3) + builderTextarea('Card Text', 'cardText', 3) + builderInput('Score', 'score') + builderInput('Score Label', 'scoreLabel') + builderInput('Check 1 Title', 'check1Title') + builderInput('Check 1 Text', 'check1Text') + builderInput('Check 2 Title', 'check2Title') + builderInput('Check 2 Text', 'check2Text') + builderInput('Check 3 Title', 'check3Title') + builderInput('Check 3 Text', 'check3Text') + builderInput('Bottom Label 1', 'bottom1') + builderInput('Bottom Label 2', 'bottom2') + builderInput('Bottom Label 3', 'bottom3') + builderColor('Background', 'bg') + builderColor('Second Background', 'bg2') + builderColor('Accent', 'accent') + builderColor('Muted Text', 'muted') + builderNumber('Padding', 'padding', 8, 70);
+    } else if (block.type === 'premiumPlumberFindings') {
+        html += builderInput('Eyebrow', 'eyebrow') + builderTextarea('Title', 'title', 3) + builderTextarea('Text', 'text', 3) + builderTextarea('Item 1', 'item1', 3) + builderTextarea('Item 2', 'item2', 3) + builderTextarea('Item 3', 'item3', 3) + builderColor('Background', 'bg') + builderColor('Second Background', 'bg2') + builderColor('Accent', 'accent') + builderNumber('Padding', 'padding', 8, 70);
+    } else if (block.type === 'premiumPlumberProcess') {
+        html += builderInput('Eyebrow', 'eyebrow') + builderInput('Title', 'title') + builderTextarea('Text', 'text', 4) + builderInput('Item 1 Title', 'item1Title') + builderTextarea('Item 1 Text', 'item1Text', 3) + builderInput('Item 2 Title', 'item2Title') + builderTextarea('Item 2 Text', 'item2Text', 3) + builderInput('Item 3 Title', 'item3Title') + builderTextarea('Item 3 Text', 'item3Text', 3) + builderInput('Item 4 Title', 'item4Title') + builderTextarea('Item 4 Text', 'item4Text', 3) + builderColor('Accent', 'accent') + builderNumber('Padding', 'padding', 8, 70);
+    } else if (block.type === 'premiumPlumberIncludes') {
+        html += builderInput('Title', 'title') + builderTextarea('Item 1', 'item1', 2) + builderTextarea('Item 2', 'item2', 2) + builderTextarea('Item 3', 'item3', 2) + builderTextarea('Item 4', 'item4', 2) + builderColor('Accent', 'accent') + builderNumber('Padding', 'padding', 8, 70);
     } else if (block.type === 'premiumLeakHero') {
         html += builderInput('Title Line 1', 'titleLine1') + builderInput('Title Line 2', 'titleLine2') + builderInput('Orange Title Text', 'titleAccent') + builderTextarea('Intro Text', 'text', 4) + builderInput('Button Text', 'buttonText') + builderInput('Button URL', 'buttonUrl') + builderInput('Badge Top Text', 'visualTop') + builderInput('Badge Line 1', 'visualLine1') + builderInput('Badge Line 2', 'visualLine2') + builderColor('Background', 'bg') + builderColor('Text Color', 'textColor') + builderColor('Muted Text', 'muted') + builderColor('Accent', 'accent') + builderColor('Button Background', 'buttonBg') + builderNumber('Padding', 'padding', 8, 60);
     } else if (block.type === 'premiumFunnel') {
@@ -1530,6 +1884,10 @@ function builderRenderInspector() {
         html += builderInput('First Emphasis', 'smallWord') + builderInput('First Tail', 'smallTail') + builderInput('Orange Emphasis', 'bigWord') + builderInput('Second Tail', 'bigTail') + builderTextarea('Text', 'text', 4) + builderInput('Button Text', 'buttonText') + builderInput('Button URL', 'buttonUrl') + builderColor('Accent', 'accent') + builderColor('Button Background', 'buttonBg') + builderNumber('Padding', 'padding', 8, 60);
     } else if (block.type === 'premiumCompare') {
         html += builderInput('Title', 'title') + builderInput('Left Label', 'leftLabel') + builderInput('Left Percent', 'leftPercent') + builderInput('Left Main Text', 'leftTitle') + builderInput('Left Subtext', 'leftText') + builderInput('Right Label', 'rightLabel') + builderInput('Right Percent', 'rightPercent') + builderInput('Right Main Text', 'rightTitle') + builderInput('Right Subtext', 'rightText') + builderColor('Background', 'bg') + builderColor('Accent', 'accent') + builderNumber('Padding', 'padding', 8, 60);
+    } else if (block.type === 'premiumPlumberFinalCta') {
+        html += builderInput('Title', 'title') + builderTextarea('Text', 'text', 3) + builderInput('Button Text', 'buttonText') + builderInput('Button URL', 'buttonUrl') + builderInput('Note', 'note') + builderColor('Background', 'bg') + builderColor('Border', 'border') + builderColor('Accent', 'accent') + builderNumber('Padding', 'padding', 8, 70);
+    } else if (block.type === 'premiumPlumberFooter') {
+        html += builderInput('Brand', 'brand') + builderInput('Tagline', 'tagline') + builderTextarea('Left Text', 'text', 3) + builderInput('Right Title', 'title') + builderInput('Phone', 'phone') + builderTextarea('Footer Note', 'note', 4) + builderColor('Background', 'bg') + builderColor('Accent', 'accent') + builderColor('Muted Text', 'muted') + builderNumber('Padding', 'padding', 8, 70);
     } else if (block.type === 'image') {
         html += builderImageControl('Image URL', 'url') + builderInput('Alt Text', 'alt') + builderInput('Link URL', 'link') + builderNumber('Width %', 'width', 20, 100) + builderNumber('Padding', 'padding', 0, 70);
     } else if (block.type === 'button') {
@@ -1694,6 +2052,21 @@ function builderEmailBlock(block) {
             </table>
         </td></tr>`;
     }
+    if (block.type === 'premiumPlumberHeader') {
+        return `<tr><td style="padding:0;">${builderPremiumPlumberHeaderHtml(block)}</td></tr>`;
+    }
+    if (block.type === 'premiumPlumberHeroScore') {
+        return `<tr><td style="padding:0;">${builderPremiumPlumberHeroScoreHtml(block)}</td></tr>`;
+    }
+    if (block.type === 'premiumPlumberFindings') {
+        return `<tr><td style="padding:0;">${builderPremiumPlumberFindingsHtml(block)}</td></tr>`;
+    }
+    if (block.type === 'premiumPlumberProcess') {
+        return `<tr><td style="padding:0;">${builderPremiumPlumberProcessHtml(block)}</td></tr>`;
+    }
+    if (block.type === 'premiumPlumberIncludes') {
+        return `<tr><td style="padding:0;">${builderPremiumPlumberIncludesHtml(block)}</td></tr>`;
+    }
     if (block.type === 'premiumLeakHero') {
         return `<tr><td style="padding:0;">${builderPremiumLeakHeroHtml(block)}</td></tr>`;
     }
@@ -1705,6 +2078,12 @@ function builderEmailBlock(block) {
     }
     if (block.type === 'premiumCompare') {
         return `<tr><td style="padding:0;">${builderPremiumCompareHtml(block)}</td></tr>`;
+    }
+    if (block.type === 'premiumPlumberFinalCta') {
+        return `<tr><td style="padding:0;">${builderPremiumPlumberFinalCtaHtml(block)}</td></tr>`;
+    }
+    if (block.type === 'premiumPlumberFooter') {
+        return `<tr><td style="padding:0;">${builderPremiumPlumberFooterHtml(block)}</td></tr>`;
     }
     if (block.type === 'image') {
         const img = block.url ? `<img src="${builderAttr(block.url)}" alt="${builderAttr(block.alt)}" width="${Math.round(572 * ((Number(block.width) || 100) / 100))}" style="display:block; width:${Number(block.width) || 100}%; max-width:100%; height:auto; border:0;">` : '';
@@ -1786,6 +2165,7 @@ function builderGenerateHtml() {
     }
 
     const rows = builderState.blocks.map(builderEmailBlock).join('');
+    const emailWidth = Number(builderState.settings.width) || 640;
     return `<!doctype html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">${builderFontImport()}${builderResponsiveCss()}</head>
@@ -1793,7 +2173,7 @@ function builderGenerateHtml() {
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%; background:${builderAttr(builderState.settings.bg)}; border-collapse:collapse;">
 <tr>
 <td align="center" style="padding:24px 12px;">
-<table role="presentation" class="mp-container" width="640" cellspacing="0" cellpadding="0" border="0" style="width:100%; max-width:640px; background:${builderAttr(builderState.settings.contentBg)}; border-collapse:collapse; font-family:${builderAttr(builderFontStack())};">
+<table role="presentation" class="mp-container" width="${emailWidth}" cellspacing="0" cellpadding="0" border="0" style="width:100%; max-width:${emailWidth}px; background:${builderAttr(builderState.settings.contentBg)}; border-collapse:collapse; font-family:${builderAttr(builderFontStack())};">
 ${rows}
 </table>
 </td>

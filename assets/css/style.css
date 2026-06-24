@@ -1505,6 +1505,10 @@ table tbody tr:last-child td {
     box-sizing: border-box;
 }
 
+.builder-preview-mobile .builder-email-preview .mp-hide-mobile {
+    display: none !important;
+}
+
 .builder-preview-mobile .builder-email-preview .mp-mobile-edge {
     padding-left: 0 !important;
     padding-right: 0 !important;
@@ -1521,6 +1525,13 @@ table tbody tr:last-child td {
 
 .builder-preview-mobile .builder-email-preview .mp-mobile-gap {
     padding-top: 12px !important;
+}
+
+.builder-preview-mobile .builder-email-preview .mp-process-border {
+    border-right: none !important;
+    border-bottom: 1px solid #dde5f0 !important;
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
 }
 
 .builder-email-preview-raw {
