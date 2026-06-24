@@ -1498,6 +1498,31 @@ table tbody tr:last-child td {
     max-width: 390px;
 }
 
+.builder-preview-mobile .builder-email-preview .mp-stack {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+}
+
+.builder-preview-mobile .builder-email-preview .mp-mobile-edge {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.builder-preview-mobile .builder-email-preview .mp-pad-mobile {
+    padding-left: 22px !important;
+    padding-right: 22px !important;
+}
+
+.builder-preview-mobile .builder-email-preview .mp-mobile-top {
+    padding-top: 20px !important;
+}
+
+.builder-preview-mobile .builder-email-preview .mp-mobile-gap {
+    padding-top: 12px !important;
+}
+
 .builder-email-preview-raw {
     overflow: hidden;
 }

@@ -241,6 +241,20 @@ function mailpilotBuilderFontImport($font) {
     return '';
 }
 
+function mailpilotBuilderResponsiveCss() {
+    return '<style>
+@media screen and (max-width:680px) {
+    .mp-container { width:100% !important; max-width:100% !important; }
+    .mp-stack { display:block !important; width:100% !important; max-width:100% !important; }
+    .mp-mobile-edge { padding-left:0 !important; padding-right:0 !important; }
+    .mp-pad-mobile { padding-left:22px !important; padding-right:22px !important; }
+    .mp-center-mobile { text-align:center !important; }
+    .mp-mobile-top { padding-top:20px !important; }
+    .mp-mobile-gap { padding-top:12px !important; }
+}
+</style>';
+}
+
 function mailpilotBuilderBlockHtml($block, $state) {
     $type = $block['type'] ?? '';
     $accent = mailpilotBuilderSetting($state, 'accent', '#2563eb');
@@ -372,6 +386,140 @@ function mailpilotBuilderBlockHtml($block, $state) {
         </td></tr>';
     }
 
+    if ($type === 'premiumLeakHero') {
+        $padding = mailpilotBuilderNum($block['padding'] ?? 24);
+        $bg = $block['bg'] ?? '#0a1f3d';
+        $accentColor = $block['accent'] ?? '#ff7a1a';
+        $buttonBg = $block['buttonBg'] ?? $accentColor;
+        $textColor = $block['textColor'] ?? '#ffffff';
+        return '<tr><td style="padding:' . $padding . 'px 28px 18px 28px; background:#ffffff;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:' . mailpilotBuilderAttr($bg) . '; border-radius:24px; border-collapse:separate; overflow:hidden;">
+                <tr>
+                    <td class="mp-stack mp-pad-mobile" width="52%" valign="middle" style="padding:34px 12px 34px 28px; color:' . mailpilotBuilderAttr($textColor) . ';">
+                        <div style="font-size:25px; line-height:1.08; font-weight:800; color:' . mailpilotBuilderAttr($textColor) . '; margin-bottom:22px;">' . mailpilotBuilderEsc($block['titleLine1'] ?? '') . '<br>' . mailpilotBuilderEsc($block['titleLine2'] ?? '') . ' <span style="color:' . mailpilotBuilderAttr($accentColor) . ';">' . mailpilotBuilderEsc($block['titleAccent'] ?? '') . '</span></div>
+                        <div style="font-size:17px; line-height:1.65; color:' . mailpilotBuilderAttr($block['muted'] ?? '#d9e6f8') . '; margin-bottom:26px;">' . mailpilotBuilderLines($block['text'] ?? '') . '</div>
+                        <a href="' . mailpilotBuilderAttr($block['buttonUrl'] ?? '#') . '" style="display:inline-block; background:' . mailpilotBuilderAttr($buttonBg) . '; color:#ffffff; text-decoration:none; padding:16px 24px; border-radius:8px; font-size:15px; line-height:1; font-weight:800;">' . mailpilotBuilderEsc($block['buttonText'] ?? '') . ' &#8594;</a>
+                    </td>
+                    <td class="mp-stack mp-pad-mobile mp-mobile-top" width="48%" valign="middle" style="padding:24px 28px 24px 0;">
+                        <div style="position:relative; min-height:178px; background:#102641; overflow:hidden;">
+                            <div style="position:absolute; right:20px; top:46px; width:160px; height:17px; border-radius:20px; background:#cfd7df; box-shadow:0 3px 0 rgba(0,0,0,.35) inset;"></div>
+                            <div style="position:absolute; right:53px; top:60px; width:70px; height:88px; border:26px solid #b8c3cc; border-top:0; border-radius:0 0 62px 62px;"></div>
+                            <div style="position:absolute; left:28px; top:60px; width:118px; height:118px; border-radius:70px; background:#ffffff; text-align:center;">
+                                <div style="padding-top:27px; color:' . mailpilotBuilderAttr($accentColor) . '; font-size:26px; line-height:1; font-weight:800;">' . mailpilotBuilderEsc($block['visualTop'] ?? 'FREE') . '</div>
+                                <div style="margin-top:6px; color:#0a1f3d; font-size:15px; line-height:1.25; font-weight:800;">' . mailpilotBuilderEsc($block['visualLine1'] ?? 'Landing Page') . '<br>' . mailpilotBuilderEsc($block['visualLine2'] ?? 'Audit') . '</div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </td></tr>';
+    }
+
+    if ($type === 'premiumFunnel') {
+        $padding = mailpilotBuilderNum($block['padding'] ?? 18);
+        $bg = $block['bg'] ?? '#071b34';
+        $accentColor = $block['accent'] ?? '#ff7a1a';
+        $blue = $block['blue'] ?? '#3367ff';
+        return '<tr><td style="padding:' . $padding . 'px 28px; background:#ffffff;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:' . mailpilotBuilderAttr($bg) . '; border-radius:24px; border-collapse:separate; overflow:hidden;">
+                <tr>
+                    <td class="mp-stack mp-pad-mobile" width="32%" valign="middle" style="padding:38px 12px 38px 28px;">
+                        <div style="font-size:23px; line-height:1.14; font-weight:800; color:#ffffff; margin-bottom:24px;">' . mailpilotBuilderEsc($block['titleLine1'] ?? '') . '<br><span style="color:' . mailpilotBuilderAttr($accentColor) . ';">' . mailpilotBuilderEsc($block['titleAccent'] ?? '') . '</span></div>
+                        <div style="font-size:19px; line-height:1.65; color:#9fb1ca;">' . mailpilotBuilderLines($block['text'] ?? '') . '</div>
+                    </td>
+                    <td class="mp-stack mp-pad-mobile mp-mobile-top" width="35%" valign="middle" align="center" style="padding:28px 6px;">
+                        <div style="position:relative; width:220px; max-width:100%; height:178px; margin:0 auto;">
+                            <div style="position:absolute; left:25px; top:20px; width:170px; height:118px; background:' . mailpilotBuilderAttr($blue) . '; clip-path:polygon(0 0,100% 0,68% 100%,32% 100%);"></div>
+                            <div style="position:absolute; left:82px; top:118px; width:56px; height:58px; border-radius:0 0 20px 20px; background:#123b96;"></div>
+                            <div style="position:absolute; left:17px; top:13px; transform:rotate(-6deg); background:#ffffff; color:#0f172a; border-radius:5px; padding:10px 17px; font-size:14px; font-weight:800;">' . mailpilotBuilderEsc($block['labelOne'] ?? 'Traffic') . '</div>
+                            <div style="position:absolute; right:0; top:14px; transform:rotate(5deg); background:#ffffff; color:#0f172a; border-radius:5px; padding:10px 17px; font-size:14px; font-weight:800;">' . mailpilotBuilderEsc($block['labelTwo'] ?? 'CTAs') . '</div>
+                            <div style="position:absolute; left:78px; top:70px; transform:rotate(-3deg); background:#ffffff; color:#0f172a; border-radius:5px; padding:10px 18px; font-size:14px; font-weight:800;">' . mailpilotBuilderEsc($block['labelThree'] ?? 'Follow-up') . '</div>
+                        </div>
+                    </td>
+                    <td class="mp-stack mp-pad-mobile mp-mobile-top" width="33%" valign="middle" style="padding:34px 28px 34px 12px;">
+                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse;">
+                            <tr><td style="padding:0 0 12px 0; border-bottom:1px solid rgba(255,255,255,.12);"><div style="font-size:13px; color:#ffffff; font-weight:800;">' . mailpilotBuilderEsc($block['step1Title'] ?? '') . '</div><div style="font-size:12px; color:#9fb1ca;">' . mailpilotBuilderEsc($block['step1Text'] ?? '') . '</div></td></tr>
+                            <tr><td style="padding:12px 0; border-bottom:1px solid rgba(255,255,255,.12);"><div style="font-size:13px; color:#ffffff; font-weight:800;">' . mailpilotBuilderEsc($block['step2Title'] ?? '') . '</div><div style="font-size:12px; color:#9fb1ca;">' . mailpilotBuilderEsc($block['step2Text'] ?? '') . '</div></td></tr>
+                            <tr><td style="padding:12px 0; border-bottom:1px solid rgba(255,255,255,.12);"><div style="font-size:13px; color:#ffffff; font-weight:800;">' . mailpilotBuilderEsc($block['step3Title'] ?? '') . '</div><div style="font-size:12px; color:#9fb1ca;">' . mailpilotBuilderEsc($block['step3Text'] ?? '') . '</div></td></tr>
+                            <tr><td style="padding:12px 0 0 0;"><div style="font-size:13px; color:#ffffff; font-weight:800;">' . mailpilotBuilderEsc($block['step4Title'] ?? '') . '</div><div style="font-size:12px; color:#9fb1ca;">' . mailpilotBuilderEsc($block['step4Text'] ?? '') . '</div></td></tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td></tr>';
+    }
+
+    if ($type === 'premiumImpactDice') {
+        $padding = mailpilotBuilderNum($block['padding'] ?? 18);
+        $accentColor = $block['accent'] ?? '#ff7a1a';
+        $buttonBg = $block['buttonBg'] ?? '#0a1f3d';
+        return '<tr><td style="padding:' . $padding . 'px 28px; background:#ffffff;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border:1px solid #d6e1ee; border-radius:20px; border-collapse:separate; overflow:hidden; background-color:#f7fbff; background-image:linear-gradient(#d9e5f2 1px, transparent 1px), linear-gradient(90deg, #d9e5f2 1px, transparent 1px); background-size:32px 32px;">
+                <tr><td align="center" style="padding:44px 42px 20px 42px;">
+                    <div style="font-size:34px; line-height:1.14; font-weight:800; color:#20334f; margin-bottom:18px;"><span style="font-style:italic;">' . mailpilotBuilderEsc($block['smallWord'] ?? 'Small') . '</span> ' . mailpilotBuilderEsc($block['smallTail'] ?? 'moves.') . '<br><span style="font-style:italic; color:' . mailpilotBuilderAttr($accentColor) . ';">' . mailpilotBuilderEsc($block['bigWord'] ?? 'Big') . '</span>' . mailpilotBuilderEsc($block['bigTail'] ?? ' impact.') . '</div>
+                    <div style="font-size:17px; line-height:1.7; color:#4d6485; margin:0 auto 28px auto; max-width:470px;">' . mailpilotBuilderLines($block['text'] ?? '') . '</div>
+                    <a href="' . mailpilotBuilderAttr($block['buttonUrl'] ?? '#') . '" style="display:inline-block; background:' . mailpilotBuilderAttr($buttonBg) . '; color:#ffffff; text-decoration:none; padding:16px 24px; border-radius:8px; font-size:15px; line-height:1; font-weight:800;">' . mailpilotBuilderEsc($block['buttonText'] ?? '') . '</a>
+                    <div style="position:relative; height:168px; max-width:270px; margin:26px auto 0 auto;">
+                        <div style="position:absolute; left:20px; top:25px; width:116px; height:116px; border-radius:18px; background:#ffffff; box-shadow:0 18px 32px rgba(31,55,84,.15); transform:rotate(-11deg);">
+                            <span style="position:absolute; left:28px; top:31px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
+                            <span style="position:absolute; right:28px; top:20px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
+                            <span style="position:absolute; left:56px; top:59px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
+                            <span style="position:absolute; left:31px; bottom:23px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
+                            <span style="position:absolute; right:21px; bottom:30px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
+                        </div>
+                        <div style="position:absolute; right:22px; top:28px; width:116px; height:116px; border-radius:18px; background:#ffffff; box-shadow:0 18px 32px rgba(31,55,84,.15); transform:rotate(7deg);">
+                            <span style="position:absolute; left:28px; top:26px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
+                            <span style="position:absolute; right:25px; top:40px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
+                            <span style="position:absolute; left:23px; bottom:33px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
+                            <span style="position:absolute; right:34px; bottom:24px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
+                        </div>
+                    </div>
+                </td></tr>
+            </table>
+        </td></tr>';
+    }
+
+    if ($type === 'premiumCompare') {
+        $padding = mailpilotBuilderNum($block['padding'] ?? 18);
+        $bg = $block['bg'] ?? '#0a1f3d';
+        $accentColor = $block['accent'] ?? '#ff8a32';
+        return '<tr><td style="padding:' . $padding . 'px 28px 26px 28px; background:#ffffff;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:' . mailpilotBuilderAttr($bg) . '; border-radius:24px; border-collapse:separate; overflow:hidden;">
+                <tr><td align="center" style="padding:32px 28px 10px 28px; font-size:38px; line-height:1.05; font-weight:800; color:#ffffff;">' . mailpilotBuilderEsc($block['title'] ?? '') . '</td></tr>
+                <tr><td style="padding:10px 28px 30px 28px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:separate;">
+                        <tr>
+                            <td class="mp-stack mp-mobile-edge" width="50%" valign="top" style="padding:0 12px 0 0;">
+                                <div style="background:#294360; border:1px solid rgba(255,255,255,.12); border-radius:18px; padding:24px 22px; color:#ffffff;">
+                                    <div style="font-size:19px; font-weight:800; color:' . mailpilotBuilderAttr($accentColor) . '; margin-bottom:22px;">' . mailpilotBuilderEsc($block['leftLabel'] ?? '') . '</div>
+                                    <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr><td width="82"><div style="width:58px; height:58px; border:10px solid ' . mailpilotBuilderAttr($accentColor) . '; border-radius:50%; text-align:center; line-height:58px; font-size:20px; font-weight:800;">' . mailpilotBuilderEsc($block['leftPercent'] ?? '') . '</div></td><td><div style="font-size:18px; line-height:1.18; font-weight:800;">' . mailpilotBuilderEsc($block['leftTitle'] ?? '') . '</div><div style="font-size:14px; line-height:1.45; color:#cbd7e8;">' . mailpilotBuilderEsc($block['leftText'] ?? '') . '</div></td></tr></table>
+                                    <div style="position:relative; height:86px; margin-top:24px; border-left:2px solid rgba(255,255,255,.6); border-bottom:2px solid rgba(255,255,255,.25);">
+                                        <div style="position:absolute; left:0; bottom:12px; width:58px; height:4px; background:' . mailpilotBuilderAttr($accentColor) . '; transform:rotate(-25deg); transform-origin:left center;"></div>
+                                        <div style="position:absolute; left:52px; bottom:32px; width:72px; height:4px; background:' . mailpilotBuilderAttr($accentColor) . '; transform:rotate(-6deg); transform-origin:left center;"></div>
+                                        <div style="position:absolute; left:118px; bottom:40px; width:54px; height:4px; background:' . mailpilotBuilderAttr($accentColor) . '; transform:rotate(-18deg); transform-origin:left center;"></div>
+                                        <div style="position:absolute; left:165px; bottom:57px; width:76px; height:4px; background:' . mailpilotBuilderAttr($accentColor) . '; transform:rotate(-7deg); transform-origin:left center;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="mp-stack mp-mobile-edge mp-mobile-gap" width="50%" valign="top" style="padding:0 0 0 12px;">
+                                <div style="background:#294360; border:1px solid rgba(255,255,255,.12); border-radius:18px; padding:24px 22px; color:#ffffff;">
+                                    <div style="font-size:19px; font-weight:800; color:#d5deeb; margin-bottom:22px;">' . mailpilotBuilderEsc($block['rightLabel'] ?? '') . '</div>
+                                    <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr><td width="82"><div style="width:58px; height:58px; border:10px solid #9aa8ba; border-radius:50%; text-align:center; line-height:58px; font-size:20px; font-weight:800;">' . mailpilotBuilderEsc($block['rightPercent'] ?? '') . '</div></td><td><div style="font-size:18px; line-height:1.18; font-weight:800;">' . mailpilotBuilderEsc($block['rightTitle'] ?? '') . '</div><div style="font-size:14px; line-height:1.45; color:#cbd7e8;">' . mailpilotBuilderEsc($block['rightText'] ?? '') . '</div></td></tr></table>
+                                    <div style="position:relative; height:86px; margin-top:24px; border-left:2px solid rgba(255,255,255,.6); border-bottom:2px solid rgba(255,255,255,.55);">
+                                        <div style="position:absolute; left:0; bottom:68px; width:52px; height:4px; background:#ffffff; transform:rotate(25deg); transform-origin:left center;"></div>
+                                        <div style="position:absolute; left:46px; bottom:48px; width:70px; height:4px; background:#ffffff; transform:rotate(6deg); transform-origin:left center;"></div>
+                                        <div style="position:absolute; left:111px; bottom:39px; width:57px; height:4px; background:#ffffff; transform:rotate(18deg); transform-origin:left center;"></div>
+                                        <div style="position:absolute; left:160px; bottom:23px; width:78px; height:4px; background:#ffffff; transform:rotate(7deg); transform-origin:left center;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </td></tr>
+            </table>
+        </td></tr>';
+    }
+
     if ($type === 'signature') {
         $padding = mailpilotBuilderNum($block['padding'] ?? 24);
         return '<tr><td style="padding:' . $padding . 'px 30px; background:' . mailpilotBuilderAttr($block['bg'] ?? '#ffffff') . '; color:' . mailpilotBuilderAttr($block['color'] ?? '#0f172a') . ';">
@@ -414,11 +562,11 @@ function mailpilotBuilderGenerateHtml($state) {
 
     return '<!doctype html>
 <html>
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">' . mailpilotBuilderFontImport($font) . '</head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">' . mailpilotBuilderFontImport($font) . mailpilotBuilderResponsiveCss() . '</head>
 <body style="margin:0; padding:0; background:' . mailpilotBuilderAttr($bg) . '; font-family:' . mailpilotBuilderAttr($fontStack) . ';">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%; background:' . mailpilotBuilderAttr($bg) . '; border-collapse:collapse;">
 <tr><td align="center" style="padding:24px 12px;">
-<table role="presentation" width="640" cellspacing="0" cellpadding="0" border="0" style="width:100%; max-width:640px; background:' . mailpilotBuilderAttr($contentBg) . '; border-collapse:collapse; font-family:' . mailpilotBuilderAttr($fontStack) . ';">
+<table role="presentation" class="mp-container" width="640" cellspacing="0" cellpadding="0" border="0" style="width:100%; max-width:640px; background:' . mailpilotBuilderAttr($contentBg) . '; border-collapse:collapse; font-family:' . mailpilotBuilderAttr($fontStack) . ';">
 ' . $rows . '
 </table>
 </td></tr>

@@ -116,6 +116,7 @@ foreach ($batchOptionsByList as $listId => $values) {
                         <button type="button" class="btn btn-outline btn-sm" onclick="builderLoadTemplate('newsletter')">Newsletter</button>
                         <button type="button" class="btn btn-outline btn-sm" onclick="builderLoadTemplate('promo')">Promo</button>
                         <button type="button" class="btn btn-outline btn-sm" onclick="builderLoadTemplate('announcement')">Announcement</button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="builderLoadTemplate('premiumLeakAudit')">Premium Leak Audit</button>
                         <span class="builder-action-divider"></span>
                         <button type="button" class="btn btn-primary btn-sm" onclick="builderSaveCurrentTemplate()">Save Template</button>
                         <select id="savedTemplateSelect" class="builder-template-select" onchange="builderApplySavedTemplate(this.value)">
@@ -139,6 +140,10 @@ foreach ($batchOptionsByList as $listId => $values) {
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('metricBars')"><strong>Metrics</strong><span>Mini bar chart</span></button>
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('browserAudit')"><strong>Mockup</strong><span>Website audit</span></button>
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('ctaPanel')"><strong>CTA Panel</strong><span>Audit offer</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumLeakHero')"><strong>Premium Hero</strong><span>Audit graphic</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumFunnel')"><strong>Funnel Leak</strong><span>Traffic flow</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumImpactDice')"><strong>Impact Grid</strong><span>Dice visual</span></button>
+                                <button type="button" class="builder-block-button" onclick="builderAddBlock('premiumCompare')"><strong>Convert Card</strong><span>Results compare</span></button>
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('image')"><strong>Image</strong><span>Upload visual</span></button>
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('button')"><strong>Button</strong><span>Action link</span></button>
                                 <button type="button" class="builder-block-button" onclick="builderAddBlock('twoColumn')"><strong>Columns</strong><span>Two sections</span></button>
@@ -399,6 +404,20 @@ function builderFontImport() {
     return '';
 }
 
+function builderResponsiveCss() {
+    return `<style>
+@media screen and (max-width:680px) {
+    .mp-container { width:100% !important; max-width:100% !important; }
+    .mp-stack { display:block !important; width:100% !important; max-width:100% !important; }
+    .mp-mobile-edge { padding-left:0 !important; padding-right:0 !important; }
+    .mp-pad-mobile { padding-left:22px !important; padding-right:22px !important; }
+    .mp-center-mobile { text-align:center !important; }
+    .mp-mobile-top { padding-top:20px !important; }
+    .mp-mobile-gap { padding-top:12px !important; }
+}
+</style>`;
+}
+
 function builderIsRawHtmlMode() {
     return builderState?.settings?.mode === 'rawHtml';
 }
@@ -591,6 +610,69 @@ function builderBlock(type, data = {}) {
             color: '#0f172a',
             padding: 30,
         },
+        premiumLeakHero: {
+            titleLine1: 'Stop Losing Jobs',
+            titleLine2: 'to a',
+            titleAccent: 'Weak Landing Page.',
+            text: "Let's build a page that brings you more calls, more bookings, and more revenue.",
+            buttonText: 'Get My Free Landing Page Audit',
+            buttonUrl: '#',
+            visualTop: 'FREE',
+            visualLine1: 'Landing Page',
+            visualLine2: 'Audit',
+            bg: '#0a1f3d',
+            textColor: '#ffffff',
+            muted: '#d9e6f8',
+            accent: '#ff7a1a',
+            buttonBg: '#ff7a1a',
+            padding: 24,
+        },
+        premiumFunnel: {
+            titleLine1: "More traffic isn't the solution if your",
+            titleAccent: 'funnel leaks.',
+            text: 'We plug the gaps that are costing you calls and jobs.',
+            labelOne: 'Traffic',
+            labelTwo: 'CTAs',
+            labelThree: 'Follow-up',
+            step1Title: 'Visitors',
+            step1Text: 'Traffic comes in',
+            step2Title: 'Leaky Pages',
+            step2Text: 'Visitors drop off',
+            step3Title: 'Lost Opportunities',
+            step3Text: 'No calls, no bookings',
+            step4Title: 'Optimized Landing Page',
+            step4Text: 'More calls. More jobs.',
+            bg: '#071b34',
+            accent: '#ff7a1a',
+            blue: '#3367ff',
+            padding: 18,
+        },
+        premiumImpactDice: {
+            smallWord: 'Small',
+            smallTail: 'moves.',
+            bigWord: 'Big',
+            bigTail: ' impact.',
+            text: "Big impact doesn't come from one big step. It comes from making the small things clear, fast, and easy to act on.",
+            buttonText: 'Start Today',
+            buttonUrl: '#',
+            accent: '#ff7a1a',
+            buttonBg: '#0a1f3d',
+            padding: 18,
+        },
+        premiumCompare: {
+            title: 'Convert or Leak..?',
+            leftLabel: 'with optimization',
+            leftPercent: '68%',
+            leftTitle: 'more quote requests',
+            leftText: 'from clearer page flow',
+            rightLabel: 'without optimization',
+            rightPercent: '18%',
+            rightTitle: 'visitors bounce',
+            rightText: 'before they call',
+            bg: '#0a1f3d',
+            accent: '#ff8a32',
+            padding: 18,
+        },
         image: {
             url: '',
             alt: 'Campaign image',
@@ -713,6 +795,33 @@ function builderTemplates() {
             builderBlock('divider'),
             builderBlock('button', { text: 'Learn more', bg: '#059669' }),
         ],
+        premiumLeakAudit: {
+            settings: { bg: '#eef4fb', contentBg: '#ffffff', accent: '#ff7a1a', font: 'DM Sans' },
+            blocks: [
+                builderBlock('premiumLeakHero', {
+                    buttonUrl: 'https://calendly.com/mu-abdullahhashmi/30min?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_leak_audit',
+                }),
+                builderBlock('premiumFunnel'),
+                builderBlock('premiumImpactDice', {
+                    buttonUrl: 'https://calendly.com/mu-abdullahhashmi/30min?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_leak_audit',
+                }),
+                builderBlock('premiumCompare'),
+                builderBlock('ctaPanel', {
+                    title: 'Want me to check your landing page?',
+                    text: 'I can send 2-3 clear improvements that may help more plumbing visitors call, request a quote, or book a job.',
+                    buttonText: 'Get Free Audit',
+                    buttonUrl: 'https://calendly.com/mu-abdullahhashmi/30min?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_leak_audit',
+                    secondaryButtonText: 'See How It Works',
+                    secondaryButtonUrl: 'https://abdullahhashmi.com/plumbers-growth-expert/?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_how_it_works',
+                    bg: '#eef5ff',
+                    border: '#bfd7ff',
+                    buttonBg: '#ff7a1a',
+                    secondaryButtonBg: '#ffffff',
+                    secondaryButtonColor: '#0a1f3d',
+                }),
+                builderBlock('signature'),
+            ],
+        },
     };
 }
 
@@ -720,8 +829,18 @@ function builderLoadTemplate(name) {
     builderSnapshot();
     delete builderState.settings.mode;
     delete builderState.rawHtml;
-    builderState.blocks = builderTemplates()[name] || builderTemplates().newsletter;
+    const template = builderTemplates()[name] || builderTemplates().newsletter;
+    if (Array.isArray(template)) {
+        builderState.blocks = template;
+    } else {
+        builderState.settings = Object.assign(
+            { bg: '#f4f7fb', contentBg: '#ffffff', accent: '#2563eb', font: 'Poppins' },
+            template.settings || {}
+        );
+        builderState.blocks = template.blocks || [];
+    }
     builderSelectedId = builderState.blocks[0]?.id || null;
+    builderApplyStateSettingsToControls();
     builderRender();
 }
 
@@ -949,6 +1068,148 @@ function builderPreviewBlock(block) {
     `;
 }
 
+function builderPremiumLeakHeroHtml(block) {
+    const padding = Number(block.padding) || 0;
+    const bg = builderAttr(block.bg || '#0a1f3d');
+    const accent = builderAttr(block.accent || '#ff7a1a');
+    const buttonBg = builderAttr(block.buttonBg || block.accent || '#ff7a1a');
+    const textColor = builderAttr(block.textColor || '#ffffff');
+    return `
+        <div style="padding:${padding}px 28px 18px 28px; background:#ffffff;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:${bg}; border-radius:24px; border-collapse:separate; overflow:hidden;">
+                <tr>
+                    <td class="mp-stack mp-pad-mobile" width="52%" valign="middle" style="padding:34px 12px 34px 28px; color:${textColor};">
+                        <div style="font-size:25px; line-height:1.08; font-weight:800; color:${textColor}; margin-bottom:22px;">${builderEsc(block.titleLine1)}<br>${builderEsc(block.titleLine2)} <span style="color:${accent};">${builderEsc(block.titleAccent)}</span></div>
+                        <div style="font-size:17px; line-height:1.65; color:${builderAttr(block.muted || '#d9e6f8')}; margin-bottom:26px;">${builderLines(block.text)}</div>
+                        <a href="${builderAttr(block.buttonUrl)}" style="display:inline-block; background:${buttonBg}; color:#ffffff; text-decoration:none; padding:16px 24px; border-radius:8px; font-size:15px; line-height:1; font-weight:800;">${builderEsc(block.buttonText)} &#8594;</a>
+                    </td>
+                    <td class="mp-stack mp-pad-mobile mp-mobile-top" width="48%" valign="middle" style="padding:24px 28px 24px 0;">
+                        <div style="position:relative; min-height:178px; background:#102641; overflow:hidden;">
+                            <div style="position:absolute; right:20px; top:46px; width:160px; height:17px; border-radius:20px; background:#cfd7df; box-shadow:0 3px 0 rgba(0,0,0,.35) inset;"></div>
+                            <div style="position:absolute; right:53px; top:60px; width:70px; height:88px; border:26px solid #b8c3cc; border-top:0; border-radius:0 0 62px 62px;"></div>
+                            <div style="position:absolute; left:28px; top:60px; width:118px; height:118px; border-radius:70px; background:#ffffff; text-align:center;">
+                                <div style="padding-top:27px; color:${accent}; font-size:26px; line-height:1; font-weight:800;">${builderEsc(block.visualTop || 'FREE')}</div>
+                                <div style="margin-top:6px; color:#0a1f3d; font-size:15px; line-height:1.25; font-weight:800;">${builderEsc(block.visualLine1 || 'Landing Page')}<br>${builderEsc(block.visualLine2 || 'Audit')}</div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    `;
+}
+
+function builderPremiumFunnelHtml(block) {
+    const padding = Number(block.padding) || 0;
+    const bg = builderAttr(block.bg || '#071b34');
+    const accent = builderAttr(block.accent || '#ff7a1a');
+    const blue = builderAttr(block.blue || '#3367ff');
+    return `
+        <div style="padding:${padding}px 28px; background:#ffffff;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:${bg}; border-radius:24px; border-collapse:separate; overflow:hidden;">
+                <tr>
+                    <td class="mp-stack mp-pad-mobile" width="32%" valign="middle" style="padding:38px 12px 38px 28px;">
+                        <div style="font-size:23px; line-height:1.14; font-weight:800; color:#ffffff; margin-bottom:24px;">${builderEsc(block.titleLine1)}<br><span style="color:${accent};">${builderEsc(block.titleAccent)}</span></div>
+                        <div style="font-size:19px; line-height:1.65; color:#9fb1ca;">${builderLines(block.text)}</div>
+                    </td>
+                    <td class="mp-stack mp-pad-mobile mp-mobile-top" width="35%" valign="middle" align="center" style="padding:28px 6px;">
+                        <div style="position:relative; width:220px; max-width:100%; height:178px; margin:0 auto;">
+                            <div style="position:absolute; left:25px; top:20px; width:170px; height:118px; background:${blue}; clip-path:polygon(0 0,100% 0,68% 100%,32% 100%);"></div>
+                            <div style="position:absolute; left:82px; top:118px; width:56px; height:58px; border-radius:0 0 20px 20px; background:#123b96;"></div>
+                            <div style="position:absolute; left:17px; top:13px; transform:rotate(-6deg); background:#ffffff; color:#0f172a; border-radius:5px; padding:10px 17px; font-size:14px; font-weight:800;">${builderEsc(block.labelOne)}</div>
+                            <div style="position:absolute; right:0; top:14px; transform:rotate(5deg); background:#ffffff; color:#0f172a; border-radius:5px; padding:10px 17px; font-size:14px; font-weight:800;">${builderEsc(block.labelTwo)}</div>
+                            <div style="position:absolute; left:78px; top:70px; transform:rotate(-3deg); background:#ffffff; color:#0f172a; border-radius:5px; padding:10px 18px; font-size:14px; font-weight:800;">${builderEsc(block.labelThree)}</div>
+                        </div>
+                    </td>
+                    <td class="mp-stack mp-pad-mobile mp-mobile-top" width="33%" valign="middle" style="padding:34px 28px 34px 12px;">
+                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse;">
+                            <tr><td style="padding:0 0 12px 0; border-bottom:1px solid rgba(255,255,255,.12);"><div style="font-size:13px; color:#ffffff; font-weight:800;">${builderEsc(block.step1Title)}</div><div style="font-size:12px; color:#9fb1ca;">${builderEsc(block.step1Text)}</div></td></tr>
+                            <tr><td style="padding:12px 0; border-bottom:1px solid rgba(255,255,255,.12);"><div style="font-size:13px; color:#ffffff; font-weight:800;">${builderEsc(block.step2Title)}</div><div style="font-size:12px; color:#9fb1ca;">${builderEsc(block.step2Text)}</div></td></tr>
+                            <tr><td style="padding:12px 0; border-bottom:1px solid rgba(255,255,255,.12);"><div style="font-size:13px; color:#ffffff; font-weight:800;">${builderEsc(block.step3Title)}</div><div style="font-size:12px; color:#9fb1ca;">${builderEsc(block.step3Text)}</div></td></tr>
+                            <tr><td style="padding:12px 0 0 0;"><div style="font-size:13px; color:#ffffff; font-weight:800;">${builderEsc(block.step4Title)}</div><div style="font-size:12px; color:#9fb1ca;">${builderEsc(block.step4Text)}</div></td></tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    `;
+}
+
+function builderPremiumImpactDiceHtml(block) {
+    const padding = Number(block.padding) || 0;
+    const accent = builderAttr(block.accent || '#ff7a1a');
+    const buttonBg = builderAttr(block.buttonBg || '#0a1f3d');
+    return `
+        <div style="padding:${padding}px 28px; background:#ffffff;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border:1px solid #d6e1ee; border-radius:20px; border-collapse:separate; overflow:hidden; background-color:#f7fbff; background-image:linear-gradient(#d9e5f2 1px, transparent 1px), linear-gradient(90deg, #d9e5f2 1px, transparent 1px); background-size:32px 32px;">
+                <tr><td align="center" style="padding:44px 42px 20px 42px;">
+                    <div style="font-size:34px; line-height:1.14; font-weight:800; color:#20334f; margin-bottom:18px;"><span style="font-style:italic;">${builderEsc(block.smallWord)}</span> ${builderEsc(block.smallTail)}<br><span style="font-style:italic; color:${accent};">${builderEsc(block.bigWord)}</span>${builderEsc(block.bigTail)}</div>
+                    <div style="font-size:17px; line-height:1.7; color:#4d6485; margin:0 auto 28px auto; max-width:470px;">${builderLines(block.text)}</div>
+                    <a href="${builderAttr(block.buttonUrl)}" style="display:inline-block; background:${buttonBg}; color:#ffffff; text-decoration:none; padding:16px 24px; border-radius:8px; font-size:15px; line-height:1; font-weight:800;">${builderEsc(block.buttonText)}</a>
+                    <div style="position:relative; height:168px; max-width:270px; margin:26px auto 0 auto;">
+                        <div style="position:absolute; left:20px; top:25px; width:116px; height:116px; border-radius:18px; background:#ffffff; box-shadow:0 18px 32px rgba(31,55,84,.15); transform:rotate(-11deg);">
+                            <span style="position:absolute; left:28px; top:31px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
+                            <span style="position:absolute; right:28px; top:20px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
+                            <span style="position:absolute; left:56px; top:59px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
+                            <span style="position:absolute; left:31px; bottom:23px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
+                            <span style="position:absolute; right:21px; bottom:30px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
+                        </div>
+                        <div style="position:absolute; right:22px; top:28px; width:116px; height:116px; border-radius:18px; background:#ffffff; box-shadow:0 18px 32px rgba(31,55,84,.15); transform:rotate(7deg);">
+                            <span style="position:absolute; left:28px; top:26px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
+                            <span style="position:absolute; right:25px; top:40px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
+                            <span style="position:absolute; left:23px; bottom:33px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
+                            <span style="position:absolute; right:34px; bottom:24px; width:17px; height:17px; background:#111111; border-radius:50%;"></span>
+                        </div>
+                    </div>
+                </td></tr>
+            </table>
+        </div>
+    `;
+}
+
+function builderPremiumCompareHtml(block) {
+    const padding = Number(block.padding) || 0;
+    const bg = builderAttr(block.bg || '#0a1f3d');
+    const accent = builderAttr(block.accent || '#ff8a32');
+    return `
+        <div style="padding:${padding}px 28px 26px 28px; background:#ffffff;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:${bg}; border-radius:24px; border-collapse:separate; overflow:hidden;">
+                <tr><td align="center" style="padding:32px 28px 10px 28px; font-size:38px; line-height:1.05; font-weight:800; color:#ffffff;">${builderEsc(block.title)}</td></tr>
+                <tr><td style="padding:10px 28px 30px 28px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:separate;">
+                        <tr>
+                            <td class="mp-stack mp-mobile-edge" width="50%" valign="top" style="padding:0 12px 0 0;">
+                                <div style="background:#294360; border:1px solid rgba(255,255,255,.12); border-radius:18px; padding:24px 22px; color:#ffffff;">
+                                    <div style="font-size:19px; font-weight:800; color:${accent}; margin-bottom:22px;">${builderEsc(block.leftLabel)}</div>
+                                    <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr><td width="82"><div style="width:58px; height:58px; border:10px solid ${accent}; border-radius:50%; text-align:center; line-height:58px; font-size:20px; font-weight:800;">${builderEsc(block.leftPercent)}</div></td><td><div style="font-size:18px; line-height:1.18; font-weight:800;">${builderEsc(block.leftTitle)}</div><div style="font-size:14px; line-height:1.45; color:#cbd7e8;">${builderEsc(block.leftText)}</div></td></tr></table>
+                                    <div style="position:relative; height:86px; margin-top:24px; border-left:2px solid rgba(255,255,255,.6); border-bottom:2px solid rgba(255,255,255,.25);">
+                                        <div style="position:absolute; left:0; bottom:12px; width:58px; height:4px; background:${accent}; transform:rotate(-25deg); transform-origin:left center;"></div>
+                                        <div style="position:absolute; left:52px; bottom:32px; width:72px; height:4px; background:${accent}; transform:rotate(-6deg); transform-origin:left center;"></div>
+                                        <div style="position:absolute; left:118px; bottom:40px; width:54px; height:4px; background:${accent}; transform:rotate(-18deg); transform-origin:left center;"></div>
+                                        <div style="position:absolute; left:165px; bottom:57px; width:76px; height:4px; background:${accent}; transform:rotate(-7deg); transform-origin:left center;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="mp-stack mp-mobile-edge mp-mobile-gap" width="50%" valign="top" style="padding:0 0 0 12px;">
+                                <div style="background:#294360; border:1px solid rgba(255,255,255,.12); border-radius:18px; padding:24px 22px; color:#ffffff;">
+                                    <div style="font-size:19px; font-weight:800; color:#d5deeb; margin-bottom:22px;">${builderEsc(block.rightLabel)}</div>
+                                    <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr><td width="82"><div style="width:58px; height:58px; border:10px solid #9aa8ba; border-radius:50%; text-align:center; line-height:58px; font-size:20px; font-weight:800;">${builderEsc(block.rightPercent)}</div></td><td><div style="font-size:18px; line-height:1.18; font-weight:800;">${builderEsc(block.rightTitle)}</div><div style="font-size:14px; line-height:1.45; color:#cbd7e8;">${builderEsc(block.rightText)}</div></td></tr></table>
+                                    <div style="position:relative; height:86px; margin-top:24px; border-left:2px solid rgba(255,255,255,.6); border-bottom:2px solid rgba(255,255,255,.55);">
+                                        <div style="position:absolute; left:0; bottom:68px; width:52px; height:4px; background:#ffffff; transform:rotate(25deg); transform-origin:left center;"></div>
+                                        <div style="position:absolute; left:46px; bottom:48px; width:70px; height:4px; background:#ffffff; transform:rotate(6deg); transform-origin:left center;"></div>
+                                        <div style="position:absolute; left:111px; bottom:39px; width:57px; height:4px; background:#ffffff; transform:rotate(18deg); transform-origin:left center;"></div>
+                                        <div style="position:absolute; left:160px; bottom:23px; width:78px; height:4px; background:#ffffff; transform:rotate(7deg); transform-origin:left center;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </td></tr>
+            </table>
+        </div>
+    `;
+}
+
 function builderBlockInnerHtml(block) {
     if (block.type === 'hero') {
         return `
@@ -1045,6 +1306,18 @@ function builderBlockInnerHtml(block) {
                 ${block.secondaryButtonText ? `<a href="${builderAttr(block.secondaryButtonUrl)}" style="display:inline-block; background:${builderAttr(block.secondaryButtonBg || '#ffffff')}; color:${builderAttr(block.secondaryButtonColor || '#0f172a')}; border:1px solid ${builderAttr(block.border)}; text-decoration:none; padding:12px 20px; border-radius:7px; font-weight:800; margin:4px;">${builderEsc(block.secondaryButtonText)}</a>` : ''}
             </div>
         </div>`;
+    }
+    if (block.type === 'premiumLeakHero') {
+        return builderPremiumLeakHeroHtml(block);
+    }
+    if (block.type === 'premiumFunnel') {
+        return builderPremiumFunnelHtml(block);
+    }
+    if (block.type === 'premiumImpactDice') {
+        return builderPremiumImpactDiceHtml(block);
+    }
+    if (block.type === 'premiumCompare') {
+        return builderPremiumCompareHtml(block);
     }
     if (block.type === 'image') {
         const img = block.url ? `<img src="${builderAttr(block.url)}" alt="${builderAttr(block.alt)}" style="display:block; width:${Number(block.width) || 100}%; max-width:100%; height:auto; border:0;">` : '<div style="padding:46px 20px; background:#f1f5f9; color:#64748b; text-align:center;">Select this block and upload an image</div>';
@@ -1249,6 +1522,14 @@ function builderRenderInspector() {
         html += builderInput('Label', 'label') + builderInput('Domain', 'domain') + builderInput('Score Badge', 'score') + builderInput('Issue 1', 'issue1') + builderInput('Issue 2', 'issue2') + builderInput('Issue 3', 'issue3') + builderInput('Issue 4', 'issue4') + builderColor('Background', 'bg') + builderColor('Warning Background', 'warningBg') + builderColor('Warning Text', 'warningColor') + builderColor('Browser Background', 'chromeBg') + builderNumber('Padding', 'padding', 8, 70);
     } else if (block.type === 'ctaPanel') {
         html += builderInput('Title', 'title') + builderTextarea('Text', 'text', 4) + builderInput('Primary Button Text', 'buttonText') + builderInput('Primary Button URL', 'buttonUrl') + builderInput('Secondary Button Text', 'secondaryButtonText') + builderInput('Secondary Button URL', 'secondaryButtonUrl') + builderColor('Background', 'bg') + builderColor('Border', 'border') + builderColor('Primary Button Background', 'buttonBg') + builderColor('Secondary Button Background', 'secondaryButtonBg') + builderColor('Secondary Button Text', 'secondaryButtonColor') + builderColor('Text Color', 'color') + builderNumber('Padding', 'padding', 8, 70);
+    } else if (block.type === 'premiumLeakHero') {
+        html += builderInput('Title Line 1', 'titleLine1') + builderInput('Title Line 2', 'titleLine2') + builderInput('Orange Title Text', 'titleAccent') + builderTextarea('Intro Text', 'text', 4) + builderInput('Button Text', 'buttonText') + builderInput('Button URL', 'buttonUrl') + builderInput('Badge Top Text', 'visualTop') + builderInput('Badge Line 1', 'visualLine1') + builderInput('Badge Line 2', 'visualLine2') + builderColor('Background', 'bg') + builderColor('Text Color', 'textColor') + builderColor('Muted Text', 'muted') + builderColor('Accent', 'accent') + builderColor('Button Background', 'buttonBg') + builderNumber('Padding', 'padding', 8, 60);
+    } else if (block.type === 'premiumFunnel') {
+        html += builderInput('Title Line', 'titleLine1') + builderInput('Orange Title Text', 'titleAccent') + builderTextarea('Body Text', 'text', 4) + builderInput('Funnel Label 1', 'labelOne') + builderInput('Funnel Label 2', 'labelTwo') + builderInput('Funnel Label 3', 'labelThree') + builderInput('Step 1 Title', 'step1Title') + builderInput('Step 1 Text', 'step1Text') + builderInput('Step 2 Title', 'step2Title') + builderInput('Step 2 Text', 'step2Text') + builderInput('Step 3 Title', 'step3Title') + builderInput('Step 3 Text', 'step3Text') + builderInput('Step 4 Title', 'step4Title') + builderInput('Step 4 Text', 'step4Text') + builderColor('Background', 'bg') + builderColor('Accent', 'accent') + builderColor('Funnel Blue', 'blue') + builderNumber('Padding', 'padding', 8, 60);
+    } else if (block.type === 'premiumImpactDice') {
+        html += builderInput('First Emphasis', 'smallWord') + builderInput('First Tail', 'smallTail') + builderInput('Orange Emphasis', 'bigWord') + builderInput('Second Tail', 'bigTail') + builderTextarea('Text', 'text', 4) + builderInput('Button Text', 'buttonText') + builderInput('Button URL', 'buttonUrl') + builderColor('Accent', 'accent') + builderColor('Button Background', 'buttonBg') + builderNumber('Padding', 'padding', 8, 60);
+    } else if (block.type === 'premiumCompare') {
+        html += builderInput('Title', 'title') + builderInput('Left Label', 'leftLabel') + builderInput('Left Percent', 'leftPercent') + builderInput('Left Main Text', 'leftTitle') + builderInput('Left Subtext', 'leftText') + builderInput('Right Label', 'rightLabel') + builderInput('Right Percent', 'rightPercent') + builderInput('Right Main Text', 'rightTitle') + builderInput('Right Subtext', 'rightText') + builderColor('Background', 'bg') + builderColor('Accent', 'accent') + builderNumber('Padding', 'padding', 8, 60);
     } else if (block.type === 'image') {
         html += builderImageControl('Image URL', 'url') + builderInput('Alt Text', 'alt') + builderInput('Link URL', 'link') + builderNumber('Width %', 'width', 20, 100) + builderNumber('Padding', 'padding', 0, 70);
     } else if (block.type === 'button') {
@@ -1413,6 +1694,18 @@ function builderEmailBlock(block) {
             </table>
         </td></tr>`;
     }
+    if (block.type === 'premiumLeakHero') {
+        return `<tr><td style="padding:0;">${builderPremiumLeakHeroHtml(block)}</td></tr>`;
+    }
+    if (block.type === 'premiumFunnel') {
+        return `<tr><td style="padding:0;">${builderPremiumFunnelHtml(block)}</td></tr>`;
+    }
+    if (block.type === 'premiumImpactDice') {
+        return `<tr><td style="padding:0;">${builderPremiumImpactDiceHtml(block)}</td></tr>`;
+    }
+    if (block.type === 'premiumCompare') {
+        return `<tr><td style="padding:0;">${builderPremiumCompareHtml(block)}</td></tr>`;
+    }
     if (block.type === 'image') {
         const img = block.url ? `<img src="${builderAttr(block.url)}" alt="${builderAttr(block.alt)}" width="${Math.round(572 * ((Number(block.width) || 100) / 100))}" style="display:block; width:${Number(block.width) || 100}%; max-width:100%; height:auto; border:0;">` : '';
         return `<tr><td align="center" style="padding:${Number(block.padding) || 0}px 34px;">${block.link ? `<a href="${builderAttr(block.link)}">${img}</a>` : img}</td></tr>`;
@@ -1495,12 +1788,12 @@ function builderGenerateHtml() {
     const rows = builderState.blocks.map(builderEmailBlock).join('');
     return `<!doctype html>
 <html>
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">${builderFontImport()}</head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">${builderFontImport()}${builderResponsiveCss()}</head>
 <body style="margin:0; padding:0; background:${builderAttr(builderState.settings.bg)}; font-family:${builderAttr(builderFontStack())};">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%; background:${builderAttr(builderState.settings.bg)}; border-collapse:collapse;">
 <tr>
 <td align="center" style="padding:24px 12px;">
-<table role="presentation" width="640" cellspacing="0" cellpadding="0" border="0" style="width:100%; max-width:640px; background:${builderAttr(builderState.settings.contentBg)}; border-collapse:collapse; font-family:${builderAttr(builderFontStack())};">
+<table role="presentation" class="mp-container" width="640" cellspacing="0" cellpadding="0" border="0" style="width:100%; max-width:640px; background:${builderAttr(builderState.settings.contentBg)}; border-collapse:collapse; font-family:${builderAttr(builderFontStack())};">
 ${rows}
 </table>
 </td>

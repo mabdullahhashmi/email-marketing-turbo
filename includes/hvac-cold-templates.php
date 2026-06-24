@@ -6,7 +6,7 @@
 function seedHVACColdOutreachTemplates() {
     ensureCampaignTemplatesTable();
 
-    $version = '8';
+    $version = '9';
     $currentVersion = null;
     try {
         $currentVersion = dbFetchValue("SELECT setting_value FROM settings WHERE setting_key = 'hvac_template_pack_version' LIMIT 1");
@@ -116,45 +116,118 @@ function getHVACColdOutreachTemplates() {
         }
     }
 
-    $premiumTemplateHtml = plumberPremiumLandingPageTemplateHtml($calendlyBaseUrl, $websiteBaseUrl);
-    if ($premiumTemplateHtml !== '') {
-        $templates[] = [
-            'name' => 'Plumber Landing Page Premium 01 - Leak Audit Visual',
-            'subject' => 'Stop losing jobs to a weak landing page',
-            'body_html' => $premiumTemplateHtml,
-        ];
-    }
+    $templates[] = [
+        'name' => 'Plumber Landing Page Premium 01 - Leak Audit Visual',
+        'subject' => 'Stop losing jobs to a weak landing page',
+        'body_html' => hvacWebsiteAuditTemplateBodyHtml(plumberPremiumLandingPageTemplateState($calendlyBaseUrl, $websiteBaseUrl)),
+    ];
 
     return $templates;
 }
 
-function plumberPremiumLandingPageTemplateHtml($calendlyBaseUrl, $websiteBaseUrl) {
-    $templatePath = __DIR__ . '/templates/plumber-landing-page-premium.html';
-    if (!is_readable($templatePath)) {
-        return '';
-    }
-
-    $html = file_get_contents($templatePath);
-    if (!is_string($html) || trim($html) === '') {
-        return '';
-    }
-
+function plumberPremiumLandingPageTemplateState($calendlyBaseUrl, $websiteBaseUrl) {
     $auditUrl = $calendlyBaseUrl . '?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_leak_audit';
     $websiteUrl = $websiteBaseUrl . '?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_how_it_works';
 
-    return str_replace(
-        [
-            'https://yourwebsite.com/audit',
-            'https://portfolio.abdullahhashmi.dev/coolbreeze/',
-            'href="#" style="color:#4a6080;text-decoration:underline;">Unsubscribe',
+    return [
+        'settings' => [
+            'bg' => '#eef4fb',
+            'contentBg' => '#ffffff',
+            'accent' => '#ff7a1a',
+            'font' => 'DM Sans',
         ],
-        [
-            $auditUrl,
-            $websiteUrl,
-            'href="{{unsubscribe_link}}" style="color:#4a6080;text-decoration:underline;">Unsubscribe',
+        'blocks' => [
+            hvacWebsiteAuditBlock('premiumLeakHero', 'premium', [
+                'titleLine1' => 'Stop Losing Jobs',
+                'titleLine2' => 'to a',
+                'titleAccent' => 'Weak Landing Page.',
+                'text' => "Let's build a page that brings you more calls, more bookings, and more revenue.",
+                'buttonText' => 'Get My Free Landing Page Audit',
+                'buttonUrl' => $auditUrl,
+                'visualTop' => 'FREE',
+                'visualLine1' => 'Landing Page',
+                'visualLine2' => 'Audit',
+                'bg' => '#0a1f3d',
+                'textColor' => '#ffffff',
+                'muted' => '#d9e6f8',
+                'accent' => '#ff7a1a',
+                'buttonBg' => '#ff7a1a',
+                'padding' => 24,
+            ]),
+            hvacWebsiteAuditBlock('premiumFunnel', 'premium', [
+                'titleLine1' => "More traffic isn't the solution if your",
+                'titleAccent' => 'funnel leaks.',
+                'text' => 'We plug the gaps that are costing you calls and jobs.',
+                'labelOne' => 'Traffic',
+                'labelTwo' => 'CTAs',
+                'labelThree' => 'Follow-up',
+                'step1Title' => 'Visitors',
+                'step1Text' => 'Traffic comes in',
+                'step2Title' => 'Leaky Pages',
+                'step2Text' => 'Visitors drop off',
+                'step3Title' => 'Lost Opportunities',
+                'step3Text' => 'No calls, no bookings',
+                'step4Title' => 'Optimized Landing Page',
+                'step4Text' => 'More calls. More jobs.',
+                'bg' => '#071b34',
+                'accent' => '#ff7a1a',
+                'blue' => '#3367ff',
+                'padding' => 18,
+            ]),
+            hvacWebsiteAuditBlock('premiumImpactDice', 'premium', [
+                'smallWord' => 'Small',
+                'smallTail' => 'moves.',
+                'bigWord' => 'Big',
+                'bigTail' => ' impact.',
+                'text' => "Big impact doesn't come from one big step. It comes from making the small things clear, fast, and easy to act on.",
+                'buttonText' => 'Start Today',
+                'buttonUrl' => $auditUrl,
+                'accent' => '#ff7a1a',
+                'buttonBg' => '#0a1f3d',
+                'padding' => 18,
+            ]),
+            hvacWebsiteAuditBlock('premiumCompare', 'premium', [
+                'title' => 'Convert or Leak..?',
+                'leftLabel' => 'with optimization',
+                'leftPercent' => '68%',
+                'leftTitle' => 'more quote requests',
+                'leftText' => 'from clearer page flow',
+                'rightLabel' => 'without optimization',
+                'rightPercent' => '18%',
+                'rightTitle' => 'visitors bounce',
+                'rightText' => 'before they call',
+                'bg' => '#0a1f3d',
+                'accent' => '#ff8a32',
+                'padding' => 18,
+            ]),
+            hvacWebsiteAuditBlock('ctaPanel', 'premium', [
+                'title' => 'Want me to check your landing page?',
+                'text' => 'I can send 2-3 clear improvements that may help more plumbing visitors call, request a quote, or book a job.',
+                'buttonText' => 'Get Free Audit',
+                'buttonUrl' => $auditUrl,
+                'secondaryButtonText' => 'See How It Works',
+                'secondaryButtonUrl' => $websiteUrl,
+                'bg' => '#eef5ff',
+                'border' => '#bfd7ff',
+                'buttonBg' => '#ff7a1a',
+                'secondaryButtonBg' => '#ffffff',
+                'secondaryButtonColor' => '#0a1f3d',
+                'color' => '#0f172a',
+                'padding' => 30,
+            ]),
+            hvacWebsiteAuditBlock('signature', 'premium', [
+                'name' => 'Abdullah Hashmi',
+                'title' => 'Website & Landing Page Specialist',
+                'website' => 'abdullahhashmi.com',
+                'note' => 'You are receiving this because I thought this may be relevant to your business. If not interested, reply "not interested" and I will not contact you again. Unsubscribe: {{unsubscribe_link}}',
+                'avatarText' => 'AH',
+                'bg' => '#ffffff',
+                'color' => '#0f172a',
+                'muted' => '#64748b',
+                'padding' => 24,
+            ]),
         ],
-        $html
-    );
+    ];
 }
 
 function hvacWebsiteAuditTemplateState($number, $angle, $style, $theme, $auditUrl, $websiteUrl) {
