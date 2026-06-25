@@ -261,6 +261,110 @@ function mailpilotBuilderBlockValue($block, $key, $default = '') {
     return $block[$key] ?? $default;
 }
 
+function mailpilotBuilderFaIcons() {
+    return [
+        'chart-line' => [
+            'viewBox' => '0 0 512 512',
+            'path' => 'M64 64c0-17.7-14.3-32-32-32S0 46.3 0 64V400c0 44.2 35.8 80 80 80H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H80c-8.8 0-16-7.2-16-16V64zm406.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L320 210.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L240 221.3l57.4 57.4c12.5 12.5 32.8 12.5 45.3 0l128-128z',
+        ],
+        'dollar-sign' => [
+            'viewBox' => '0 0 320 512',
+            'path' => 'M160 0c17.7 0 32 14.3 32 32V67.7c20.3 1.9 40 6.5 58.2 13.4c16.5 6.2 24.9 24.6 18.6 41.2s-24.6 24.9-41.2 18.6c-18.1-6.8-38.6-10.5-57.7-10.5c-36.3 0-65.9 14.7-65.9 32.8c0 16.6 21.5 27.2 75.6 41.7l3.4 .9c62.9 16.8 117 43.2 117 110.3c0 59.4-48.9 101.1-108 109.8V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V426.4c-28.2-3.1-55.4-12.4-79.5-27.2c-15.1-9.2-19.8-28.9-10.6-44s28.9-19.8 44-10.6c24.5 15 52.4 22.9 80.4 22.9c41.8 0 74.8-16.6 74.8-43.6c0-20.6-14.3-33.1-78.2-50.1l-3.4-.9C86.2 257.2 40 232.1 40 164.2c0-55.7 45.9-93.2 88-102.8V32c0-17.7 14.3-32 32-32z',
+        ],
+        'calendar-check' => [
+            'viewBox' => '0 0 448 512',
+            'path' => 'M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16H448V128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24zM448 192H0V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192zM331.3 304.7l-112 112c-6.2 6.2-16.4 6.2-22.6 0l-56-56c-6.2-6.2-6.2-16.4 0-22.6s16.4-6.2 22.6 0L208 382.7l100.7-100.7c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z',
+        ],
+        'bullseye' => [
+            'viewBox' => '0 0 512 512',
+            'path' => 'M448 256A192 192 0 1 0 64 256a192 192 0 1 0 384 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm256 80a80 80 0 1 0 0-160 80 80 0 1 0 0 160zm0-224a144 144 0 1 1 0 288 144 144 0 1 1 0-288zm0 176a32 32 0 1 0 0-64 32 32 0 1 0 0 64z',
+        ],
+        'mobile-screen-button' => [
+            'viewBox' => '0 0 384 512',
+            'path' => 'M16 64C16 28.7 44.7 0 80 0H304c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H80c-35.3 0-64-28.7-64-64V64zM224 448a32 32 0 1 0-64 0a32 32 0 1 0 64 0zM304 64H80V384H304V64z',
+        ],
+        'shield-halved' => [
+            'viewBox' => '0 0 512 512',
+            'path' => 'M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 36.3 30.9 36.3 54.8c0 116.6-65.5 225.4-169.9 278.2l-54.7 27.7c-8.5 4.3-18.3 4.3-26.8 0l-54.7-27.7C83.5 363 18 254.2 18 137.6c0-23.9 14.3-45.5 36.3-54.8L242.6 2.9C246.8 1 251.4 0 256 0z',
+        ],
+        'bolt' => [
+            'viewBox' => '0 0 448 512',
+            'path' => 'M349.4 44.6c5.9-13.7 1.5-29.7-10.6-38.5s-28.7-8.8-39.7 1.3L31.4 255.4c-10.1 9.4-13.4 24-8.3 36.8s17 21.4 30.8 21.4H184.1L98.6 467.4c-7.3 13.1-3.1 29.6 10.2 38.2s30.8 7.7 43.2-2.6L416.6 224.6c9.5-10 12.2-24.6 6.8-37.2s-15.9-21-29.6-21H262.5L349.4 44.6z',
+        ],
+        'database' => [
+            'viewBox' => '0 0 448 512',
+            'path' => 'M448 80v48c0 44.2-100.3 80-224 80S0 172.2 0 128V80C0 35.8 100.3 0 224 0S448 35.8 448 80zM393.2 214.7c20.8-7.4 39.9-16.9 54.8-28.6V288c0 44.2-100.3 80-224 80S0 332.2 0 288V186.1c14.9 11.8 34 21.2 54.8 28.6C99.7 230.7 159.5 240 224 240s124.3-9.3 169.2-25.3zM0 346.1c14.9 11.8 34 21.2 54.8 28.6C99.7 390.7 159.5 400 224 400s124.3-9.3 169.2-25.3c20.8-7.4 39.9-16.9 54.8-28.6V432c0 44.2-100.3 80-224 80S0 476.2 0 432V346.1z',
+        ],
+        'pen-to-square' => [
+            'viewBox' => '0 0 512 512',
+            'path' => 'M471.6 21.7c-23.6-23.6-61.9-23.6-85.5 0L362.3 45.5l104 104l23.8-23.8c23.6-23.6 23.6-61.9 0-85.5L471.6 21.7zM21.7 386.1C7.8 400 0 418.9 0 438.6V480c0 17.7 14.3 32 32 32H73.4c19.7 0 38.6-7.8 52.5-21.7L444.7 171.5l-104-104L21.7 386.1z',
+        ],
+        'phone' => [
+            'viewBox' => '0 0 512 512',
+            'path' => 'M164.9 24.6c-7.7-18.6-28-28.5-46.6-20.8L39.4 36.7C21.7 44.1 9.7 60.7 8.1 79.8c-7.8 96.1 23.4 189.4 89.3 255.3s159.2 97.1 255.3 89.3c19.1-1.6 35.7-13.6 43.1-31.3l32.9-78.9c7.7-18.6-2.2-38.9-20.8-46.6l-86.7-36.1c-16.3-6.8-35.2-2.1-46.6 11.4l-37.1 43.6c-49.7-25.6-90.4-66.3-116-116l43.6-37.1c13.5-11.5 18.2-30.3 11.4-46.6L164.9 24.6z',
+        ],
+    ];
+}
+
+function mailpilotBuilderFaIconName($label) {
+    $key = strtolower(trim((string)$label));
+    $map = [
+        '+' => 'chart-line',
+        'more leads' => 'chart-line',
+        'lead' => 'chart-line',
+        'leads' => 'chart-line',
+        '$' => 'dollar-sign',
+        'cost' => 'dollar-sign',
+        'lower cost' => 'dollar-sign',
+        'b' => 'calendar-check',
+        'booked' => 'calendar-check',
+        'booking' => 'calendar-check',
+        'calendar' => 'calendar-check',
+        'c' => 'bullseye',
+        'cta' => 'bullseye',
+        'conversion' => 'bullseye',
+        'clear ctas' => 'bullseye',
+        'm' => 'mobile-screen-button',
+        'mobile' => 'mobile-screen-button',
+        'mobile-friendly' => 'mobile-screen-button',
+        't' => 'shield-halved',
+        'trust' => 'shield-halved',
+        'trust proof' => 'shield-halved',
+        's' => 'bolt',
+        'speed' => 'bolt',
+        'fast' => 'bolt',
+        'f' => 'bolt',
+        'd' => 'database',
+        'data' => 'database',
+        'q' => 'pen-to-square',
+        'quote' => 'pen-to-square',
+        'quotes' => 'pen-to-square',
+        'p' => 'phone',
+        'phone' => 'phone',
+        'call' => 'phone',
+        'calls' => 'phone',
+    ];
+
+    return $map[$key] ?? 'chart-line';
+}
+
+function mailpilotBuilderFaIconSvg($label, $color = 'currentColor', $size = 14, $display = 'inline-block') {
+    $icons = mailpilotBuilderFaIcons();
+    $name = mailpilotBuilderFaIconName($label);
+    $icon = $icons[$name] ?? $icons['chart-line'];
+    $size = max(8, (int)$size);
+    $style = $display === 'block'
+        ? 'display:block;margin:0 auto;line-height:1;'
+        : 'display:inline-block;vertical-align:-2px;line-height:1;';
+
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="' . $size . '" height="' . $size . '" viewBox="' . mailpilotBuilderAttr($icon['viewBox']) . '" fill="' . mailpilotBuilderAttr($color) . '" style="' . $style . '" aria-hidden="true"><path d="' . mailpilotBuilderAttr($icon['path']) . '"/></svg>';
+}
+
+function mailpilotBuilderIconBadge($label, $bg = '#fff5eb', $color = '#f47c20', $size = 42, $iconSize = 16, $radius = 14, $margin = '0 auto 10px auto') {
+    $size = (int)$size;
+    return '<table role="presentation" width="' . $size . '" height="' . $size . '" cellspacing="0" cellpadding="0" border="0" style="width:' . $size . 'px;height:' . $size . 'px;border-radius:' . (int)$radius . 'px;background:' . mailpilotBuilderAttr($bg) . ';margin:' . mailpilotBuilderAttr($margin) . ';box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 8px 18px rgba(244,124,32,.12);border-collapse:separate;"><tr><td align="center" valign="middle" style="line-height:1;">' . mailpilotBuilderFaIconSvg($label, $color, $iconSize, 'block') . '</td></tr></table>';
+}
+
 function mailpilotBuilderPremiumBlockHtml($block, $state) {
     $type = $block['type'] ?? '';
     $fontStack = mailpilotBuilderFontStack(mailpilotBuilderSetting($state, 'font', 'Poppins'));
@@ -276,29 +380,11 @@ function mailpilotBuilderPremiumBlockHtml($block, $state) {
     $lines = function($key, $default = '') use ($get) {
         return mailpilotBuilderLines($get($key, $default));
     };
-    $iconSymbol = function($label) {
-        $map = [
-            '+' => '&#8599;',
-            '$' => '$',
-            'B' => '&#10003;',
-            'C' => '&#8599;',
-            'M' => '&#9637;',
-            'T' => '&#9733;',
-            'S' => '&#9889;',
-            'D' => '&#9635;',
-            'F' => '&#9889;',
-            'P' => '&#9742;',
-            'Q' => '&#9998;',
-            'phone' => '&#9742;',
-            'quote' => '&#9998;',
-            'booked' => '&#10003;',
-        ];
-        $key = (string)$label;
-        return $map[$key] ?? mailpilotBuilderEsc($key);
+    $iconSymbol = function($label, $color = 'currentColor', $size = 14) {
+        return mailpilotBuilderFaIconSvg($label, $color, $size);
     };
-    $iconHtml = function($label, $bg = '#fff5eb', $color = '#f47c20', $size = 42, $fontSize = 16, $radius = 14, $margin = '0 auto 10px auto') use ($iconSymbol) {
-        $size = (int)$size;
-        return '<div style="width:' . $size . 'px;height:' . $size . 'px;border-radius:' . (int)$radius . 'px;background:' . mailpilotBuilderAttr($bg) . ';color:' . mailpilotBuilderAttr($color) . ';font-size:' . (int)$fontSize . 'px;line-height:' . $size . 'px;text-align:center;font-weight:700;margin:' . mailpilotBuilderAttr($margin) . ';box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 8px 18px rgba(244,124,32,.12);">' . $iconSymbol($label) . '</div>';
+    $iconHtml = function($label, $bg = '#fff5eb', $color = '#f47c20', $size = 42, $fontSize = 16, $radius = 14, $margin = '0 auto 10px auto') {
+        return mailpilotBuilderIconBadge($label, $bg, $color, $size, $fontSize, $radius, $margin);
     };
     $pipeGraphic = function() use ($esc, $attr) {
         return '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#102641;background-image:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,0));"><tr><td align="center" style="padding:24px 10px;"><table role="presentation" width="218" cellspacing="0" cellpadding="0" border="0" style="width:218px;max-width:100%;border-collapse:separate;"><tr><td width="86">&nbsp;</td><td align="center" colspan="2"><div style="height:20px;line-height:20px;border-radius:999px;background:#cfd7df;background-image:linear-gradient(#f1f5f9,#aeb8c1);box-shadow:0 5px 0 rgba(0,0,0,.18);font-size:1px;">&nbsp;</div></td></tr><tr><td width="112" align="center" valign="top" style="padding-top:8px;"><div style="width:104px;height:84px;border-radius:999px;background:#ffffff;color:#0b1d3a;text-align:center;padding-top:20px;box-shadow:0 20px 42px rgba(0,0,0,.22);"><div style="font-size:24px;color:' . $attr('accent', '#f47c20') . ';font-weight:700;line-height:1;">' . $esc('visualTop', 'FREE') . '</div><div style="font-size:12px;font-weight:700;padding-top:5px;line-height:1.25;">' . $esc('visualLine1', 'Landing Page') . '<br>' . $esc('visualLine2', 'Audit') . '</div></div></td><td width="106" align="center" valign="top"><div style="width:62px;height:74px;border-left:22px solid #b7c0c7;border-right:22px solid #b7c0c7;border-bottom:22px solid #b7c0c7;border-top:0;border-radius:0 0 58px 58px;line-height:1px;font-size:1px;">&nbsp;</div></td></tr></table></td></tr></table>';
@@ -360,7 +446,7 @@ function mailpilotBuilderPremiumBlockHtml($block, $state) {
                     <div style="background:#ffffff;border:1px solid #dde5f0;border-radius:18px;overflow:hidden;box-shadow:0 20px 55px rgba(8,24,50,.14);">
                         <div style="padding:17px 20px 16px 20px;background:#0b1d3a;background-image:linear-gradient(90deg,rgba(11,29,58,.98),rgba(11,29,58,.82));"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td><span style="display:inline-block;background:rgba(244,124,32,.16);color:#fb923c;border:1px solid rgba(251,146,60,.22);padding:6px 9px;border-radius:999px;font-size:8px;letter-spacing:.11em;font-weight:700;text-transform:uppercase;">' . $esc('cardPill') . '</span></td><td align="right" style="font-size:10px;color:' . $muted . ';font-weight:700;">' . $esc('cardMeta') . '</td></tr></table><div style="font-size:20px;line-height:1.14;margin:13px 0 0 0;font-weight:700;letter-spacing:-.7px;color:#ffffff;max-width:165px;">' . $lines('cardTitle') . '</div><div style="font-size:11px;line-height:1.48;margin:8px 0 0 0;color:' . $muted . ';max-width:175px;">' . $lines('cardText') . '</div></div>
                         <div style="padding:18px 18px 14px 18px;background:#ffffff;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td width="38%" align="center" valign="middle" style="padding-right:12px;"><div style="width:98px;height:98px;border-radius:50%;background:' . $accent . ';padding:7px;box-shadow:0 18px 40px rgba(244,124,32,.18);"><div style="width:84px;height:84px;border-radius:50%;background:#ffffff;text-align:center;padding-top:22px;"><div style="font-size:24px;line-height:1;font-weight:700;letter-spacing:-1px;color:#0b1d3a;">' . $esc('score') . '</div><div style="font-size:11px;font-weight:700;color:#4a6080;">/ 100</div></div></div><div style="font-size:8px;color:#4a6080;font-weight:700;padding-top:8px;letter-spacing:.08em;text-transform:uppercase;line-height:1.3;">' . $esc('scoreLabel') . '</div></td><td width="62%" valign="middle"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">' . $row($get('check1Title'), $get('check1Text'), 'C') . $row($get('check2Title'), $get('check2Text'), 'M') . $row($get('check3Title'), $get('check3Text'), 'T', false) . '</table></td></tr></table></div>
-                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#0d2347;color:#ffffff;"><tr><td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:700;color:#ffffff;"><span style="color:' . $accent . ';font-size:13px;">' . $iconSymbol('P') . '</span><br><span style="font-size:8px;color:' . $muted . ';font-weight:700;">' . $esc('bottom1') . '</span></td><td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:700;color:#ffffff;"><span style="color:' . $accent . ';font-size:13px;">' . $iconSymbol('Q') . '</span><br><span style="font-size:8px;color:' . $muted . ';font-weight:700;">' . $esc('bottom2') . '</span></td><td align="center" style="padding:11px 8px;font-size:10px;font-weight:700;color:#ffffff;"><span style="color:' . $accent . ';font-size:13px;">' . $iconSymbol('B') . '</span><br><span style="font-size:8px;color:' . $muted . ';font-weight:700;">' . $esc('bottom3') . '</span></td></tr></table>
+                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#0d2347;color:#ffffff;"><tr><td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:700;color:#ffffff;"><span style="color:' . $accent . ';font-size:13px;">' . $iconSymbol('P', $accent, 13) . '</span><br><span style="font-size:8px;color:' . $muted . ';font-weight:700;">' . $esc('bottom1') . '</span></td><td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:700;color:#ffffff;"><span style="color:' . $accent . ';font-size:13px;">' . $iconSymbol('Q', $accent, 13) . '</span><br><span style="font-size:8px;color:' . $muted . ';font-weight:700;">' . $esc('bottom2') . '</span></td><td align="center" style="padding:11px 8px;font-size:10px;font-weight:700;color:#ffffff;"><span style="color:' . $accent . ';font-size:13px;">' . $iconSymbol('B', $accent, 13) . '</span><br><span style="font-size:8px;color:' . $muted . ';font-weight:700;">' . $esc('bottom3') . '</span></td></tr></table>
                     </div>
                 </td>
             </tr></table>
@@ -389,7 +475,7 @@ function mailpilotBuilderPremiumBlockHtml($block, $state) {
         $padding = mailpilotBuilderNum($get('padding', 28));
         $accent = $attr('accent', '#f47c20');
         $item = function($text, $icon, $last = false) use ($accent, $iconSymbol) {
-            return '<td width="25%" align="center" valign="top" style="' . ($last ? '' : 'border-right:1px solid #dde5f0;') . 'padding:0 7px;"><div style="font-size:24px;line-height:1;color:' . $accent . ';font-weight:700;">' . $iconSymbol($icon) . '</div><div style="font-size:10px;line-height:1.45;font-weight:700;color:#0b1d3a;padding-top:8px;">' . mailpilotBuilderLines($text) . '</div></td>';
+            return '<td width="25%" align="center" valign="top" style="' . ($last ? '' : 'border-right:1px solid #dde5f0;') . 'padding:0 7px;"><div style="font-size:24px;line-height:1;color:' . $accent . ';font-weight:700;">' . $iconSymbol($icon, $accent, 24) . '</div><div style="font-size:10px;line-height:1.45;font-weight:700;color:#0b1d3a;padding-top:8px;">' . mailpilotBuilderLines($text) . '</div></td>';
         };
         return '<tr><td style="padding:0 28px ' . $padding . 'px 28px;background:#ffffff;"><div style="border:1px solid #dde5f0;border-radius:14px;padding:20px 12px;background:#ffffff;box-shadow:0 10px 34px rgba(9,17,22,.04);text-align:center;"><div style="font-size:16px;line-height:1.35;font-weight:700;color:#1e3048;padding-bottom:17px;">' . $esc('title') . '</div><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr>' . $item($get('item1'), '+') . $item($get('item2'), 'M') . $item($get('item3'), 'F') . $item($get('item4'), 'C', true) . '</tr></table></div></td></tr>';
     }
@@ -403,7 +489,7 @@ function mailpilotBuilderPremiumBlockHtml($block, $state) {
     if ($type === 'premiumPlumberFooter') {
         $padding = mailpilotBuilderNum($get('padding', 26));
         $accent = $attr('accent', '#f47c20');
-        return '<tr><td style="padding:' . $padding . 'px 28px 20px 28px;background:' . $attr('bg', '#f7f9fc') . ';border-top:1px solid #dde5f0;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="mp-stack" width="48%" valign="top" style="padding-right:18px;"><div style="font-size:23px;font-weight:700;letter-spacing:0;color:#0b1d3a;line-height:.72;">' . $esc('brand', 'Abdullah') . '<span style="color:' . $accent . ';">.</span><br><span style="font-size:7px;font-weight:700;letter-spacing:.28em;color:#8fa3bf;text-transform:uppercase;">' . $esc('tagline', 'GROWTH EXPERT') . '</span></div><div style="font-size:12px;line-height:1.55;color:' . $attr('muted', '#4a6080') . ';padding-top:14px;">' . $lines('text') . '</div></td><td class="mp-hide-mobile" width="4%" style="border-left:1px solid #dde5f0;font-size:1px;line-height:1px;">&nbsp;</td><td class="mp-stack mp-mobile-top" width="48%" valign="top" style="padding-left:24px;"><div style="font-size:16px;line-height:1.35;font-weight:700;color:#1e3048;">' . $esc('title') . '</div><table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-top:12px;"><tr><td style="font-size:14px;padding:4px 9px 4px 0;color:' . $accent . ';font-weight:700;">' . $iconSymbol('P') . '</td><td style="font-size:12px;line-height:1.55;color:#0d2347;">' . $esc('phone') . '</td></tr></table></td></tr></table><div style="font-size:10px;line-height:1.45;color:' . $attr('muted', '#4a6080') . ';text-align:center;padding-top:24px;margin:0;">' . $lines('note') . '</div></td></tr>';
+        return '<tr><td style="padding:' . $padding . 'px 28px 20px 28px;background:' . $attr('bg', '#f7f9fc') . ';border-top:1px solid #dde5f0;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td class="mp-stack" width="48%" valign="top" style="padding-right:18px;"><div style="font-size:23px;font-weight:700;letter-spacing:0;color:#0b1d3a;line-height:.72;">' . $esc('brand', 'Abdullah') . '<span style="color:' . $accent . ';">.</span><br><span style="font-size:7px;font-weight:700;letter-spacing:.28em;color:#8fa3bf;text-transform:uppercase;">' . $esc('tagline', 'GROWTH EXPERT') . '</span></div><div style="font-size:12px;line-height:1.55;color:' . $attr('muted', '#4a6080') . ';padding-top:14px;">' . $lines('text') . '</div></td><td class="mp-hide-mobile" width="4%" style="border-left:1px solid #dde5f0;font-size:1px;line-height:1px;">&nbsp;</td><td class="mp-stack mp-mobile-top" width="48%" valign="top" style="padding-left:24px;"><div style="font-size:16px;line-height:1.35;font-weight:700;color:#1e3048;">' . $esc('title') . '</div><table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-top:12px;"><tr><td style="font-size:14px;padding:4px 9px 4px 0;color:' . $accent . ';font-weight:700;">' . $iconSymbol('P', $accent, 14) . '</td><td style="font-size:12px;line-height:1.55;color:#0d2347;">' . $esc('phone') . '</td></tr></table></td></tr></table><div style="font-size:10px;line-height:1.45;color:' . $attr('muted', '#4a6080') . ';text-align:center;padding-top:24px;margin:0;">' . $lines('note') . '</div></td></tr>';
     }
 
     if ($type === 'premiumFunnel') {
@@ -482,7 +568,7 @@ function mailpilotBuilderBlockHtml($block, $state) {
     if ($type === 'auditGrid') {
         $card = function($icon, $title, $text) use ($block) {
             return '<td width="50%" valign="top" style="padding:7px;"><div style="border:1px solid ' . mailpilotBuilderAttr($block['border'] ?? '#dbe3ef') . '; background:' . mailpilotBuilderAttr($block['cardBg'] ?? '#f8fafc') . '; border-radius:10px; padding:18px;">
-                <div style="display:inline-block; background:' . mailpilotBuilderAttr($block['iconBg'] ?? '#eff6ff') . '; color:' . mailpilotBuilderAttr($block['iconColor'] ?? '#2563eb') . '; border-radius:10px; padding:8px 10px; font-size:12px; font-weight:bold; margin-bottom:14px;">' . mailpilotBuilderEsc($icon) . '</div>
+                ' . mailpilotBuilderIconBadge($icon, $block['iconBg'] ?? '#eff6ff', $block['iconColor'] ?? '#2563eb', 38, 15, 10, '0 0 14px 0') . '
                 <div style="font-weight:bold; color:#0f172a; margin-bottom:8px;">' . mailpilotBuilderEsc($title) . '</div>
                 <div style="font-size:13px; color:#475569; line-height:1.55;">' . mailpilotBuilderLines($text) . '</div>
             </div></td>';

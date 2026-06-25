@@ -720,9 +720,9 @@ function builderBlock(type, data = {}) {
             title: 'Want me to check your website?',
             text: 'I can send a quick free audit with 2-3 improvements that may help your plumbing website get more calls and quote requests.',
             buttonText: 'Get Free Website Audit',
-            buttonUrl: '#',
+            buttonUrl: 'https://calendly.com/mu-abdullahhashmi/30min?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_builder_audit',
             secondaryButtonText: 'How It Works',
-            secondaryButtonUrl: '#',
+            secondaryButtonUrl: 'https://abdullahhashmi.com/plumbers-growth-expert/?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_builder_how_it_works',
             bg: '#eff6ff',
             border: '#bfdbfe',
             buttonBg: '#2563eb',
@@ -816,7 +816,7 @@ function builderBlock(type, data = {}) {
             titleAccent: 'Weak Landing Page.',
             text: "Let's build a page that brings you more calls, more bookings, and more revenue.",
             buttonText: 'Get My Free Landing Page Audit',
-            buttonUrl: '#',
+            buttonUrl: 'https://calendly.com/mu-abdullahhashmi/30min?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_leak_audit',
             visualTop: 'FREE',
             visualLine1: 'Landing Page',
             visualLine2: 'Audit',
@@ -854,7 +854,7 @@ function builderBlock(type, data = {}) {
             bigTail: ' impact.',
             text: "Big impact doesn't come from one big step. It comes from making the small things clear, fast, and easy to act on.",
             buttonText: 'Start Today',
-            buttonUrl: '#',
+            buttonUrl: 'https://calendly.com/mu-abdullahhashmi/30min?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_leak_audit',
             accent: '#ff7a1a',
             buttonBg: '#0a1f3d',
             padding: 18,
@@ -877,7 +877,7 @@ function builderBlock(type, data = {}) {
             title: 'Ready to turn more clicks into booked plumbing jobs?',
             text: "Send us your landing page and we'll show the biggest conversion leaks.",
             buttonText: 'Book Free Audit',
-            buttonUrl: '#',
+            buttonUrl: 'https://calendly.com/mu-abdullahhashmi/30min?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_leak_audit',
             note: 'No pressure. No hard pitch.',
             bg: '#fff5eb',
             border: '#fbd6bd',
@@ -1311,28 +1311,105 @@ function builderPreviewBlock(block) {
     `;
 }
 
-function builderPremiumIconSymbol(label) {
+const builderFaIcons = {
+    'chart-line': {
+        viewBox: '0 0 512 512',
+        path: 'M64 64c0-17.7-14.3-32-32-32S0 46.3 0 64V400c0 44.2 35.8 80 80 80H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H80c-8.8 0-16-7.2-16-16V64zm406.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L320 210.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L240 221.3l57.4 57.4c12.5 12.5 32.8 12.5 45.3 0l128-128z',
+    },
+    'dollar-sign': {
+        viewBox: '0 0 320 512',
+        path: 'M160 0c17.7 0 32 14.3 32 32V67.7c20.3 1.9 40 6.5 58.2 13.4c16.5 6.2 24.9 24.6 18.6 41.2s-24.6 24.9-41.2 18.6c-18.1-6.8-38.6-10.5-57.7-10.5c-36.3 0-65.9 14.7-65.9 32.8c0 16.6 21.5 27.2 75.6 41.7l3.4 .9c62.9 16.8 117 43.2 117 110.3c0 59.4-48.9 101.1-108 109.8V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V426.4c-28.2-3.1-55.4-12.4-79.5-27.2c-15.1-9.2-19.8-28.9-10.6-44s28.9-19.8 44-10.6c24.5 15 52.4 22.9 80.4 22.9c41.8 0 74.8-16.6 74.8-43.6c0-20.6-14.3-33.1-78.2-50.1l-3.4-.9C86.2 257.2 40 232.1 40 164.2c0-55.7 45.9-93.2 88-102.8V32c0-17.7 14.3-32 32-32z',
+    },
+    'calendar-check': {
+        viewBox: '0 0 448 512',
+        path: 'M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16H448V128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24zM448 192H0V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192zM331.3 304.7l-112 112c-6.2 6.2-16.4 6.2-22.6 0l-56-56c-6.2-6.2-6.2-16.4 0-22.6s16.4-6.2 22.6 0L208 382.7l100.7-100.7c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z',
+    },
+    bullseye: {
+        viewBox: '0 0 512 512',
+        path: 'M448 256A192 192 0 1 0 64 256a192 192 0 1 0 384 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm256 80a80 80 0 1 0 0-160 80 80 0 1 0 0 160zm0-224a144 144 0 1 1 0 288 144 144 0 1 1 0-288zm0 176a32 32 0 1 0 0-64 32 32 0 1 0 0 64z',
+    },
+    'mobile-screen-button': {
+        viewBox: '0 0 384 512',
+        path: 'M16 64C16 28.7 44.7 0 80 0H304c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H80c-35.3 0-64-28.7-64-64V64zM224 448a32 32 0 1 0-64 0a32 32 0 1 0 64 0zM304 64H80V384H304V64z',
+    },
+    'shield-halved': {
+        viewBox: '0 0 512 512',
+        path: 'M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 36.3 30.9 36.3 54.8c0 116.6-65.5 225.4-169.9 278.2l-54.7 27.7c-8.5 4.3-18.3 4.3-26.8 0l-54.7-27.7C83.5 363 18 254.2 18 137.6c0-23.9 14.3-45.5 36.3-54.8L242.6 2.9C246.8 1 251.4 0 256 0z',
+    },
+    bolt: {
+        viewBox: '0 0 448 512',
+        path: 'M349.4 44.6c5.9-13.7 1.5-29.7-10.6-38.5s-28.7-8.8-39.7 1.3L31.4 255.4c-10.1 9.4-13.4 24-8.3 36.8s17 21.4 30.8 21.4H184.1L98.6 467.4c-7.3 13.1-3.1 29.6 10.2 38.2s30.8 7.7 43.2-2.6L416.6 224.6c9.5-10 12.2-24.6 6.8-37.2s-15.9-21-29.6-21H262.5L349.4 44.6z',
+    },
+    database: {
+        viewBox: '0 0 448 512',
+        path: 'M448 80v48c0 44.2-100.3 80-224 80S0 172.2 0 128V80C0 35.8 100.3 0 224 0S448 35.8 448 80zM393.2 214.7c20.8-7.4 39.9-16.9 54.8-28.6V288c0 44.2-100.3 80-224 80S0 332.2 0 288V186.1c14.9 11.8 34 21.2 54.8 28.6C99.7 230.7 159.5 240 224 240s124.3-9.3 169.2-25.3zM0 346.1c14.9 11.8 34 21.2 54.8 28.6C99.7 390.7 159.5 400 224 400s124.3-9.3 169.2-25.3c20.8-7.4 39.9-16.9 54.8-28.6V432c0 44.2-100.3 80-224 80S0 476.2 0 432V346.1z',
+    },
+    'pen-to-square': {
+        viewBox: '0 0 512 512',
+        path: 'M471.6 21.7c-23.6-23.6-61.9-23.6-85.5 0L362.3 45.5l104 104l23.8-23.8c23.6-23.6 23.6-61.9 0-85.5L471.6 21.7zM21.7 386.1C7.8 400 0 418.9 0 438.6V480c0 17.7 14.3 32 32 32H73.4c19.7 0 38.6-7.8 52.5-21.7L444.7 171.5l-104-104L21.7 386.1z',
+    },
+    phone: {
+        viewBox: '0 0 512 512',
+        path: 'M164.9 24.6c-7.7-18.6-28-28.5-46.6-20.8L39.4 36.7C21.7 44.1 9.7 60.7 8.1 79.8c-7.8 96.1 23.4 189.4 89.3 255.3s159.2 97.1 255.3 89.3c19.1-1.6 35.7-13.6 43.1-31.3l32.9-78.9c7.7-18.6-2.2-38.9-20.8-46.6l-86.7-36.1c-16.3-6.8-35.2-2.1-46.6 11.4l-37.1 43.6c-49.7-25.6-90.4-66.3-116-116l43.6-37.1c13.5-11.5 18.2-30.3 11.4-46.6L164.9 24.6z',
+    },
+};
+
+function builderFaIconName(label) {
+    const key = String(label || '').trim().toLowerCase();
     const map = {
-        '+': '&#8599;',
-        '$': '$',
-        B: '&#10003;',
-        C: '&#8599;',
-        M: '&#9637;',
-        T: '&#9733;',
-        S: '&#9889;',
-        D: '&#9635;',
-        F: '&#9889;',
-        P: '&#9742;',
-        Q: '&#9998;',
-        phone: '&#9742;',
-        quote: '&#9998;',
-        booked: '&#10003;',
+        '+': 'chart-line',
+        'more leads': 'chart-line',
+        lead: 'chart-line',
+        leads: 'chart-line',
+        '$': 'dollar-sign',
+        cost: 'dollar-sign',
+        'lower cost': 'dollar-sign',
+        b: 'calendar-check',
+        booked: 'calendar-check',
+        booking: 'calendar-check',
+        calendar: 'calendar-check',
+        c: 'bullseye',
+        cta: 'bullseye',
+        conversion: 'bullseye',
+        'clear ctas': 'bullseye',
+        m: 'mobile-screen-button',
+        mobile: 'mobile-screen-button',
+        'mobile-friendly': 'mobile-screen-button',
+        t: 'shield-halved',
+        trust: 'shield-halved',
+        'trust proof': 'shield-halved',
+        s: 'bolt',
+        speed: 'bolt',
+        fast: 'bolt',
+        f: 'bolt',
+        d: 'database',
+        data: 'database',
+        q: 'pen-to-square',
+        quote: 'pen-to-square',
+        quotes: 'pen-to-square',
+        p: 'phone',
+        phone: 'phone',
+        call: 'phone',
+        calls: 'phone',
     };
-    return map[String(label)] || builderEsc(label);
+    return map[key] || 'chart-line';
+}
+
+function builderFaIconSvg(label, color = 'currentColor', size = 14, display = 'inline-block') {
+    const icon = builderFaIcons[builderFaIconName(label)] || builderFaIcons['chart-line'];
+    const iconSize = Math.max(8, Number(size) || 14);
+    const style = display === 'block'
+        ? 'display:block;margin:0 auto;line-height:1;'
+        : 'display:inline-block;vertical-align:-2px;line-height:1;';
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${iconSize}" height="${iconSize}" viewBox="${builderAttr(icon.viewBox)}" fill="${builderAttr(color)}" style="${style}" aria-hidden="true"><path d="${builderAttr(icon.path)}"></path></svg>`;
+}
+
+function builderPremiumIconSymbol(label, color = 'currentColor', size = 14) {
+    return builderFaIconSvg(label, color, size);
 }
 
 function builderPremiumIcon(label, bg = '#fff5eb', color = '#f47c20', size = 42, fontSize = 16, radius = 14, margin = '0 auto 10px auto') {
-    return `<div style="width:${size}px;height:${size}px;border-radius:${radius}px;background:${builderAttr(bg)};color:${builderAttr(color)};font-size:${fontSize}px;line-height:${size}px;text-align:center;font-weight:700;margin:${margin};box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 8px 18px rgba(244,124,32,.12);">${builderPremiumIconSymbol(label)}</div>`;
+    return `<table role="presentation" width="${size}" height="${size}" cellspacing="0" cellpadding="0" border="0" style="width:${size}px;height:${size}px;border-radius:${radius}px;background:${builderAttr(bg)};margin:${margin};box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 8px 18px rgba(244,124,32,.12);border-collapse:separate;"><tr><td align="center" valign="middle" style="line-height:1;">${builderFaIconSvg(label, color, fontSize, 'block')}</td></tr></table>`;
 }
 
 function builderPremiumMiniIcon(label, bg = '#fff5eb', color = '#f47c20') {
@@ -1410,9 +1487,9 @@ function builderPremiumPlumberHeroScoreHtml(block) {
                             </div>
                             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#0d2347;color:#ffffff;">
                                 <tr>
-                                    <td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:13px;">${builderPremiumIconSymbol('P')}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom1)}</span></td>
-                                    <td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:13px;">${builderPremiumIconSymbol('Q')}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom2)}</span></td>
-                                    <td align="center" style="padding:11px 8px;font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:13px;">${builderPremiumIconSymbol('B')}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom3)}</span></td>
+                                    <td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:13px;">${builderPremiumIconSymbol('P', accent, 13)}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom1)}</span></td>
+                                    <td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:13px;">${builderPremiumIconSymbol('Q', accent, 13)}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom2)}</span></td>
+                                    <td align="center" style="padding:11px 8px;font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:13px;">${builderPremiumIconSymbol('B', accent, 13)}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom3)}</span></td>
                                 </tr>
                             </table>
                         </div>
@@ -1457,7 +1534,7 @@ function builderPremiumPlumberProcessHtml(block) {
 
 function builderPremiumPlumberIncludesHtml(block) {
     const accent = builderAttr(block.accent || '#f47c20');
-    const item = (text, icon, last = false) => `<td width="25%" align="center" valign="top" style="${last ? '' : 'border-right:1px solid #dde5f0;'}padding:0 7px;"><div style="font-size:24px;line-height:1;color:${accent};font-weight:700;">${builderPremiumIconSymbol(icon)}</div><div style="font-size:10px;line-height:1.45;font-weight:700;color:#0b1d3a;padding-top:8px;">${builderLines(text)}</div></td>`;
+    const item = (text, icon, last = false) => `<td width="25%" align="center" valign="top" style="${last ? '' : 'border-right:1px solid #dde5f0;'}padding:0 7px;"><div style="font-size:24px;line-height:1;color:${accent};font-weight:700;">${builderPremiumIconSymbol(icon, accent, 24)}</div><div style="font-size:10px;line-height:1.45;font-weight:700;color:#0b1d3a;padding-top:8px;">${builderLines(text)}</div></td>`;
     return `
         <div style="padding:0 28px ${Number(block.padding) || 0}px 28px;background:#ffffff;">
             <div style="border:1px solid #dde5f0;border-radius:14px;padding:20px 12px;background:#ffffff;box-shadow:0 10px 34px rgba(9,17,22,.04);text-align:center;">
@@ -1672,7 +1749,7 @@ function builderPremiumPlumberFooterHtml(block) {
                     <td class="mp-hide-mobile" width="4%" style="border-left:1px solid #dde5f0;font-size:1px;line-height:1px;">&nbsp;</td>
                     <td class="mp-stack mp-mobile-top" width="48%" valign="top" style="padding-left:24px;">
                         <div style="font-size:16px;line-height:1.35;font-weight:700;color:#1e3048;">${builderEsc(block.title)}</div>
-                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-top:12px;"><tr><td style="font-size:14px;padding:4px 9px 4px 0;color:${accent};font-weight:700;">${builderPremiumIconSymbol('P')}</td><td style="font-size:12px;line-height:1.55;color:#0d2347;">${builderEsc(block.phone)}</td></tr></table>
+                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-top:12px;"><tr><td style="font-size:14px;padding:4px 9px 4px 0;color:${accent};font-weight:700;">${builderPremiumIconSymbol('P', accent, 14)}</td><td style="font-size:12px;line-height:1.55;color:#0d2347;">${builderEsc(block.phone)}</td></tr></table>
                     </td>
                 </tr>
             </table>
@@ -1713,7 +1790,7 @@ function builderBlockInnerHtml(block) {
         return `<div style="padding:${Number(block.padding) || 0}px 30px; background:${builderAttr(block.bg)};">
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
                 ${cards.map((card) => `<div style="border:1px solid ${builderAttr(block.border)}; background:${builderAttr(block.cardBg)}; border-radius:10px; padding:18px;">
-                    <div style="display:inline-block; background:${builderAttr(block.iconBg)}; color:${builderAttr(block.iconColor)}; border-radius:10px; padding:8px 10px; font-size:12px; font-weight:700; margin-bottom:14px;">${builderEsc(card[0])}</div>
+                    ${builderPremiumIcon(card[0], block.iconBg || '#eff6ff', block.iconColor || '#2563eb', 38, 15, 10, '0 0 14px 0')}
                     <div style="font-weight:700; color:#0f172a; margin-bottom:8px;">${builderEsc(card[1])}</div>
                     <div style="font-size:13px; color:#475569; line-height:1.55;">${builderLines(card[2])}</div>
                 </div>`).join('')}
@@ -2141,7 +2218,7 @@ function builderEmailBlock(block) {
     if (block.type === 'auditGrid') {
         const card = (icon, title, text) => `<td width="50%" valign="top" style="padding:7px;">
             <div style="border:1px solid ${builderAttr(block.border)}; background:${builderAttr(block.cardBg)}; border-radius:10px; padding:18px;">
-                <div style="display:inline-block; background:${builderAttr(block.iconBg)}; color:${builderAttr(block.iconColor)}; border-radius:10px; padding:8px 10px; font-size:12px; font-weight:bold; margin-bottom:14px;">${builderEsc(icon)}</div>
+                ${builderPremiumIcon(icon, block.iconBg || '#eff6ff', block.iconColor || '#2563eb', 38, 15, 10, '0 0 14px 0')}
                 <div style="font-weight:bold; color:#0f172a; margin-bottom:8px;">${builderEsc(title)}</div>
                 <div style="font-size:13px; color:#475569; line-height:1.55;">${builderLines(text)}</div>
             </div>
