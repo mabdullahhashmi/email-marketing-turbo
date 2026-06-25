@@ -134,7 +134,7 @@ function plumberPremiumLandingPageTemplateState($calendlyBaseUrl, $websiteBaseUr
             'bg' => '#f7f9fc',
             'contentBg' => '#ffffff',
             'accent' => '#f47c20',
-            'font' => 'DM Sans',
+            'font' => 'Poppins',
             'width' => 580,
         ],
         'blocks' => [

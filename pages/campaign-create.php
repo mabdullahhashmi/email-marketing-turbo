@@ -439,9 +439,9 @@ function builderLines(value) {
 
 function builderFontStack(font = builderState.settings.font) {
     const stacks = {
-        'Poppins': "'Poppins', Arial, Helvetica, sans-serif",
-        'Montserrat': "'Montserrat', Arial, Helvetica, sans-serif",
-        'DM Sans': "'DM Sans', Arial, Helvetica, sans-serif",
+        'Poppins': "'Poppins', 'Segoe UI', Arial, Helvetica, sans-serif",
+        'Montserrat': "'Montserrat', 'Segoe UI', Arial, Helvetica, sans-serif",
+        'DM Sans': "'DM Sans', 'Segoe UI', Arial, Helvetica, sans-serif",
         'Arial': 'Arial, Helvetica, sans-serif',
         'Helvetica': 'Helvetica, Arial, sans-serif',
         'Verdana': 'Verdana, Geneva, sans-serif',
@@ -454,7 +454,7 @@ function builderFontStack(font = builderState.settings.font) {
 
 function builderFontImport() {
     if (builderState.settings.font === 'Poppins') {
-        return "<link href=\"https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap\" rel=\"stylesheet\">";
+        return "<link href=\"https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap\" rel=\"stylesheet\">";
     }
     if (builderState.settings.font === 'Montserrat') {
         return "<link href=\"https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap\" rel=\"stylesheet\">";
@@ -496,7 +496,7 @@ function builderSetRawHtmlState(html) {
             bg: '#f7f9fc',
             contentBg: '#ffffff',
             accent: '#f47c20',
-            font: 'DM Sans',
+            font: 'Poppins',
             mode: 'rawHtml',
         },
         rawHtml: String(html || ''),
@@ -1019,7 +1019,7 @@ function builderTemplates() {
             builderBlock('button', { text: 'Learn more', bg: '#059669' }),
         ],
         premiumLeakAudit: {
-            settings: { bg: '#f7f9fc', contentBg: '#ffffff', accent: '#f47c20', font: 'DM Sans', width: 580 },
+            settings: { bg: '#f7f9fc', contentBg: '#ffffff', accent: '#f47c20', font: 'Poppins', width: 580 },
             blocks: [
                 builderBlock('premiumPlumberHeader'),
                 builderBlock('premiumPlumberHeroScore'),
@@ -1311,8 +1311,32 @@ function builderPreviewBlock(block) {
     `;
 }
 
+function builderPremiumIconSymbol(label) {
+    const map = {
+        '+': '&#8599;',
+        '$': '$',
+        B: '&#10003;',
+        C: '&#8599;',
+        M: '&#9637;',
+        T: '&#9733;',
+        S: '&#9889;',
+        D: '&#9635;',
+        F: '&#9889;',
+        P: '&#9742;',
+        Q: '&#9998;',
+        phone: '&#9742;',
+        quote: '&#9998;',
+        booked: '&#10003;',
+    };
+    return map[String(label)] || builderEsc(label);
+}
+
+function builderPremiumIcon(label, bg = '#fff5eb', color = '#f47c20', size = 42, fontSize = 16, radius = 14, margin = '0 auto 10px auto') {
+    return `<div style="width:${size}px;height:${size}px;border-radius:${radius}px;background:${builderAttr(bg)};color:${builderAttr(color)};font-size:${fontSize}px;line-height:${size}px;text-align:center;font-weight:700;margin:${margin};box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 8px 18px rgba(244,124,32,.12);">${builderPremiumIconSymbol(label)}</div>`;
+}
+
 function builderPremiumMiniIcon(label, bg = '#fff5eb', color = '#f47c20') {
-    return `<div style="width:42px;height:42px;border-radius:14px;background:${builderAttr(bg)};color:${builderAttr(color)};font-size:16px;line-height:42px;text-align:center;font-weight:800;margin:0 auto 10px auto;">${builderEsc(label)}</div>`;
+    return builderPremiumIcon(label, bg, color, 42, 16, 14);
 }
 
 function builderPremiumPlumberHeaderHtml(block) {
@@ -1322,7 +1346,7 @@ function builderPremiumPlumberHeaderHtml(block) {
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                     <td align="left" style="font-family:${builderAttr(builderFontStack())};">
-                        <div style="font-size:24px;font-weight:800;letter-spacing:0;color:${builderAttr(block.color || '#0b1d3a')};line-height:.72;">${builderEsc(block.brand)}<span style="color:${builderAttr(block.dotColor || '#f47c20')};">.</span><br><span style="font-size:7px;font-weight:700;letter-spacing:.28em;color:${builderAttr(block.muted || '#8fa3bf')};text-transform:uppercase;">${builderEsc(block.tagline)}</span></div>
+                        <div style="font-size:24px;font-weight:700;letter-spacing:0;color:${builderAttr(block.color || '#0b1d3a')};line-height:.72;">${builderEsc(block.brand)}<span style="color:${builderAttr(block.dotColor || '#f47c20')};">.</span><br><span style="font-size:7px;font-weight:700;letter-spacing:.28em;color:${builderAttr(block.muted || '#8fa3bf')};text-transform:uppercase;">${builderEsc(block.tagline)}</span></div>
                     </td>
                     <td align="right" class="mp-hide-mobile" style="font-size:12px;color:${builderAttr(block.muted || '#4a6080')};font-weight:700;">${builderEsc(block.rightText)}</td>
                 </tr>
@@ -1340,8 +1364,8 @@ function builderPremiumPlumberHeroScoreHtml(block) {
             <td style="padding:8px 0;${border ? 'border-bottom:1px solid #dde5f0;' : ''}">
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                     <tr>
-                        <td width="32"><div style="width:26px;height:26px;line-height:26px;border-radius:8px;background:#fff5eb;color:${accent};text-align:center;font-size:11px;font-weight:800;">${builderEsc(icon)}</div></td>
-                        <td><div style="font-size:11px;font-weight:800;color:#0b1d3a;line-height:1.25;">${builderEsc(title)}</div><div style="font-size:9px;color:#4a6080;line-height:1.35;">${builderEsc(text)}</div></td>
+                        <td width="32">${builderPremiumIcon(icon, '#fff5eb', accent, 26, 12, 8, '0')}</td>
+                        <td><div style="font-size:11px;font-weight:700;color:#0b1d3a;line-height:1.25;">${builderEsc(title)}</div><div style="font-size:9px;color:#4a6080;line-height:1.35;">${builderEsc(text)}</div></td>
                     </tr>
                 </table>
             </td>
@@ -1349,8 +1373,8 @@ function builderPremiumPlumberHeroScoreHtml(block) {
     `;
     const stat = (title, text, icon) => `
         <td width="33.33%" align="left" valign="top" style="padding-right:8px;">
-            <div style="width:42px;height:42px;border-radius:14px;background:#fff5eb;color:${accent};font-size:15px;line-height:42px;text-align:center;font-weight:800;margin:0 0 10px 0;">${builderEsc(icon)}</div>
-            <div style="font-size:12px;font-weight:800;color:#ffffff;">${builderEsc(title)}</div>
+            ${builderPremiumIcon(icon, '#fff5eb', accent, 42, 15, 14, '0 0 10px 0')}
+            <div style="font-size:12px;font-weight:700;color:#ffffff;">${builderEsc(title)}</div>
             <div style="font-size:10px;line-height:1.45;color:${muted};">${builderEsc(text)}</div>
         </td>
     `;
@@ -1359,8 +1383,8 @@ function builderPremiumPlumberHeroScoreHtml(block) {
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                     <td class="mp-stack" width="54%" valign="top" style="padding-right:20px;">
-                        <span style="display:inline-block;padding:7px 13px;border-radius:999px;background:#fff5eb;color:${accent};font-size:10px;font-weight:800;line-height:1;letter-spacing:.12em;text-transform:uppercase;border:1px solid #fbd6bd;">${builderEsc(block.pill)}</span>
-                        <div style="font-size:24px;line-height:1.10;font-weight:800;letter-spacing:-1.2px;margin:0;padding-top:22px;color:#ffffff;">${builderEsc(block.title)} <span style="color:#f99148;">${builderEsc(block.titleAccent)}</span></div>
+                        <span style="display:inline-block;padding:7px 13px;border-radius:999px;background:#fff5eb;color:${accent};font-size:10px;font-weight:700;line-height:1;letter-spacing:.12em;text-transform:uppercase;border:1px solid #fbd6bd;">${builderEsc(block.pill)}</span>
+                        <div style="font-size:24px;line-height:1.10;font-weight:700;letter-spacing:-1.2px;margin:0;padding-top:22px;color:#ffffff;">${builderEsc(block.title)} <span style="color:#f99148;">${builderEsc(block.titleAccent)}</span></div>
                         <div style="font-size:14px;line-height:1.72;margin:0;padding-top:18px;color:#dbeafe;">${builderLines(block.text)}</div>
                         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top:30px;"><tr>${stat(block.stat1Title, block.stat1Text, '+')}${stat(block.stat2Title, block.stat2Text, '$')}${stat(block.stat3Title, block.stat3Text, 'B')}</tr></table>
                         <div style="margin-top:28px;height:1px;background:rgba(255,255,255,.14);line-height:1px;font-size:1px;">&nbsp;</div>
@@ -1369,16 +1393,16 @@ function builderPremiumPlumberHeroScoreHtml(block) {
                     <td class="mp-stack mp-mobile-top" width="46%" valign="top">
                         <div style="background:#ffffff;border:1px solid #dde5f0;border-radius:18px;overflow:hidden;box-shadow:0 20px 55px rgba(8,24,50,.14);">
                             <div style="padding:17px 20px 16px 20px;background:#0b1d3a;background-image:linear-gradient(90deg,rgba(11,29,58,.98),rgba(11,29,58,.82));">
-                                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td><span style="display:inline-block;background:rgba(244,124,32,.16);color:#fb923c;border:1px solid rgba(251,146,60,.22);padding:6px 9px;border-radius:999px;font-size:8px;letter-spacing:.11em;font-weight:800;text-transform:uppercase;">${builderEsc(block.cardPill)}</span></td><td align="right" style="font-size:10px;color:${muted};font-weight:700;">${builderEsc(block.cardMeta)}</td></tr></table>
-                                <div style="font-size:20px;line-height:1.14;margin:13px 0 0 0;font-weight:800;letter-spacing:-.7px;color:#ffffff;max-width:165px;">${builderLines(block.cardTitle)}</div>
+                                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td><span style="display:inline-block;background:rgba(244,124,32,.16);color:#fb923c;border:1px solid rgba(251,146,60,.22);padding:6px 9px;border-radius:999px;font-size:8px;letter-spacing:.11em;font-weight:700;text-transform:uppercase;">${builderEsc(block.cardPill)}</span></td><td align="right" style="font-size:10px;color:${muted};font-weight:700;">${builderEsc(block.cardMeta)}</td></tr></table>
+                                <div style="font-size:20px;line-height:1.14;margin:13px 0 0 0;font-weight:700;letter-spacing:-.7px;color:#ffffff;max-width:165px;">${builderLines(block.cardTitle)}</div>
                                 <div style="font-size:11px;line-height:1.48;margin:8px 0 0 0;color:${muted};max-width:175px;">${builderLines(block.cardText)}</div>
                             </div>
                             <div style="padding:18px 18px 14px 18px;background:#ffffff;">
                                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                                     <tr>
                                         <td width="38%" align="center" valign="middle" style="padding-right:12px;">
-                                            <div style="width:98px;height:98px;border-radius:50%;background:${accent};padding:7px;box-shadow:0 18px 40px rgba(244,124,32,.18);"><div style="width:84px;height:84px;border-radius:50%;background:#ffffff;text-align:center;padding-top:22px;"><div style="font-size:24px;line-height:1;font-weight:800;letter-spacing:-1px;color:#0b1d3a;">${builderEsc(block.score)}</div><div style="font-size:11px;font-weight:800;color:#4a6080;">/ 100</div></div></div>
-                                            <div style="font-size:8px;color:#4a6080;font-weight:800;padding-top:8px;letter-spacing:.08em;text-transform:uppercase;line-height:1.3;">${builderEsc(block.scoreLabel)}</div>
+                                            <div style="width:98px;height:98px;border-radius:50%;background:${accent};padding:7px;box-shadow:0 18px 40px rgba(244,124,32,.18);"><div style="width:84px;height:84px;border-radius:50%;background:#ffffff;text-align:center;padding-top:22px;"><div style="font-size:24px;line-height:1;font-weight:700;letter-spacing:-1px;color:#0b1d3a;">${builderEsc(block.score)}</div><div style="font-size:11px;font-weight:700;color:#4a6080;">/ 100</div></div></div>
+                                            <div style="font-size:8px;color:#4a6080;font-weight:700;padding-top:8px;letter-spacing:.08em;text-transform:uppercase;line-height:1.3;">${builderEsc(block.scoreLabel)}</div>
                                         </td>
                                         <td width="62%" valign="middle"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">${row(block.check1Title, block.check1Text, 'C')}${row(block.check2Title, block.check2Text, 'M')}${row(block.check3Title, block.check3Text, 'T', false)}</table></td>
                                     </tr>
@@ -1386,9 +1410,9 @@ function builderPremiumPlumberHeroScoreHtml(block) {
                             </div>
                             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#0d2347;color:#ffffff;">
                                 <tr>
-                                    <td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:800;color:#ffffff;"><span style="color:${accent};">P</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom1)}</span></td>
-                                    <td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:800;color:#ffffff;"><span style="color:${accent};">Q</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom2)}</span></td>
-                                    <td align="center" style="padding:11px 8px;font-size:10px;font-weight:800;color:#ffffff;"><span style="color:${accent};">B</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom3)}</span></td>
+                                    <td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:13px;">${builderPremiumIconSymbol('P')}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom1)}</span></td>
+                                    <td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:13px;">${builderPremiumIconSymbol('Q')}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom2)}</span></td>
+                                    <td align="center" style="padding:11px 8px;font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:13px;">${builderPremiumIconSymbol('B')}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom3)}</span></td>
                                 </tr>
                             </table>
                         </div>
@@ -1400,14 +1424,14 @@ function builderPremiumPlumberHeroScoreHtml(block) {
 }
 
 function builderPremiumPlumberFindingsHtml(block) {
-    const item = (text, label) => `<tr><td style="background:rgba(255,255,255,.065);border-radius:12px;padding:15px 16px;color:#ffffff;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td width="56"><div style="width:44px;height:44px;border-radius:50%;background:#fff5eb;color:${builderAttr(block.accent || '#f47c20')};line-height:44px;text-align:center;font-size:15px;font-weight:800;">${label}</div></td><td style="font-size:13px;line-height:1.45;color:#ffffff;font-weight:800;">${builderEsc(text)}</td></tr></table></td></tr><tr><td height="10" style="font-size:1px;line-height:10px;">&nbsp;</td></tr>`;
+    const item = (text, label) => `<tr><td style="background:rgba(255,255,255,.065);border-radius:12px;padding:15px 16px;color:#ffffff;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td width="56"><div style="width:44px;height:44px;border-radius:50%;background:#fff5eb;color:${builderAttr(block.accent || '#f47c20')};line-height:44px;text-align:center;font-size:15px;font-weight:700;">${label}</div></td><td style="font-size:13px;line-height:1.45;color:#ffffff;font-weight:700;">${builderEsc(text)}</td></tr></table></td></tr><tr><td height="10" style="font-size:1px;line-height:10px;">&nbsp;</td></tr>`;
     return `
         <div style="padding:${Number(block.padding) || 0}px 28px;background:${builderAttr(block.bg || '#0b1d3a')};background-image:linear-gradient(145deg,${builderAttr(block.bg || '#0b1d3a')} 0%,${builderAttr(block.bg2 || '#0f2a55')} 100%);border-radius:0 0 8px 8px;">
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                     <td class="mp-stack" width="36%" valign="middle" style="padding-right:22px;">
-                        <div style="font-size:10px;color:#fb923c;font-weight:800;letter-spacing:.16em;text-transform:uppercase;">${builderEsc(block.eyebrow)}</div>
-                        <div style="font-size:15px;line-height:1.18;font-weight:800;letter-spacing:-.45px;color:#ffffff;padding-top:12px;">${builderLines(block.title)}</div>
+                        <div style="font-size:10px;color:#fb923c;font-weight:700;letter-spacing:.16em;text-transform:uppercase;">${builderEsc(block.eyebrow)}</div>
+                        <div style="font-size:15px;line-height:1.18;font-weight:700;letter-spacing:-.45px;color:#ffffff;padding-top:12px;">${builderLines(block.title)}</div>
                         <div style="width:66px;height:2px;background:${builderAttr(block.accent || '#f47c20')};margin:15px 0 18px 0;line-height:1px;font-size:1px;">&nbsp;</div>
                         <div style="font-size:12px;line-height:1.55;color:#dde5f0;">${builderLines(block.text)}</div>
                     </td>
@@ -1420,11 +1444,11 @@ function builderPremiumPlumberFindingsHtml(block) {
 
 function builderPremiumPlumberProcessHtml(block) {
     const accent = builderAttr(block.accent || '#f47c20');
-    const card = (title, text, icon, last = false) => `<td class="mp-stack ${last ? '' : 'mp-process-border'}" width="25%" align="center" valign="top" style="padding:0 11px;${last ? '' : 'border-right:1px solid #dde5f0;'}">${builderPremiumMiniIcon(icon, '#fff5eb', accent)}<div style="font-size:11px;font-weight:800;color:#1e3048;">${builderEsc(title)}</div><div style="font-size:10px;line-height:1.45;color:#4a6080;padding-top:5px;">${builderLines(text)}</div></td>`;
+    const card = (title, text, icon, last = false) => `<td class="mp-stack ${last ? '' : 'mp-process-border'}" width="25%" align="center" valign="top" style="padding:0 11px;${last ? '' : 'border-right:1px solid #dde5f0;'}">${builderPremiumMiniIcon(icon, '#fff5eb', accent)}<div style="font-size:11px;font-weight:700;color:#1e3048;">${builderEsc(title)}</div><div style="font-size:10px;line-height:1.45;color:#4a6080;padding-top:5px;">${builderLines(text)}</div></td>`;
     return `
         <div style="padding:${Number(block.padding) || 0}px 28px;background:#ffffff;text-align:center;">
-            <div style="font-size:10px;color:#fb923c;font-weight:800;letter-spacing:.18em;text-transform:uppercase;">${builderEsc(block.eyebrow)}</div>
-            <div style="font-size:15px;line-height:1.18;font-weight:800;letter-spacing:-.45px;color:#1e3048;padding-top:9px;">${builderEsc(block.title)}</div>
+            <div style="font-size:10px;color:#fb923c;font-weight:700;letter-spacing:.18em;text-transform:uppercase;">${builderEsc(block.eyebrow)}</div>
+            <div style="font-size:15px;line-height:1.18;font-weight:700;letter-spacing:-.45px;color:#1e3048;padding-top:9px;">${builderEsc(block.title)}</div>
             <div style="font-size:14px;line-height:1.72;color:#4a6080;padding:14px 28px 26px 28px;">${builderLines(block.text)}</div>
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr>${card(block.item1Title, block.item1Text, 'C')}${card(block.item2Title, block.item2Text, 'S')}${card(block.item3Title, block.item3Text, 'T')}${card(block.item4Title, block.item4Text, 'D', true)}</tr></table>
         </div>
@@ -1433,11 +1457,11 @@ function builderPremiumPlumberProcessHtml(block) {
 
 function builderPremiumPlumberIncludesHtml(block) {
     const accent = builderAttr(block.accent || '#f47c20');
-    const item = (text, icon, last = false) => `<td width="25%" align="center" valign="top" style="${last ? '' : 'border-right:1px solid #dde5f0;'}padding:0 7px;"><div style="font-size:24px;line-height:1;color:${accent};font-weight:800;">${builderEsc(icon)}</div><div style="font-size:10px;line-height:1.45;font-weight:800;color:#0b1d3a;padding-top:8px;">${builderLines(text)}</div></td>`;
+    const item = (text, icon, last = false) => `<td width="25%" align="center" valign="top" style="${last ? '' : 'border-right:1px solid #dde5f0;'}padding:0 7px;"><div style="font-size:24px;line-height:1;color:${accent};font-weight:700;">${builderPremiumIconSymbol(icon)}</div><div style="font-size:10px;line-height:1.45;font-weight:700;color:#0b1d3a;padding-top:8px;">${builderLines(text)}</div></td>`;
     return `
         <div style="padding:0 28px ${Number(block.padding) || 0}px 28px;background:#ffffff;">
             <div style="border:1px solid #dde5f0;border-radius:14px;padding:20px 12px;background:#ffffff;box-shadow:0 10px 34px rgba(9,17,22,.04);text-align:center;">
-                <div style="font-size:16px;line-height:1.35;font-weight:800;color:#1e3048;padding-bottom:17px;">${builderEsc(block.title)}</div>
+                <div style="font-size:16px;line-height:1.35;font-weight:700;color:#1e3048;padding-bottom:17px;">${builderEsc(block.title)}</div>
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr>${item(block.item1, '+')}${item(block.item2, 'M')}${item(block.item3, 'F')}${item(block.item4, 'C', true)}</tr></table>
             </div>
         </div>
@@ -1460,8 +1484,8 @@ function builderPremiumPipeGraphicHtml(block) {
                         <tr>
                             <td width="112" align="center" valign="top" style="padding-top:8px;">
                                 <div style="width:104px;height:84px;border-radius:999px;background:#ffffff;color:#0b1d3a;text-align:center;padding-top:20px;box-shadow:0 20px 42px rgba(0,0,0,.22);">
-                                    <div style="font-size:24px;color:${accent};font-weight:800;line-height:1;">${builderEsc(block.visualTop || 'FREE')}</div>
-                                    <div style="font-size:12px;font-weight:800;padding-top:5px;line-height:1.25;">${builderEsc(block.visualLine1 || 'Landing Page')}<br>${builderEsc(block.visualLine2 || 'Audit')}</div>
+                                    <div style="font-size:24px;color:${accent};font-weight:700;line-height:1;">${builderEsc(block.visualTop || 'FREE')}</div>
+                                    <div style="font-size:12px;font-weight:700;padding-top:5px;line-height:1.25;">${builderEsc(block.visualLine1 || 'Landing Page')}<br>${builderEsc(block.visualLine2 || 'Audit')}</div>
                                 </div>
                             </td>
                             <td width="106" align="center" valign="top">
@@ -1475,15 +1499,15 @@ function builderPremiumPipeGraphicHtml(block) {
     `;
 }
 
-function builderPremiumDiceFaceHtml(pips) {
+function builderPremiumDiceFaceHtml(pips, rotate = 0) {
     const pipSet = new Set(pips);
     const cells = Array.from({ length: 9 }, (_, index) => {
-        const pip = pipSet.has(index + 1) ? '<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#111111;line-height:14px;font-size:1px;">&nbsp;</span>' : '&nbsp;';
+        const pip = pipSet.has(index + 1) ? '<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#111111;line-height:14px;font-size:1px;box-shadow:inset 1px 1px 2px rgba(255,255,255,.18),0 2px 3px rgba(0,0,0,.18);">&nbsp;</span>' : '&nbsp;';
         return `<td align="center" valign="middle" width="33.33%" height="27" style="font-size:1px;line-height:1px;">${pip}</td>`;
     });
 
     return `
-        <table role="presentation" width="98" height="98" cellspacing="0" cellpadding="0" border="0" style="width:98px;height:98px;background:#ffffff;border-radius:18px;box-shadow:0 18px 32px rgba(31,55,84,.15);border-collapse:separate;">
+        <table role="presentation" width="104" height="104" cellspacing="0" cellpadding="0" border="0" style="width:104px;height:104px;background:#ffffff;background-image:linear-gradient(145deg,#ffffff 0%,#f9fbfd 46%,#e9eff6 100%);border:1px solid #ffffff;border-radius:20px;box-shadow:inset 4px 4px 9px rgba(255,255,255,.96),inset -6px -6px 13px rgba(148,163,184,.22),0 22px 42px rgba(31,55,84,.24);border-collapse:separate;transform:rotate(${rotate}deg);">
             <tr>${cells.slice(0, 3).join('')}</tr>
             <tr>${cells.slice(3, 6).join('')}</tr>
             <tr>${cells.slice(6, 9).join('')}</tr>
@@ -1511,9 +1535,9 @@ function builderPremiumLeakHeroHtml(block) {
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:${bg};border-radius:18px;border-collapse:separate;overflow:hidden;color:#ffffff;">
                 <tr>
                     <td class="mp-stack" width="55%" valign="middle" style="padding:30px 26px;">
-                        <div style="font-size:15px;line-height:1.18;font-weight:800;letter-spacing:-.45px;color:#ffffff;">${builderEsc(block.titleLine1)}<br>${builderEsc(block.titleLine2)} <span style="color:${accent};">${builderEsc(block.titleAccent)}</span></div>
+                        <div style="font-size:15px;line-height:1.18;font-weight:700;letter-spacing:-.45px;color:#ffffff;">${builderEsc(block.titleLine1)}<br>${builderEsc(block.titleLine2)} <span style="color:${accent};">${builderEsc(block.titleAccent)}</span></div>
                         <div style="font-size:14px;line-height:1.72;color:#dde5f0;padding-top:14px;">${builderLines(block.text)}</div>
-                        <div style="padding-top:20px;"><a href="${builderAttr(block.buttonUrl)}" style="display:inline-block;background:${buttonBg};color:#ffffff;text-decoration:none;padding:15px 23px;border-radius:8px;font-size:10px;font-weight:800;letter-spacing:.01em;box-shadow:0 12px 30px rgba(244,124,32,.24);">${builderEsc(block.buttonText)} &#8594;</a></div>
+                        <div style="padding-top:20px;"><a href="${builderAttr(block.buttonUrl)}" style="display:inline-block;background:${buttonBg};color:#ffffff;text-decoration:none;padding:15px 23px;border-radius:8px;font-size:10px;font-weight:700;letter-spacing:.01em;box-shadow:0 12px 30px rgba(244,124,32,.24);">${builderEsc(block.buttonText)} &#8594;</a></div>
                     </td>
                     <td class="mp-stack" width="45%" valign="middle">
                         ${builderPremiumPipeGraphicHtml(block)}
@@ -1534,24 +1558,24 @@ function builderPremiumFunnelHtml(block) {
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:${bg}; border-radius:18px; border-collapse:separate; overflow:hidden;color:#ffffff;">
                 <tr>
                     <td class="mp-stack" width="38%" valign="middle" style="padding:28px 24px;">
-                        <div style="font-size:15px;line-height:1.18;font-weight:800;letter-spacing:-.45px;color:#ffffff;">${builderEsc(block.titleLine1)} <span style="color:${accent};">${builderEsc(block.titleAccent)}</span></div>
+                        <div style="font-size:15px;line-height:1.18;font-weight:700;letter-spacing:-.45px;color:#ffffff;">${builderEsc(block.titleLine1)} <span style="color:${accent};">${builderEsc(block.titleAccent)}</span></div>
                         <div style="font-size:14px;line-height:1.72;color:#8fa3bf;padding-top:16px;">${builderLines(block.text)}</div>
                     </td>
                     <td class="mp-stack mp-mobile-top" width="34%" valign="middle" align="center" style="padding:22px 0;">
                         <table role="presentation" width="218" cellspacing="0" cellpadding="0" border="0" align="center" style="width:218px;max-width:100%;">
-                            <tr><td align="center"><span style="display:inline-block;background:#ffffff;color:#0b1d3a;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:800;margin:0 8px 8px 0;">${builderEsc(block.labelOne)}</span><span style="display:inline-block;background:#ffffff;color:#0b1d3a;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:800;margin:0 0 8px 8px;">${builderEsc(block.labelTwo)}</span></td></tr>
+                            <tr><td align="center"><span style="display:inline-block;background:#ffffff;color:#0b1d3a;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:700;margin:0 8px 8px 0;">${builderEsc(block.labelOne)}</span><span style="display:inline-block;background:#ffffff;color:#0b1d3a;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:700;margin:0 0 8px 8px;">${builderEsc(block.labelTwo)}</span></td></tr>
                             <tr><td align="center" style="height:30px;background:${blue};border-radius:12px 12px 4px 4px;"></td></tr>
                             <tr><td align="center"><div style="width:154px;height:30px;background:#2b60eb;"></div></td></tr>
-                            <tr><td align="center"><span style="display:inline-block;background:#ffffff;color:#0b1d3a;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:800;margin:0 0 8px 0;">${builderEsc(block.labelThree)}</span></td></tr>
+                            <tr><td align="center"><span style="display:inline-block;background:#ffffff;color:#0b1d3a;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:700;margin:0 0 8px 0;">${builderEsc(block.labelThree)}</span></td></tr>
                             <tr><td align="center"><div style="width:72px;height:58px;background:#122444;border-radius:0 0 18px 18px;"></div></td></tr>
                         </table>
                     </td>
                     <td class="mp-stack mp-mobile-top" width="28%" valign="middle" style="padding:28px 24px 28px 4px;">
                         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse;">
-                            <tr><td style="padding:0 0 12px 0; border-bottom:1px solid rgba(255,255,255,.12);"><div style="font-size:13px; color:#ffffff; font-weight:800;">${builderEsc(block.step1Title)}</div><div style="font-size:12px; color:#9fb1ca;">${builderEsc(block.step1Text)}</div></td></tr>
-                            <tr><td style="padding:12px 0; border-bottom:1px solid rgba(255,255,255,.12);"><div style="font-size:13px; color:#ffffff; font-weight:800;">${builderEsc(block.step2Title)}</div><div style="font-size:12px; color:#9fb1ca;">${builderEsc(block.step2Text)}</div></td></tr>
-                            <tr><td style="padding:12px 0; border-bottom:1px solid rgba(255,255,255,.12);"><div style="font-size:13px; color:#ffffff; font-weight:800;">${builderEsc(block.step3Title)}</div><div style="font-size:12px; color:#9fb1ca;">${builderEsc(block.step3Text)}</div></td></tr>
-                            <tr><td style="padding:12px 0 0 0;"><div style="font-size:13px; color:#ffffff; font-weight:800;">${builderEsc(block.step4Title)}</div><div style="font-size:12px; color:#9fb1ca;">${builderEsc(block.step4Text)}</div></td></tr>
+                            <tr><td style="padding:0 0 12px 0; border-bottom:1px solid rgba(255,255,255,.12);"><div style="font-size:13px; color:#ffffff; font-weight:700;">${builderEsc(block.step1Title)}</div><div style="font-size:12px; color:#9fb1ca;">${builderEsc(block.step1Text)}</div></td></tr>
+                            <tr><td style="padding:12px 0; border-bottom:1px solid rgba(255,255,255,.12);"><div style="font-size:13px; color:#ffffff; font-weight:700;">${builderEsc(block.step2Title)}</div><div style="font-size:12px; color:#9fb1ca;">${builderEsc(block.step2Text)}</div></td></tr>
+                            <tr><td style="padding:12px 0; border-bottom:1px solid rgba(255,255,255,.12);"><div style="font-size:13px; color:#ffffff; font-weight:700;">${builderEsc(block.step3Title)}</div><div style="font-size:12px; color:#9fb1ca;">${builderEsc(block.step3Text)}</div></td></tr>
+                            <tr><td style="padding:12px 0 0 0;"><div style="font-size:13px; color:#ffffff; font-weight:700;">${builderEsc(block.step4Title)}</div><div style="font-size:12px; color:#9fb1ca;">${builderEsc(block.step4Text)}</div></td></tr>
                         </table>
                     </td>
                 </tr>
@@ -1568,13 +1592,13 @@ function builderPremiumImpactDiceHtml(block) {
         <div style="padding:${padding}px 28px; background:#ffffff;">
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border:1px solid #d6e1ee; border-radius:20px; border-collapse:separate; overflow:hidden; background-color:#f7fbff; background-image:linear-gradient(#d9e5f2 1px, transparent 1px), linear-gradient(90deg, #d9e5f2 1px, transparent 1px); background-size:32px 32px;">
                 <tr><td align="center" style="padding:44px 42px 20px 42px;">
-                    <div style="font-size:34px; line-height:1.14; font-weight:800; color:#20334f; margin-bottom:18px;"><span style="font-style:italic;">${builderEsc(block.smallWord)}</span> ${builderEsc(block.smallTail)}<br><span style="font-style:italic; color:${accent};">${builderEsc(block.bigWord)}</span>${builderEsc(block.bigTail)}</div>
+                    <div style="font-size:34px; line-height:1.14; font-weight:700; color:#20334f; margin-bottom:18px;"><span style="font-style:italic;">${builderEsc(block.smallWord)}</span> ${builderEsc(block.smallTail)}<br><span style="font-style:italic; color:${accent};">${builderEsc(block.bigWord)}</span>${builderEsc(block.bigTail)}</div>
                     <div style="font-size:17px; line-height:1.7; color:#4d6485; margin:0 auto 28px auto; max-width:470px;">${builderLines(block.text)}</div>
-                    <a href="${builderAttr(block.buttonUrl)}" style="display:inline-block; background:${buttonBg}; color:#ffffff; text-decoration:none; padding:16px 24px; border-radius:8px; font-size:15px; line-height:1; font-weight:800;">${builderEsc(block.buttonText)}</a>
+                    <a href="${builderAttr(block.buttonUrl)}" style="display:inline-block; background:${buttonBg}; color:#ffffff; text-decoration:none; padding:16px 24px; border-radius:8px; font-size:15px; line-height:1; font-weight:700;">${builderEsc(block.buttonText)}</a>
                     <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin:30px auto 0 auto;">
                         <tr>
-                            <td style="padding:10px 0 0 0;">${builderPremiumDiceFaceHtml([1, 3, 5, 7, 9])}</td>
-                            <td style="padding:0 0 0 10px;">${builderPremiumDiceFaceHtml([1, 3, 7, 9])}</td>
+                            <td style="padding:10px 0 0 0;">${builderPremiumDiceFaceHtml([1, 3, 5, 7, 9], -9)}</td>
+                            <td style="padding:0 0 0 10px;">${builderPremiumDiceFaceHtml([1, 3, 7, 9], 7)}</td>
                         </tr>
                     </table>
                 </td></tr>
@@ -1590,21 +1614,21 @@ function builderPremiumCompareHtml(block) {
     return `
         <div style="padding:${padding}px 28px 26px 28px; background:#ffffff;">
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:${bg}; border-radius:24px; border-collapse:separate; overflow:hidden;">
-                <tr><td align="center" style="padding:32px 28px 10px 28px; font-size:38px; line-height:1.05; font-weight:800; color:#ffffff;">${builderEsc(block.title)}</td></tr>
+                <tr><td align="center" style="padding:32px 28px 10px 28px; font-size:38px; line-height:1.05; font-weight:700; color:#ffffff;">${builderEsc(block.title)}</td></tr>
                 <tr><td style="padding:10px 28px 30px 28px;">
                     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:separate;">
                         <tr>
                             <td class="mp-stack mp-mobile-edge" width="50%" valign="top" style="padding:0 12px 0 0;">
                                 <div style="background:#294360; border:1px solid rgba(255,255,255,.12); border-radius:18px; padding:24px 22px; color:#ffffff;">
-                                    <div style="font-size:19px; font-weight:800; color:${accent}; margin-bottom:22px;">${builderEsc(block.leftLabel)}</div>
-                                    <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr><td width="82"><div style="width:58px; height:58px; border:10px solid ${accent}; border-radius:50%; text-align:center; line-height:58px; font-size:20px; font-weight:800;">${builderEsc(block.leftPercent)}</div></td><td><div style="font-size:18px; line-height:1.18; font-weight:800;">${builderEsc(block.leftTitle)}</div><div style="font-size:14px; line-height:1.45; color:#cbd7e8;">${builderEsc(block.leftText)}</div></td></tr></table>
+                                    <div style="font-size:19px; font-weight:700; color:${accent}; margin-bottom:22px;">${builderEsc(block.leftLabel)}</div>
+                                    <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr><td width="82"><div style="width:58px; height:58px; border:10px solid ${accent}; border-radius:50%; text-align:center; line-height:58px; font-size:20px; font-weight:700;">${builderEsc(block.leftPercent)}</div></td><td><div style="font-size:18px; line-height:1.18; font-weight:700;">${builderEsc(block.leftTitle)}</div><div style="font-size:14px; line-height:1.45; color:#cbd7e8;">${builderEsc(block.leftText)}</div></td></tr></table>
                                     <div style="margin-top:24px;">${builderPremiumSparkBarsHtml(accent, [16, 28, 34, 39, 55, 48, 61, 66, 78])}</div>
                                 </div>
                             </td>
                             <td class="mp-stack mp-mobile-edge mp-mobile-gap" width="50%" valign="top" style="padding:0 0 0 12px;">
                                 <div style="background:#294360; border:1px solid rgba(255,255,255,.12); border-radius:18px; padding:24px 22px; color:#ffffff;">
-                                    <div style="font-size:19px; font-weight:800; color:#d5deeb; margin-bottom:22px;">${builderEsc(block.rightLabel)}</div>
-                                    <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr><td width="82"><div style="width:58px; height:58px; border:10px solid #9aa8ba; border-radius:50%; text-align:center; line-height:58px; font-size:20px; font-weight:800;">${builderEsc(block.rightPercent)}</div></td><td><div style="font-size:18px; line-height:1.18; font-weight:800;">${builderEsc(block.rightTitle)}</div><div style="font-size:14px; line-height:1.45; color:#cbd7e8;">${builderEsc(block.rightText)}</div></td></tr></table>
+                                    <div style="font-size:19px; font-weight:700; color:#d5deeb; margin-bottom:22px;">${builderEsc(block.rightLabel)}</div>
+                                    <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr><td width="82"><div style="width:58px; height:58px; border:10px solid #9aa8ba; border-radius:50%; text-align:center; line-height:58px; font-size:20px; font-weight:700;">${builderEsc(block.rightPercent)}</div></td><td><div style="font-size:18px; line-height:1.18; font-weight:700;">${builderEsc(block.rightTitle)}</div><div style="font-size:14px; line-height:1.45; color:#cbd7e8;">${builderEsc(block.rightText)}</div></td></tr></table>
                                     <div style="margin-top:24px;">${builderPremiumSparkBarsHtml('#ffffff', [76, 61, 56, 47, 38, 31, 23, 18, 10])}</div>
                                 </div>
                             </td>
@@ -1622,11 +1646,11 @@ function builderPremiumPlumberFinalCtaHtml(block) {
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:${builderAttr(block.bg || '#fff5eb')};border-radius:18px;border:1px solid ${builderAttr(block.border || '#fbd6bd')};border-collapse:separate;">
                 <tr>
                     <td class="mp-stack" width="62%" style="padding:24px 22px;">
-                        <div style="font-size:15px;line-height:1.18;font-weight:800;letter-spacing:-.45px;color:#1e3048;">${builderEsc(block.title)}</div>
+                        <div style="font-size:15px;line-height:1.18;font-weight:700;letter-spacing:-.45px;color:#1e3048;">${builderEsc(block.title)}</div>
                         <div style="font-size:12px;line-height:1.55;color:#4a6080;padding-top:8px;">${builderLines(block.text)}</div>
                     </td>
                     <td class="mp-stack mp-center-mobile" align="right" style="padding:24px 22px;">
-                        <a href="${builderAttr(block.buttonUrl)}" style="display:inline-block;background:${builderAttr(block.accent || '#f47c20')};color:#ffffff;text-decoration:none;padding:15px 23px;border-radius:8px;font-size:10px;font-weight:800;letter-spacing:.01em;box-shadow:0 12px 30px rgba(244,124,32,.24);">${builderEsc(block.buttonText)} &#8594;</a>
+                        <a href="${builderAttr(block.buttonUrl)}" style="display:inline-block;background:${builderAttr(block.accent || '#f47c20')};color:#ffffff;text-decoration:none;padding:15px 23px;border-radius:8px;font-size:10px;font-weight:700;letter-spacing:.01em;box-shadow:0 12px 30px rgba(244,124,32,.24);">${builderEsc(block.buttonText)} &#8594;</a>
                         <div style="font-size:10px;line-height:1.45;color:#4a6080;padding-top:8px;">${builderEsc(block.note)}</div>
                     </td>
                 </tr>
@@ -1642,13 +1666,13 @@ function builderPremiumPlumberFooterHtml(block) {
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                     <td class="mp-stack" width="48%" valign="top" style="padding-right:18px;">
-                        <div style="font-size:23px;font-weight:800;letter-spacing:0;color:#0b1d3a;line-height:.72;">${builderEsc(block.brand)}<span style="color:${accent};">.</span><br><span style="font-size:7px;font-weight:700;letter-spacing:.28em;color:#8fa3bf;text-transform:uppercase;">${builderEsc(block.tagline)}</span></div>
+                        <div style="font-size:23px;font-weight:700;letter-spacing:0;color:#0b1d3a;line-height:.72;">${builderEsc(block.brand)}<span style="color:${accent};">.</span><br><span style="font-size:7px;font-weight:700;letter-spacing:.28em;color:#8fa3bf;text-transform:uppercase;">${builderEsc(block.tagline)}</span></div>
                         <div style="font-size:12px;line-height:1.55;color:${builderAttr(block.muted || '#4a6080')};padding-top:14px;">${builderLines(block.text)}</div>
                     </td>
                     <td class="mp-hide-mobile" width="4%" style="border-left:1px solid #dde5f0;font-size:1px;line-height:1px;">&nbsp;</td>
                     <td class="mp-stack mp-mobile-top" width="48%" valign="top" style="padding-left:24px;">
-                        <div style="font-size:16px;line-height:1.35;font-weight:800;color:#1e3048;">${builderEsc(block.title)}</div>
-                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-top:12px;"><tr><td style="font-size:14px;padding:4px 9px 4px 0;color:${accent};font-weight:800;">P</td><td style="font-size:12px;line-height:1.55;color:#0d2347;">${builderEsc(block.phone)}</td></tr></table>
+                        <div style="font-size:16px;line-height:1.35;font-weight:700;color:#1e3048;">${builderEsc(block.title)}</div>
+                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-top:12px;"><tr><td style="font-size:14px;padding:4px 9px 4px 0;color:${accent};font-weight:700;">${builderPremiumIconSymbol('P')}</td><td style="font-size:12px;line-height:1.55;color:#0d2347;">${builderEsc(block.phone)}</td></tr></table>
                     </td>
                 </tr>
             </table>
@@ -1663,7 +1687,7 @@ function builderBlockInnerHtml(block) {
             <div style="background:${builderAttr(block.bg)}; color:${builderAttr(block.textColor)}; text-align:${builderAttr(block.align)}; padding:${Number(block.padding) || 0}px 34px;">
                 ${block.imageUrl ? `<img src="${builderAttr(block.imageUrl)}" alt="" style="display:block; max-width:100%; margin:0 auto 22px; border-radius:6px;">` : ''}
                 <div style="font-size:12px; font-weight:700; letter-spacing:1px; color:${builderAttr(builderState.settings.accent)}; margin-bottom:10px;">${builderEsc(block.eyebrow)}</div>
-                <div style="font-size:34px; line-height:1.15; font-weight:800; margin-bottom:14px;">${builderEsc(block.title)}</div>
+                <div style="font-size:34px; line-height:1.15; font-weight:700; margin-bottom:14px;">${builderEsc(block.title)}</div>
                 <div style="font-size:16px; line-height:1.65; margin-bottom:22px;">${builderLines(block.subtitle)}</div>
                 ${block.buttonText ? `<a href="${builderAttr(block.buttonUrl)}" style="display:inline-block; background:${builderAttr(builderState.settings.accent)}; color:#ffffff; text-decoration:none; padding:13px 22px; border-radius:4px; font-weight:700;">${builderEsc(block.buttonText)}</a>` : ''}
                 ${block.secondaryButtonText ? `<a href="${builderAttr(block.secondaryButtonUrl)}" style="display:inline-block; background:${builderAttr(block.secondaryButtonBg || '#ffffff')}; color:${builderAttr(block.secondaryButtonColor || '#111827')}; text-decoration:none; padding:12px 20px; border-radius:4px; font-weight:700; margin:4px;">${builderEsc(block.secondaryButtonText)}</a>` : ''}
@@ -1672,7 +1696,7 @@ function builderBlockInnerHtml(block) {
     }
     if (block.type === 'brandHeader') {
         return `<div style="display:flex; justify-content:space-between; gap:18px; align-items:center; background:${builderAttr(block.bg)}; color:${builderAttr(block.color)}; padding:${Number(block.padding) || 0}px 28px;">
-            <div style="font-size:17px; font-weight:800;">${builderEsc(block.brand)}</div>
+            <div style="font-size:17px; font-weight:700;">${builderEsc(block.brand)}</div>
             <div style="font-size:13px;">${builderEsc(block.label)}</div>
         </div>`;
     }
@@ -1689,8 +1713,8 @@ function builderBlockInnerHtml(block) {
         return `<div style="padding:${Number(block.padding) || 0}px 30px; background:${builderAttr(block.bg)};">
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
                 ${cards.map((card) => `<div style="border:1px solid ${builderAttr(block.border)}; background:${builderAttr(block.cardBg)}; border-radius:10px; padding:18px;">
-                    <div style="display:inline-block; background:${builderAttr(block.iconBg)}; color:${builderAttr(block.iconColor)}; border-radius:10px; padding:8px 10px; font-size:12px; font-weight:800; margin-bottom:14px;">${builderEsc(card[0])}</div>
-                    <div style="font-weight:800; color:#0f172a; margin-bottom:8px;">${builderEsc(card[1])}</div>
+                    <div style="display:inline-block; background:${builderAttr(block.iconBg)}; color:${builderAttr(block.iconColor)}; border-radius:10px; padding:8px 10px; font-size:12px; font-weight:700; margin-bottom:14px;">${builderEsc(card[0])}</div>
+                    <div style="font-weight:700; color:#0f172a; margin-bottom:8px;">${builderEsc(card[1])}</div>
                     <div style="font-size:13px; color:#475569; line-height:1.55;">${builderLines(card[2])}</div>
                 </div>`).join('')}
             </div>
@@ -1700,9 +1724,9 @@ function builderBlockInnerHtml(block) {
         const items = [block.item1, block.item2, block.item3, block.item4].filter(Boolean);
         return `<div style="padding:${Number(block.padding) || 0}px 30px; background:#ffffff;">
             <div style="background:${builderAttr(block.bg)}; color:${builderAttr(block.color)}; border-radius:12px; padding:24px;">
-                <div style="font-size:21px; font-weight:800; margin-bottom:12px;">${builderEsc(block.title)}</div>
+                <div style="font-size:21px; font-weight:700; margin-bottom:12px;">${builderEsc(block.title)}</div>
                 <div style="font-size:14px; line-height:1.7; margin-bottom:16px;">${builderLines(block.intro)}</div>
-                ${items.map((item) => `<div style="border-top:1px solid ${builderAttr(block.lineColor)}; padding:12px 0; font-size:14px;"><span style="color:${builderAttr(block.accent)}; font-weight:800;">&#10003;</span> ${builderEsc(item)}</div>`).join('')}
+                ${items.map((item) => `<div style="border-top:1px solid ${builderAttr(block.lineColor)}; padding:12px 0; font-size:14px;"><span style="color:${builderAttr(block.accent)}; font-weight:700;">&#10003;</span> ${builderEsc(item)}</div>`).join('')}
             </div>
         </div>`;
     }
@@ -1713,16 +1737,16 @@ function builderBlockInnerHtml(block) {
             [block.metric3Label, block.metric3Before, block.metric3After, block.metric3Note],
         ];
         return `<div style="padding:${Number(block.padding) || 0}px 30px; background:${builderAttr(block.bg)}; color:${builderAttr(block.color)};">
-            <div style="font-size:22px; font-weight:800; margin-bottom:8px;">${builderEsc(block.title)}</div>
+            <div style="font-size:22px; font-weight:700; margin-bottom:8px;">${builderEsc(block.title)}</div>
             <div style="font-size:13px; color:${builderAttr(block.muted)}; margin-bottom:24px;">${builderEsc(block.subtitle)}</div>
             <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:18px;">
                 ${metrics.map((metric) => `<div style="text-align:center;">
-                    <div style="font-size:11px; color:${builderAttr(block.muted)}; font-weight:800; letter-spacing:1px; text-transform:uppercase; margin-bottom:12px;">${builderEsc(metric[0])}</div>
+                    <div style="font-size:11px; color:${builderAttr(block.muted)}; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:12px;">${builderEsc(metric[0])}</div>
                     <div style="height:116px; display:flex; align-items:flex-end; justify-content:center; gap:10px; margin-bottom:12px;">
-                        <div style="width:34px; height:38px; background:#64748b; border-radius:5px 5px 0 0; color:#fff; font-size:11px; font-weight:800; padding-top:5px;">${builderEsc(metric[1])}</div>
-                        <div style="width:40px; height:92px; background:${builderAttr(block.accent)}; border-radius:5px 5px 0 0; color:#fff; font-size:11px; font-weight:800; padding-top:5px;">${builderEsc(metric[2])}</div>
+                        <div style="width:34px; height:38px; background:#64748b; border-radius:5px 5px 0 0; color:#fff; font-size:11px; font-weight:700; padding-top:5px;">${builderEsc(metric[1])}</div>
+                        <div style="width:40px; height:92px; background:${builderAttr(block.accent)}; border-radius:5px 5px 0 0; color:#fff; font-size:11px; font-weight:700; padding-top:5px;">${builderEsc(metric[2])}</div>
                     </div>
-                    <div style="display:inline-block; border:1px solid rgba(251,146,60,.45); background:rgba(251,146,60,.14); color:${builderAttr(block.accent)}; border-radius:20px; padding:7px 10px; font-size:12px; font-weight:800;">${builderEsc(metric[3])}</div>
+                    <div style="display:inline-block; border:1px solid rgba(251,146,60,.45); background:rgba(251,146,60,.14); color:${builderAttr(block.accent)}; border-radius:20px; padding:7px 10px; font-size:12px; font-weight:700;">${builderEsc(metric[3])}</div>
                 </div>`).join('')}
             </div>
         </div>`;
@@ -1731,8 +1755,8 @@ function builderBlockInnerHtml(block) {
         const issues = [block.issue1, block.issue2, block.issue3, block.issue4].filter(Boolean);
         return `<div style="padding:${Number(block.padding) || 0}px 30px; background:${builderAttr(block.bg)};">
             <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px;">
-                <div style="font-size:12px; letter-spacing:2px; text-transform:uppercase; font-weight:800; color:#8aa0c8;">${builderEsc(block.label)}</div>
-                <div style="background:#ef4444; color:#fff; border-radius:7px; padding:9px 12px; font-weight:800;">${builderEsc(block.score)}</div>
+                <div style="font-size:12px; letter-spacing:2px; text-transform:uppercase; font-weight:700; color:#8aa0c8;">${builderEsc(block.label)}</div>
+                <div style="background:#ef4444; color:#fff; border-radius:7px; padding:9px 12px; font-weight:700;">${builderEsc(block.score)}</div>
             </div>
             <div style="border:1px solid #dbe3ef; background:${builderAttr(block.chromeBg)}; border-radius:10px; padding:14px; margin-bottom:16px;">
                 <div style="display:flex; gap:6px; margin-bottom:12px;"><span style="width:10px;height:10px;background:#ef4444;border-radius:50%;display:inline-block;"></span><span style="width:10px;height:10px;background:#f59e0b;border-radius:50%;display:inline-block;"></span><span style="width:10px;height:10px;background:#22c55e;border-radius:50%;display:inline-block;"></span><span style="background:#fff;border-radius:4px;padding:4px 12px;font-size:12px;color:#64748b;">${builderEsc(block.domain)}</span></div>
@@ -1747,10 +1771,10 @@ function builderBlockInnerHtml(block) {
     if (block.type === 'ctaPanel') {
         return `<div style="padding:${Number(block.padding) || 0}px 30px; background:#ffffff; text-align:center;">
             <div style="background:${builderAttr(block.bg)}; border:1px solid ${builderAttr(block.border)}; color:${builderAttr(block.color)}; border-radius:12px; padding:28px;">
-                <div style="font-size:24px; line-height:1.2; font-weight:800; margin-bottom:12px;">${builderEsc(block.title)}</div>
+                <div style="font-size:24px; line-height:1.2; font-weight:700; margin-bottom:12px;">${builderEsc(block.title)}</div>
                 <div style="font-size:14px; line-height:1.7; margin-bottom:20px;">${builderLines(block.text)}</div>
-                <a href="${builderAttr(block.buttonUrl)}" style="display:inline-block; background:${builderAttr(block.buttonBg)}; color:#ffffff; text-decoration:none; padding:13px 22px; border-radius:7px; font-weight:800; margin:4px;">${builderEsc(block.buttonText)}</a>
-                ${block.secondaryButtonText ? `<a href="${builderAttr(block.secondaryButtonUrl)}" style="display:inline-block; background:${builderAttr(block.secondaryButtonBg || '#ffffff')}; color:${builderAttr(block.secondaryButtonColor || '#0f172a')}; border:1px solid ${builderAttr(block.border)}; text-decoration:none; padding:12px 20px; border-radius:7px; font-weight:800; margin:4px;">${builderEsc(block.secondaryButtonText)}</a>` : ''}
+                <a href="${builderAttr(block.buttonUrl)}" style="display:inline-block; background:${builderAttr(block.buttonBg)}; color:#ffffff; text-decoration:none; padding:13px 22px; border-radius:7px; font-weight:700; margin:4px;">${builderEsc(block.buttonText)}</a>
+                ${block.secondaryButtonText ? `<a href="${builderAttr(block.secondaryButtonUrl)}" style="display:inline-block; background:${builderAttr(block.secondaryButtonBg || '#ffffff')}; color:${builderAttr(block.secondaryButtonColor || '#0f172a')}; border:1px solid ${builderAttr(block.border)}; text-decoration:none; padding:12px 20px; border-radius:7px; font-weight:700; margin:4px;">${builderEsc(block.secondaryButtonText)}</a>` : ''}
             </div>
         </div>`;
     }
@@ -1798,8 +1822,8 @@ function builderBlockInnerHtml(block) {
         return `
             <div style="padding:${Number(block.padding) || 0}px 34px; background:${builderAttr(block.bg)}; color:${builderAttr(block.color)};">
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px;">
-                    <div><div style="font-size:18px; font-weight:800; margin-bottom:8px;">${builderEsc(block.leftTitle)}</div><div style="font-size:14px; line-height:1.65;">${builderLines(block.leftText)}</div></div>
-                    <div><div style="font-size:18px; font-weight:800; margin-bottom:8px;">${builderEsc(block.rightTitle)}</div><div style="font-size:14px; line-height:1.65;">${builderLines(block.rightText)}</div></div>
+                    <div><div style="font-size:18px; font-weight:700; margin-bottom:8px;">${builderEsc(block.leftTitle)}</div><div style="font-size:14px; line-height:1.65;">${builderLines(block.leftText)}</div></div>
+                    <div><div style="font-size:18px; font-weight:700; margin-bottom:8px;">${builderEsc(block.rightTitle)}</div><div style="font-size:14px; line-height:1.65;">${builderLines(block.rightText)}</div></div>
                 </div>
             </div>
         `;
@@ -1810,9 +1834,9 @@ function builderBlockInnerHtml(block) {
                 <div style="display:grid; grid-template-columns:180px 1fr; gap:20px; align-items:center;">
                     <div>${block.imageUrl ? `<img src="${builderAttr(block.imageUrl)}" alt="" style="display:block; width:100%; border-radius:6px;">` : '<div style="height:150px; background:#e2e8f0; color:#64748b; display:flex; align-items:center; justify-content:center;">Image</div>'}</div>
                     <div>
-                        <div style="font-size:22px; font-weight:800; color:#111827; margin-bottom:8px;">${builderEsc(block.title)}</div>
+                        <div style="font-size:22px; font-weight:700; color:#111827; margin-bottom:8px;">${builderEsc(block.title)}</div>
                         <div style="font-size:14px; color:#475569; line-height:1.6; margin-bottom:10px;">${builderLines(block.description)}</div>
-                        <div style="font-size:18px; font-weight:800; color:#111827; margin-bottom:14px;">${builderEsc(block.price)}</div>
+                        <div style="font-size:18px; font-weight:700; color:#111827; margin-bottom:14px;">${builderEsc(block.price)}</div>
                         <a href="${builderAttr(block.buttonUrl)}" style="display:inline-block; background:${builderAttr(builderState.settings.accent)}; color:#ffffff; text-decoration:none; padding:11px 18px; border-radius:4px; font-weight:700;">${builderEsc(block.buttonText)}</a>
                     </div>
                 </div>
@@ -1837,9 +1861,9 @@ function builderBlockInnerHtml(block) {
     if (block.type === 'signature') {
         return `<div style="padding:${Number(block.padding) || 0}px 30px; background:${builderAttr(block.bg)}; color:${builderAttr(block.color)};">
             <div style="display:flex; gap:12px; align-items:center; border-top:1px solid #e2e8f0; padding-top:20px;">
-                <div style="width:42px; height:42px; border-radius:50%; background:#0f172a; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800;">${builderEsc(block.avatarText)}</div>
+                <div style="width:42px; height:42px; border-radius:50%; background:#0f172a; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700;">${builderEsc(block.avatarText)}</div>
                 <div>
-                    <div style="font-weight:800;">${builderEsc(block.name)}</div>
+                    <div style="font-weight:700;">${builderEsc(block.name)}</div>
                     <div style="font-size:13px; color:${builderAttr(block.muted)};">${builderEsc(block.title)}</div>
                     <div style="font-size:13px; color:${builderAttr(builderState.settings.accent)};">${builderEsc(block.website)}</div>
                 </div>
