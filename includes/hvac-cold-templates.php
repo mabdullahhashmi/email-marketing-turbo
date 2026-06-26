@@ -6,7 +6,7 @@
 function seedHVACColdOutreachTemplates() {
     ensureCampaignTemplatesTable();
 
-    $version = '11';
+    $version = '12';
     $currentVersion = null;
     try {
         $currentVersion = dbFetchValue("SELECT setting_value FROM settings WHERE setting_key = 'hvac_template_pack_version' LIMIT 1");
@@ -162,6 +162,7 @@ function plumberPremiumLandingPageTemplateState($calendlyBaseUrl, $websiteBaseUr
                 'note' => 'No obligation. Just value.',
                 'cardPill' => 'Free audit preview',
                 'cardMeta' => '2-min scan',
+                'cardImageUrl' => '',
                 'cardTitle' => 'Landing Page' . "\n" . 'Leak Scorecard',
                 'cardText' => 'A quick plumbing-focused check to show where leads may be dropping off.',
                 'score' => '62',
@@ -216,26 +217,6 @@ function plumberPremiumLandingPageTemplateState($calendlyBaseUrl, $websiteBaseUr
                 'item4' => 'Clear CTAs' . "\n" . 'That Convert',
                 'accent' => '#f47c20',
                 'padding' => 28,
-            ]),
-            hvacWebsiteAuditBlock('premiumFunnel', 'premium', [
-                'titleLine1' => "More traffic isn't the solution if your",
-                'titleAccent' => 'funnel leaks.',
-                'text' => 'We plug the gaps that are costing you calls and jobs.',
-                'labelOne' => 'Traffic',
-                'labelTwo' => 'CTAs',
-                'labelThree' => 'Follow-up',
-                'step1Title' => 'Visitors',
-                'step1Text' => 'Traffic comes in',
-                'step2Title' => 'Leaky Pages',
-                'step2Text' => 'Visitors drop off',
-                'step3Title' => 'Lost Opportunities',
-                'step3Text' => 'No calls, no bookings',
-                'step4Title' => 'Optimized Landing Page',
-                'step4Text' => 'More calls. More jobs.',
-                'bg' => '#071b34',
-                'accent' => '#f47c20',
-                'blue' => '#3367ff',
-                'padding' => 18,
             ]),
             hvacWebsiteAuditBlock('premiumLeakHero', 'premium', [
                 'titleLine1' => 'Stop Losing Jobs',

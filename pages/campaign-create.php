@@ -379,8 +379,7 @@ const builderBlockGroups = [
             ['premiumPlumberFindings', 'Findings', 'Dark wins'],
             ['premiumPlumberProcess', 'Process', '4 steps'],
             ['premiumPlumberIncludes', 'Included', '4 features'],
-            ['premiumLeakHero', 'Audit Hero', 'Pipe graphic'],
-            ['premiumFunnel', 'Funnel Leak', 'Traffic flow'],
+            ['premiumLeakHero', 'Audit Hero', 'Centered CTA'],
             ['premiumImpactDice', 'Impact Grid', 'Dice visual'],
             ['premiumCompare', 'Convert Card', 'Results compare'],
             ['premiumPlumberFinalCta', 'Final CTA', 'Book audit'],
@@ -467,6 +466,11 @@ function builderFontImport() {
 
 function builderResponsiveCss() {
     return `<style>
+:root { color-scheme: light; supported-color-schemes: light; }
+body, table, td, div, span, p, a, strong { font-family: inherit; }
+.mp-light-bg { background-color:#ffffff !important; background-image:linear-gradient(#ffffff,#ffffff) !important; color:#0b1d3a !important; }
+.mp-soft-bg { background-color:#f7f9fc !important; background-image:linear-gradient(#f7f9fc,#f7f9fc) !important; color:#0b1d3a !important; }
+.mp-cream-bg { background-color:#fff5eb !important; background-image:linear-gradient(#fff5eb,#fff5eb) !important; color:#0b1d3a !important; }
 @media screen and (max-width:680px) {
     .mp-container { width:100% !important; max-width:100% !important; }
     .mp-stack { display:block !important; width:100% !important; max-width:100% !important; }
@@ -477,6 +481,9 @@ function builderResponsiveCss() {
     .mp-mobile-top { padding-top:20px !important; }
     .mp-mobile-gap { padding-top:12px !important; }
     .mp-process-border { border-right:none !important; border-bottom:1px solid #dde5f0 !important; padding-top:16px !important; padding-bottom:16px !important; }
+    .mp-mobile-light { background-color:#ffffff !important; background-image:linear-gradient(#ffffff,#ffffff) !important; color:#0b1d3a !important; }
+    .mp-mobile-soft { background-color:#f7f9fc !important; background-image:linear-gradient(#f7f9fc,#f7f9fc) !important; color:#0b1d3a !important; }
+    .mp-mobile-center { text-align:center !important; }
 }
 </style>`;
 }
@@ -755,6 +762,7 @@ function builderBlock(type, data = {}) {
             note: 'No obligation. Just value.',
             cardPill: 'Free audit preview',
             cardMeta: '2-min scan',
+            cardImageUrl: '',
             cardTitle: 'Landing Page\nLeak Scorecard',
             cardText: 'A quick plumbing-focused check to show where leads may be dropping off.',
             score: '62',
@@ -1026,7 +1034,6 @@ function builderTemplates() {
                 builderBlock('premiumPlumberFindings'),
                 builderBlock('premiumPlumberProcess'),
                 builderBlock('premiumPlumberIncludes'),
-                builderBlock('premiumFunnel'),
                 builderBlock('premiumLeakHero', {
                     buttonUrl: 'https://calendly.com/mu-abdullahhashmi/30min?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_leak_audit',
                     bg: '#0b1d3a',
@@ -1396,12 +1403,12 @@ function builderFaIconName(label) {
 }
 
 function builderFaIconSvg(label, color = 'currentColor', size = 14, display = 'inline-block') {
-    const icon = builderFaIcons[builderFaIconName(label)] || builderFaIcons['chart-line'];
+    const iconName = builderFaIconName(label);
     const iconSize = Math.max(8, Number(size) || 14);
     const style = display === 'block'
-        ? 'display:block;margin:0 auto;line-height:1;'
-        : 'display:inline-block;vertical-align:-2px;line-height:1;';
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="${iconSize}" height="${iconSize}" viewBox="${builderAttr(icon.viewBox)}" fill="${builderAttr(color)}" style="${style}" aria-hidden="true"><path d="${builderAttr(icon.path)}"></path></svg>`;
+        ? 'display:block;margin:0 auto;border:0;outline:0;text-decoration:none;line-height:1;'
+        : 'display:inline-block;vertical-align:-2px;border:0;outline:0;text-decoration:none;line-height:1;';
+    return `<img src="../assets/uploads/mailpilot-icons/${builderAttr(iconName)}.png" width="${iconSize}" height="${iconSize}" alt="" style="${style}width:${iconSize}px;height:${iconSize}px;">`;
 }
 
 function builderPremiumIconSymbol(label, color = 'currentColor', size = 14) {
@@ -1409,7 +1416,7 @@ function builderPremiumIconSymbol(label, color = 'currentColor', size = 14) {
 }
 
 function builderPremiumIcon(label, bg = '#fff5eb', color = '#f47c20', size = 42, fontSize = 16, radius = 14, margin = '0 auto 10px auto') {
-    return `<table role="presentation" width="${size}" height="${size}" cellspacing="0" cellpadding="0" border="0" style="width:${size}px;height:${size}px;border-radius:${radius}px;background:${builderAttr(bg)};margin:${margin};box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 8px 18px rgba(244,124,32,.12);border-collapse:separate;"><tr><td align="center" valign="middle" style="line-height:1;">${builderFaIconSvg(label, color, fontSize, 'block')}</td></tr></table>`;
+    return `<table role="presentation" width="${size}" height="${size}" cellspacing="0" cellpadding="0" border="0" style="width:${size}px;height:${size}px;border-radius:${radius}px;background:${builderAttr(bg)};background-image:linear-gradient(${builderAttr(bg)},${builderAttr(bg)});margin:${margin};box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 8px 18px rgba(244,124,32,.12);border-collapse:separate;"><tr><td align="center" valign="middle" style="line-height:1;">${builderFaIconSvg(label, color, fontSize, 'block')}</td></tr></table>`;
 }
 
 function builderPremiumMiniIcon(label, bg = '#fff5eb', color = '#f47c20') {
@@ -1419,7 +1426,7 @@ function builderPremiumMiniIcon(label, bg = '#fff5eb', color = '#f47c20') {
 function builderPremiumPlumberHeaderHtml(block) {
     const pad = Number(block.padding) || 0;
     return `
-        <div style="padding:${pad}px 28px 6px 28px;background:${builderAttr(block.bg || '#ffffff')};">
+        <div class="mp-light-bg" style="padding:${pad}px 28px 18px 28px;background:${builderAttr(block.bg || '#ffffff')};background-image:linear-gradient(${builderAttr(block.bg || '#ffffff')},${builderAttr(block.bg || '#ffffff')});">
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                     <td align="left" style="font-family:${builderAttr(builderFontStack())};">
@@ -1436,6 +1443,7 @@ function builderPremiumPlumberHeroScoreHtml(block) {
     const pad = Number(block.padding) || 0;
     const accent = builderAttr(block.accent || '#f47c20');
     const muted = builderAttr(block.muted || '#8fa3bf');
+    const cardImageHtml = block.cardImageUrl ? `<img src="${builderAttr(block.cardImageUrl)}" width="220" alt="" style="display:block;width:100%;max-width:220px;height:auto;border:0;margin:0 auto 12px auto;border-radius:12px;">` : '';
     const row = (title, text, icon, border = true) => `
         <tr>
             <td style="padding:8px 0;${border ? 'border-bottom:1px solid #dde5f0;' : ''}">
@@ -1468,13 +1476,14 @@ function builderPremiumPlumberHeroScoreHtml(block) {
                         <div style="padding-top:14px;color:${muted};font-size:12px;line-height:1.55;"><span style="width:7px;height:7px;display:inline-block;border-radius:50%;background:#fb923c;vertical-align:middle;margin-right:8px;"></span>${builderEsc(block.note)}</div>
                     </td>
                     <td class="mp-stack mp-mobile-top" width="46%" valign="top">
-                        <div style="background:#ffffff;border:1px solid #dde5f0;border-radius:18px;overflow:hidden;box-shadow:0 20px 55px rgba(8,24,50,.14);">
+                        <div class="mp-light-bg" style="background:#ffffff;background-image:linear-gradient(#ffffff,#ffffff);border:1px solid #dde5f0;border-radius:18px;overflow:hidden;box-shadow:0 20px 55px rgba(8,24,50,.14);">
                             <div style="padding:17px 20px 16px 20px;background:#0b1d3a;background-image:linear-gradient(90deg,rgba(11,29,58,.98),rgba(11,29,58,.82));">
+                                ${cardImageHtml}
                                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td><span style="display:inline-block;background:rgba(244,124,32,.16);color:#fb923c;border:1px solid rgba(251,146,60,.22);padding:6px 9px;border-radius:999px;font-size:8px;letter-spacing:.11em;font-weight:700;text-transform:uppercase;">${builderEsc(block.cardPill)}</span></td><td align="right" style="font-size:10px;color:${muted};font-weight:700;">${builderEsc(block.cardMeta)}</td></tr></table>
                                 <div style="font-size:20px;line-height:1.14;margin:13px 0 0 0;font-weight:700;letter-spacing:-.7px;color:#ffffff;max-width:165px;">${builderLines(block.cardTitle)}</div>
                                 <div style="font-size:11px;line-height:1.48;margin:8px 0 0 0;color:${muted};max-width:175px;">${builderLines(block.cardText)}</div>
                             </div>
-                            <div style="padding:18px 18px 14px 18px;background:#ffffff;">
+                            <div class="mp-light-bg" style="padding:18px 18px 14px 18px;background:#ffffff;background-image:linear-gradient(#ffffff,#ffffff);">
                                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                                     <tr>
                                         <td width="38%" align="center" valign="middle" style="padding-right:12px;">
@@ -1577,19 +1586,8 @@ function builderPremiumPipeGraphicHtml(block) {
 }
 
 function builderPremiumDiceFaceHtml(pips, rotate = 0) {
-    const pipSet = new Set(pips);
-    const cells = Array.from({ length: 9 }, (_, index) => {
-        const pip = pipSet.has(index + 1) ? '<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:#111111;line-height:14px;font-size:1px;box-shadow:inset 1px 1px 2px rgba(255,255,255,.18),0 2px 3px rgba(0,0,0,.18);">&nbsp;</span>' : '&nbsp;';
-        return `<td align="center" valign="middle" width="33.33%" height="27" style="font-size:1px;line-height:1px;">${pip}</td>`;
-    });
-
-    return `
-        <table role="presentation" width="104" height="104" cellspacing="0" cellpadding="0" border="0" style="width:104px;height:104px;background:#ffffff;background-image:linear-gradient(145deg,#ffffff 0%,#f9fbfd 46%,#e9eff6 100%);border:1px solid #ffffff;border-radius:20px;box-shadow:inset 4px 4px 9px rgba(255,255,255,.96),inset -6px -6px 13px rgba(148,163,184,.22),0 22px 42px rgba(31,55,84,.24);border-collapse:separate;transform:rotate(${rotate}deg);">
-            <tr>${cells.slice(0, 3).join('')}</tr>
-            <tr>${cells.slice(3, 6).join('')}</tr>
-            <tr>${cells.slice(6, 9).join('')}</tr>
-        </table>
-    `;
+    const file = pips.length === 4 ? 'dice-four.png' : 'dice-five.png';
+    return `<img src="../assets/uploads/mailpilot-icons/${file}" width="142" height="142" alt="" style="display:block;width:142px;height:142px;border:0;outline:0;text-decoration:none;margin:0 auto;">`;
 }
 
 function builderPremiumSparkBarsHtml(color, heights) {
@@ -1608,16 +1606,13 @@ function builderPremiumLeakHeroHtml(block) {
     const accent = builderAttr(block.accent || '#ff7a1a');
     const buttonBg = builderAttr(block.buttonBg || block.accent || '#ff7a1a');
     return `
-        <div style="padding:${padding}px 28px 28px 28px; background:#ffffff;">
+        <div class="mp-light-bg" style="padding:${padding}px 28px 28px 28px; background:#ffffff;background-image:linear-gradient(#ffffff,#ffffff);">
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:${bg};border-radius:18px;border-collapse:separate;overflow:hidden;color:#ffffff;">
                 <tr>
-                    <td class="mp-stack" width="55%" valign="middle" style="padding:30px 26px;">
-                        <div style="font-size:15px;line-height:1.18;font-weight:700;letter-spacing:-.45px;color:#ffffff;">${builderEsc(block.titleLine1)}<br>${builderEsc(block.titleLine2)} <span style="color:${accent};">${builderEsc(block.titleAccent)}</span></div>
-                        <div style="font-size:14px;line-height:1.72;color:#dde5f0;padding-top:14px;">${builderLines(block.text)}</div>
+                    <td align="center" valign="middle" style="padding:42px 34px;text-align:center;">
+                        <div style="font-size:25px;line-height:1.15;font-weight:700;letter-spacing:-.55px;color:#ffffff;">${builderEsc(block.titleLine1)}<br>${builderEsc(block.titleLine2)} <span style="color:${accent};">${builderEsc(block.titleAccent)}</span></div>
+                        <div style="font-size:17px;line-height:1.65;color:#dde5f0;padding-top:18px;max-width:430px;margin:0 auto;">${builderLines(block.text)}</div>
                         <div style="padding-top:20px;"><a href="${builderAttr(block.buttonUrl)}" style="display:inline-block;background:${buttonBg};color:#ffffff;text-decoration:none;padding:15px 23px;border-radius:8px;font-size:10px;font-weight:700;letter-spacing:.01em;box-shadow:0 12px 30px rgba(244,124,32,.24);">${builderEsc(block.buttonText)} &#8594;</a></div>
-                    </td>
-                    <td class="mp-stack" width="45%" valign="middle">
-                        ${builderPremiumPipeGraphicHtml(block)}
                     </td>
                 </tr>
             </table>
@@ -1626,39 +1621,7 @@ function builderPremiumLeakHeroHtml(block) {
 }
 
 function builderPremiumFunnelHtml(block) {
-    const padding = Number(block.padding) || 0;
-    const bg = builderAttr(block.bg || '#071b34');
-    const accent = builderAttr(block.accent || '#ff7a1a');
-    const blue = builderAttr(block.blue || '#3367ff');
-    return `
-        <div style="padding:0 28px 28px 28px; background:#ffffff;">
-            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:${bg}; border-radius:18px; border-collapse:separate; overflow:hidden;color:#ffffff;">
-                <tr>
-                    <td class="mp-stack" width="38%" valign="middle" style="padding:28px 24px;">
-                        <div style="font-size:15px;line-height:1.18;font-weight:700;letter-spacing:-.45px;color:#ffffff;">${builderEsc(block.titleLine1)} <span style="color:${accent};">${builderEsc(block.titleAccent)}</span></div>
-                        <div style="font-size:14px;line-height:1.72;color:#8fa3bf;padding-top:16px;">${builderLines(block.text)}</div>
-                    </td>
-                    <td class="mp-stack mp-mobile-top" width="34%" valign="middle" align="center" style="padding:22px 0;">
-                        <table role="presentation" width="218" cellspacing="0" cellpadding="0" border="0" align="center" style="width:218px;max-width:100%;">
-                            <tr><td align="center"><span style="display:inline-block;background:#ffffff;color:#0b1d3a;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:700;margin:0 8px 8px 0;">${builderEsc(block.labelOne)}</span><span style="display:inline-block;background:#ffffff;color:#0b1d3a;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:700;margin:0 0 8px 8px;">${builderEsc(block.labelTwo)}</span></td></tr>
-                            <tr><td align="center" style="height:30px;background:${blue};border-radius:12px 12px 4px 4px;"></td></tr>
-                            <tr><td align="center"><div style="width:154px;height:30px;background:#2b60eb;"></div></td></tr>
-                            <tr><td align="center"><span style="display:inline-block;background:#ffffff;color:#0b1d3a;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:700;margin:0 0 8px 0;">${builderEsc(block.labelThree)}</span></td></tr>
-                            <tr><td align="center"><div style="width:72px;height:58px;background:#122444;border-radius:0 0 18px 18px;"></div></td></tr>
-                        </table>
-                    </td>
-                    <td class="mp-stack mp-mobile-top" width="28%" valign="middle" style="padding:28px 24px 28px 4px;">
-                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse;">
-                            <tr><td style="padding:0 0 12px 0; border-bottom:1px solid rgba(255,255,255,.12);"><div style="font-size:13px; color:#ffffff; font-weight:700;">${builderEsc(block.step1Title)}</div><div style="font-size:12px; color:#9fb1ca;">${builderEsc(block.step1Text)}</div></td></tr>
-                            <tr><td style="padding:12px 0; border-bottom:1px solid rgba(255,255,255,.12);"><div style="font-size:13px; color:#ffffff; font-weight:700;">${builderEsc(block.step2Title)}</div><div style="font-size:12px; color:#9fb1ca;">${builderEsc(block.step2Text)}</div></td></tr>
-                            <tr><td style="padding:12px 0; border-bottom:1px solid rgba(255,255,255,.12);"><div style="font-size:13px; color:#ffffff; font-weight:700;">${builderEsc(block.step3Title)}</div><div style="font-size:12px; color:#9fb1ca;">${builderEsc(block.step3Text)}</div></td></tr>
-                            <tr><td style="padding:12px 0 0 0;"><div style="font-size:13px; color:#ffffff; font-weight:700;">${builderEsc(block.step4Title)}</div><div style="font-size:12px; color:#9fb1ca;">${builderEsc(block.step4Text)}</div></td></tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    `;
+    return '';
 }
 
 function builderPremiumImpactDiceHtml(block) {
@@ -1666,8 +1629,8 @@ function builderPremiumImpactDiceHtml(block) {
     const accent = builderAttr(block.accent || '#ff7a1a');
     const buttonBg = builderAttr(block.buttonBg || '#0a1f3d');
     return `
-        <div style="padding:${padding}px 28px; background:#ffffff;">
-            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border:1px solid #d6e1ee; border-radius:20px; border-collapse:separate; overflow:hidden; background-color:#f7fbff; background-image:linear-gradient(#d9e5f2 1px, transparent 1px), linear-gradient(90deg, #d9e5f2 1px, transparent 1px); background-size:32px 32px;">
+        <div class="mp-light-bg" style="padding:${padding}px 28px; background:#ffffff;background-image:linear-gradient(#ffffff,#ffffff);">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" class="mp-soft-bg" style="border:1px solid #d6e1ee; border-radius:20px; border-collapse:separate; overflow:hidden; background-color:#f7fbff; background-image:linear-gradient(#d9e5f2 1px, transparent 1px), linear-gradient(90deg, #d9e5f2 1px, transparent 1px); background-size:32px 32px;">
                 <tr><td align="center" style="padding:44px 42px 20px 42px;">
                     <div style="font-size:34px; line-height:1.14; font-weight:700; color:#20334f; margin-bottom:18px;"><span style="font-style:italic;">${builderEsc(block.smallWord)}</span> ${builderEsc(block.smallTail)}<br><span style="font-style:italic; color:${accent};">${builderEsc(block.bigWord)}</span>${builderEsc(block.bigTail)}</div>
                     <div style="font-size:17px; line-height:1.7; color:#4d6485; margin:0 auto 28px auto; max-width:470px;">${builderLines(block.text)}</div>
@@ -2105,7 +2068,7 @@ function builderRenderInspector() {
     } else if (block.type === 'premiumPlumberHeader') {
         html += builderInput('Brand', 'brand') + builderInput('Tagline', 'tagline') + builderInput('Right Text', 'rightText') + builderColor('Background', 'bg') + builderColor('Text Color', 'color') + builderColor('Dot / Accent', 'dotColor') + builderColor('Muted Text', 'muted') + builderNumber('Padding', 'padding', 8, 60);
     } else if (block.type === 'premiumPlumberHeroScore') {
-        html += builderInput('Pill', 'pill') + builderInput('Title', 'title') + builderInput('Orange Title Text', 'titleAccent') + builderTextarea('Intro Text', 'text', 4) + builderInput('Stat 1 Title', 'stat1Title') + builderInput('Stat 1 Text', 'stat1Text') + builderInput('Stat 2 Title', 'stat2Title') + builderInput('Stat 2 Text', 'stat2Text') + builderInput('Stat 3 Title', 'stat3Title') + builderInput('Stat 3 Text', 'stat3Text') + builderInput('Note', 'note') + builderInput('Card Pill', 'cardPill') + builderInput('Card Meta', 'cardMeta') + builderTextarea('Card Title', 'cardTitle', 3) + builderTextarea('Card Text', 'cardText', 3) + builderInput('Score', 'score') + builderInput('Score Label', 'scoreLabel') + builderInput('Check 1 Title', 'check1Title') + builderInput('Check 1 Text', 'check1Text') + builderInput('Check 2 Title', 'check2Title') + builderInput('Check 2 Text', 'check2Text') + builderInput('Check 3 Title', 'check3Title') + builderInput('Check 3 Text', 'check3Text') + builderInput('Bottom Label 1', 'bottom1') + builderInput('Bottom Label 2', 'bottom2') + builderInput('Bottom Label 3', 'bottom3') + builderColor('Background', 'bg') + builderColor('Second Background', 'bg2') + builderColor('Accent', 'accent') + builderColor('Muted Text', 'muted') + builderNumber('Padding', 'padding', 8, 70);
+        html += builderInput('Pill', 'pill') + builderInput('Title', 'title') + builderInput('Orange Title Text', 'titleAccent') + builderTextarea('Intro Text', 'text', 4) + builderInput('Stat 1 Title', 'stat1Title') + builderInput('Stat 1 Text', 'stat1Text') + builderInput('Stat 2 Title', 'stat2Title') + builderInput('Stat 2 Text', 'stat2Text') + builderInput('Stat 3 Title', 'stat3Title') + builderInput('Stat 3 Text', 'stat3Text') + builderInput('Note', 'note') + builderInput('Card Pill', 'cardPill') + builderInput('Card Meta', 'cardMeta') + builderImageControl('Hero Card Image URL', 'cardImageUrl') + builderTextarea('Card Title', 'cardTitle', 3) + builderTextarea('Card Text', 'cardText', 3) + builderInput('Score', 'score') + builderInput('Score Label', 'scoreLabel') + builderInput('Check 1 Title', 'check1Title') + builderInput('Check 1 Text', 'check1Text') + builderInput('Check 2 Title', 'check2Title') + builderInput('Check 2 Text', 'check2Text') + builderInput('Check 3 Title', 'check3Title') + builderInput('Check 3 Text', 'check3Text') + builderInput('Bottom Label 1', 'bottom1') + builderInput('Bottom Label 2', 'bottom2') + builderInput('Bottom Label 3', 'bottom3') + builderColor('Background', 'bg') + builderColor('Second Background', 'bg2') + builderColor('Accent', 'accent') + builderColor('Muted Text', 'muted') + builderNumber('Padding', 'padding', 8, 70);
     } else if (block.type === 'premiumPlumberFindings') {
         html += builderInput('Eyebrow', 'eyebrow') + builderTextarea('Title', 'title', 3) + builderTextarea('Text', 'text', 3) + builderTextarea('Item 1', 'item1', 3) + builderTextarea('Item 2', 'item2', 3) + builderTextarea('Item 3', 'item3', 3) + builderColor('Background', 'bg') + builderColor('Second Background', 'bg2') + builderColor('Accent', 'accent') + builderNumber('Padding', 'padding', 8, 70);
     } else if (block.type === 'premiumPlumberProcess') {
@@ -2113,7 +2076,7 @@ function builderRenderInspector() {
     } else if (block.type === 'premiumPlumberIncludes') {
         html += builderInput('Title', 'title') + builderTextarea('Item 1', 'item1', 2) + builderTextarea('Item 2', 'item2', 2) + builderTextarea('Item 3', 'item3', 2) + builderTextarea('Item 4', 'item4', 2) + builderColor('Accent', 'accent') + builderNumber('Padding', 'padding', 8, 70);
     } else if (block.type === 'premiumLeakHero') {
-        html += builderInput('Title Line 1', 'titleLine1') + builderInput('Title Line 2', 'titleLine2') + builderInput('Orange Title Text', 'titleAccent') + builderTextarea('Intro Text', 'text', 4) + builderInput('Button Text', 'buttonText') + builderInput('Button URL', 'buttonUrl') + builderInput('Badge Top Text', 'visualTop') + builderInput('Badge Line 1', 'visualLine1') + builderInput('Badge Line 2', 'visualLine2') + builderColor('Background', 'bg') + builderColor('Text Color', 'textColor') + builderColor('Muted Text', 'muted') + builderColor('Accent', 'accent') + builderColor('Button Background', 'buttonBg') + builderNumber('Padding', 'padding', 8, 60);
+        html += builderInput('Title Line 1', 'titleLine1') + builderInput('Title Line 2', 'titleLine2') + builderInput('Orange Title Text', 'titleAccent') + builderTextarea('Intro Text', 'text', 4) + builderInput('Button Text', 'buttonText') + builderInput('Button URL', 'buttonUrl') + builderColor('Background', 'bg') + builderColor('Text Color', 'textColor') + builderColor('Muted Text', 'muted') + builderColor('Accent', 'accent') + builderColor('Button Background', 'buttonBg') + builderNumber('Padding', 'padding', 8, 60);
     } else if (block.type === 'premiumFunnel') {
         html += builderInput('Title Line', 'titleLine1') + builderInput('Orange Title Text', 'titleAccent') + builderTextarea('Body Text', 'text', 4) + builderInput('Funnel Label 1', 'labelOne') + builderInput('Funnel Label 2', 'labelTwo') + builderInput('Funnel Label 3', 'labelThree') + builderInput('Step 1 Title', 'step1Title') + builderInput('Step 1 Text', 'step1Text') + builderInput('Step 2 Title', 'step2Title') + builderInput('Step 2 Text', 'step2Text') + builderInput('Step 3 Title', 'step3Title') + builderInput('Step 3 Text', 'step3Text') + builderInput('Step 4 Title', 'step4Title') + builderInput('Step 4 Text', 'step4Text') + builderColor('Background', 'bg') + builderColor('Accent', 'accent') + builderColor('Funnel Blue', 'blue') + builderNumber('Padding', 'padding', 8, 60);
     } else if (block.type === 'premiumImpactDice') {
@@ -2402,14 +2365,16 @@ function builderGenerateHtml() {
 
     const rows = builderState.blocks.map(builderEmailBlock).join('');
     const emailWidth = Number(builderState.settings.width) || 640;
+    const fontStack = builderFontStack();
+    const baseCss = `<meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"><style>body,table,td,div,span,p,a,strong{font-family:${fontStack} !important;}body{background-color:${builderAttr(builderState.settings.bg)} !important;background-image:linear-gradient(${builderAttr(builderState.settings.bg)},${builderAttr(builderState.settings.bg)}) !important;}img{border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;}</style>`;
     return `<!doctype html>
 <html>
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">${builderFontImport()}${builderResponsiveCss()}</head>
-<body style="margin:0; padding:0; background:${builderAttr(builderState.settings.bg)}; font-family:${builderAttr(builderFontStack())};">
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%; background:${builderAttr(builderState.settings.bg)}; border-collapse:collapse;">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">${builderFontImport()}${baseCss}${builderResponsiveCss()}</head>
+<body style="margin:0; padding:0; background:${builderAttr(builderState.settings.bg)}; background-image:linear-gradient(${builderAttr(builderState.settings.bg)},${builderAttr(builderState.settings.bg)}); font-family:${builderAttr(fontStack)};">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="${builderAttr(builderState.settings.bg)}" style="width:100%; background:${builderAttr(builderState.settings.bg)}; background-image:linear-gradient(${builderAttr(builderState.settings.bg)},${builderAttr(builderState.settings.bg)}); border-collapse:collapse;">
 <tr>
 <td align="center" style="padding:24px 12px;">
-<table role="presentation" class="mp-container" width="${emailWidth}" cellspacing="0" cellpadding="0" border="0" style="width:100%; max-width:${emailWidth}px; background:${builderAttr(builderState.settings.contentBg)}; border-collapse:collapse; font-family:${builderAttr(builderFontStack())};">
+<table role="presentation" class="mp-container" width="${emailWidth}" cellspacing="0" cellpadding="0" border="0" bgcolor="${builderAttr(builderState.settings.contentBg)}" style="width:100%; max-width:${emailWidth}px; background:${builderAttr(builderState.settings.contentBg)}; background-image:linear-gradient(${builderAttr(builderState.settings.contentBg)},${builderAttr(builderState.settings.contentBg)}); border-collapse:collapse; font-family:${builderAttr(fontStack)};">
 ${rows}
 </table>
 </td>
