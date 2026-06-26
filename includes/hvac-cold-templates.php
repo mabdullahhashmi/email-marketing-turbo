@@ -162,7 +162,7 @@ function plumberPremiumLandingPageTemplateState($calendlyBaseUrl, $websiteBaseUr
                 'note' => 'No obligation. Just value.',
                 'cardPill' => 'Free audit preview',
                 'cardMeta' => '2-min scan',
-                'cardImageUrl' => '',
+                'cardImageUrl' => 'https://abdullahhashmi.com/wp-content/uploads/2026/06/plumber-email-image.jpg',
                 'cardTitle' => 'Landing Page' . "\n" . 'Leak Scorecard',
                 'cardText' => 'A quick plumbing-focused check to show where leads may be dropping off.',
                 'score' => '62',
