@@ -70,6 +70,7 @@ function smtpTestRun($account, $toEmail = null, $subject = null, $body = null) {
     $mail->addAddress($recipient);
     $mail->isHTML(true);
     $mail->Subject = $subject;
+    $body = embedImagesForMailer($mail, $body);
     $mail->Body = $body;
     $mail->AltBody = strip_tags($body);
     $mail->CharSet = 'UTF-8';

@@ -1187,24 +1187,50 @@ function processOpenTracking($html, $campaignId, $contactId, $queueId) {
  */
 function getEmbeddedImages($html) {
     $images = [];
-    $uploadDir = UPLOAD_DIR;
+    $uploadDir = rtrim(UPLOAD_DIR, '/\\') . DIRECTORY_SEPARATOR;
+    $uploadRoot = realpath($uploadDir);
+    $seen = [];
     
     // Match img src pointing anywhere under assets/uploads/.
     preg_match_all('/src=["\']([^"\']*assets\/uploads\/([^"\']+))["\']/i', $html, $matches);
     
     if (!empty($matches[2])) {
         foreach ($matches[2] as $index => $filename) {
-            $filepath = $uploadDir . $filename;
-            if (file_exists($filepath)) {
-                $cid = 'img_' . md5($filename) . '_' . pathinfo($filename, PATHINFO_FILENAME);
-                $images[] = [
-                    'path' => $filepath,
-                    'cid' => $cid,
-                    'name' => $filename,
-                    'original_src' => $matches[1][$index],
-                    'original_src_pattern' => $filename,
-                ];
+            $filename = rawurldecode(html_entity_decode($filename, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+            $filename = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $filename);
+            $filepath = realpath($uploadDir . $filename);
+
+            if (
+                $filepath === false
+                || $uploadRoot === false
+                || strncmp($filepath, $uploadRoot . DIRECTORY_SEPARATOR, strlen($uploadRoot . DIRECTORY_SEPARATOR)) !== 0
+                || !is_file($filepath)
+            ) {
+                continue;
             }
+
+            $relativePath = str_replace(DIRECTORY_SEPARATOR, '/', substr($filepath, strlen($uploadRoot) + 1));
+            if (isset($seen[$relativePath])) {
+                continue;
+            }
+
+            $seen[$relativePath] = true;
+            $extension = strtolower(pathinfo($filepath, PATHINFO_EXTENSION));
+            $mimeTypes = [
+                'gif' => 'image/gif',
+                'jpg' => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'png' => 'image/png',
+                'webp' => 'image/webp',
+            ];
+            $images[] = [
+                'path' => $filepath,
+                'cid' => 'mailpilot_' . md5($relativePath),
+                'name' => basename($filepath),
+                'type' => $mimeTypes[$extension] ?? 'application/octet-stream',
+                'original_src' => $matches[1][$index],
+                'original_src_pattern' => $relativePath,
+            ];
         }
     }
     
@@ -1231,6 +1257,28 @@ function replaceImagesWithCID($html, $images) {
         }
     }
     return $html;
+}
+
+/**
+ * Attach local builder images and return HTML containing CID references.
+ */
+function embedImagesForMailer($mail, $html) {
+    $images = getEmbeddedImages($html);
+    foreach ($images as $img) {
+        $added = $mail->addEmbeddedImage(
+            $img['path'],
+            $img['cid'],
+            $img['name'],
+            'base64',
+            $img['type'],
+            'inline'
+        );
+        if (!$added) {
+            throw new RuntimeException('Could not embed email image: ' . $img['name']);
+        }
+    }
+
+    return replaceImagesWithCID($html, $images);
 }
 
 /**

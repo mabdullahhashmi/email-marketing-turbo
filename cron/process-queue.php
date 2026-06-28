@@ -175,12 +175,8 @@ foreach ($pendingEmails as $email) {
         // Process open tracking - inject a hidden pixel into final campaign HTML
         $bodyHtml = processOpenTracking($bodyHtml, $email['campaign_id'], $email['contact_id'], $email['id']);
         
-        // Embed images as CID inline attachments
-        $images = getEmbeddedImages($bodyHtml);
-        foreach ($images as $img) {
-            $mail->addEmbeddedImage($img['path'], $img['cid'], $img['name']);
-        }
-        $bodyHtml = replaceImagesWithCID($bodyHtml, $images);
+        // Embed local builder assets so mailbox clients do not depend on web paths.
+        $bodyHtml = embedImagesForMailer($mail, $bodyHtml);
         
         $mail->Body = $bodyHtml;
         $mail->AltBody = strip_tags(str_replace(['<br>', '<br/>', '<br />'], "\n", $bodyHtml));
