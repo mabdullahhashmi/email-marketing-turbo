@@ -6,7 +6,7 @@
 function seedHVACColdOutreachTemplates() {
     ensureCampaignTemplatesTable();
 
-    $version = '13';
+    $version = '14';
     $currentVersion = null;
     try {
         $currentVersion = dbFetchValue("SELECT setting_value FROM settings WHERE setting_key = 'hvac_template_pack_version' LIMIT 1");
@@ -159,6 +159,10 @@ function plumberPremiumLandingPageTemplateState($calendlyBaseUrl, $websiteBaseUr
                 'stat2Text' => 'per qualified lead',
                 'stat3Title' => 'More Booked',
                 'stat3Text' => 'jobs on calendar',
+                'heroButtonText' => 'Book Free Audit',
+                'heroButtonUrl' => $auditUrl,
+                'heroSecondaryButtonText' => 'See How It Works',
+                'heroSecondaryButtonUrl' => $websiteUrl,
                 'note' => 'No obligation. Just value.',
                 'cardPill' => 'Free audit preview',
                 'cardMeta' => '2-min scan',

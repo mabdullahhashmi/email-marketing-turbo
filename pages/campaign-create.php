@@ -765,6 +765,10 @@ function builderBlock(type, data = {}) {
             stat2Text: 'per qualified lead',
             stat3Title: 'More Booked',
             stat3Text: 'jobs on calendar',
+            heroButtonText: 'Book Free Audit',
+            heroButtonUrl: 'https://calendly.com/mu-abdullahhashmi/30min?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_leak_audit',
+            heroSecondaryButtonText: 'See How It Works',
+            heroSecondaryButtonUrl: 'https://abdullahhashmi.com/plumbers-growth-expert/?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_how_it_works',
             note: 'No obligation. Just value.',
             cardPill: 'Free audit preview',
             cardMeta: '2-min scan',
@@ -1426,7 +1430,7 @@ function builderPremiumIcon(label, bg = '#fff5eb', color = '#f47c20', size = 42,
 }
 
 function builderPremiumMiniIcon(label, bg = '#fff5eb', color = '#f47c20') {
-    return builderPremiumIcon(label, bg, color, 42, 16, 14);
+    return builderPremiumIcon(label, bg, color, 46, 20, 14);
 }
 
 function builderPremiumPlumberHeaderHtml(block) {
@@ -1459,7 +1463,7 @@ function builderPremiumPlumberHeroScoreHtml(block) {
             <td style="padding:8px 0;${border ? 'border-bottom:1px solid #dde5f0;' : ''}">
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                     <tr>
-                        <td width="32">${builderPremiumIcon(icon, '#fff5eb', accent, 26, 12, 8, '0')}</td>
+                        <td width="38">${builderPremiumIcon(icon, '#fff5eb', accent, 30, 15, 9, '0')}</td>
                         <td><div style="font-size:11px;font-weight:700;color:#0b1d3a;line-height:1.25;">${builderEsc(title)}</div><div style="font-size:9px;color:#4a6080;line-height:1.35;">${builderEsc(text)}</div></td>
                     </tr>
                 </table>
@@ -1468,7 +1472,7 @@ function builderPremiumPlumberHeroScoreHtml(block) {
     `;
     const stat = (title, text, icon) => `
         <td width="33.33%" align="left" valign="top" style="padding-right:8px;">
-            ${builderPremiumIcon(icon, '#fff5eb', accent, 42, 15, 14, '0 0 10px 0')}
+            ${builderPremiumIcon(icon, '#fff5eb', accent, 50, 24, 15, '0 0 11px 0')}
             <div style="font-size:12px;font-weight:700;color:#ffffff;">${builderEsc(title)}</div>
             <div style="font-size:10px;line-height:1.45;color:${muted};">${builderEsc(text)}</div>
         </td>
@@ -1482,7 +1486,8 @@ function builderPremiumPlumberHeroScoreHtml(block) {
                         <div style="font-size:24px;line-height:1.10;font-weight:700;letter-spacing:-1.2px;margin:0;padding-top:22px;color:#ffffff;">${builderEsc(block.title)} <span style="color:#f99148;">${builderEsc(block.titleAccent)}</span></div>
                         <div style="font-size:14px;line-height:1.72;margin:0;padding-top:18px;color:#dbeafe;">${builderLines(block.text)}</div>
                         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top:30px;"><tr>${stat(block.stat1Title, block.stat1Text, '+')}${stat(block.stat2Title, block.stat2Text, '$')}${stat(block.stat3Title, block.stat3Text, 'B')}</tr></table>
-                        <div style="margin-top:28px;height:1px;background:rgba(255,255,255,.14);line-height:1px;font-size:1px;">&nbsp;</div>
+                        <div style="padding-top:24px;"><a href="${builderAttr(block.heroButtonUrl || 'https://calendly.com/mu-abdullahhashmi/30min?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_leak_audit')}" style="display:inline-block;background:${accent};color:#ffffff;text-decoration:none;padding:13px 17px;border-radius:8px;font-size:10px;line-height:1.3;font-weight:700;margin:0 7px 7px 0;">${builderEsc(block.heroButtonText || 'Book Free Audit')} &#8594;</a><a href="${builderAttr(block.heroSecondaryButtonUrl || 'https://abdullahhashmi.com/plumbers-growth-expert/?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_how_it_works')}" style="display:inline-block;background:#ffffff;color:#0b1d3a;text-decoration:none;padding:12px 16px;border-radius:8px;border:1px solid #dbeafe;font-size:10px;line-height:1.3;font-weight:700;margin:0 0 7px 0;">${builderEsc(block.heroSecondaryButtonText || 'See How It Works')}</a></div>
+                        <div style="margin-top:19px;height:1px;background:rgba(255,255,255,.14);line-height:1px;font-size:1px;">&nbsp;</div>
                         <div style="padding-top:14px;color:${muted};font-size:12px;line-height:1.55;"><span style="width:7px;height:7px;display:inline-block;border-radius:50%;background:#fb923c;vertical-align:middle;margin-right:8px;"></span>${builderEsc(block.note)}</div>
                     </td>
                     <td class="mp-stack mp-mobile-top" width="46%" valign="top">
@@ -1507,9 +1512,9 @@ function builderPremiumPlumberHeroScoreHtml(block) {
                             </div>
                             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#0d2347;color:#ffffff;">
                                 <tr>
-                                    <td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:13px;">${builderPremiumIconSymbol('P', accent, 13)}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom1)}</span></td>
-                                    <td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:13px;">${builderPremiumIconSymbol('Q', accent, 13)}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom2)}</span></td>
-                                    <td align="center" style="padding:11px 8px;font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:13px;">${builderPremiumIconSymbol('B', accent, 13)}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom3)}</span></td>
+                                    <td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:17px;">${builderPremiumIconSymbol('P', accent, 17)}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom1)}</span></td>
+                                    <td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:17px;">${builderPremiumIconSymbol('Q', accent, 17)}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom2)}</span></td>
+                                    <td align="center" style="padding:11px 8px;font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:17px;">${builderPremiumIconSymbol('B', accent, 17)}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom3)}</span></td>
                                 </tr>
                             </table>
                         </div>
@@ -1541,7 +1546,7 @@ function builderPremiumPlumberFindingsHtml(block) {
 
 function builderPremiumPlumberProcessHtml(block) {
     const accent = builderAttr(block.accent || '#f47c20');
-    const card = (title, text, icon, last = false) => `<td class="mp-stack ${last ? '' : 'mp-process-border'}" width="25%" align="center" valign="top" style="padding:0 11px;${last ? '' : 'border-right:1px solid #dde5f0;'}">${builderPremiumMiniIcon(icon, '#fff5eb', accent)}<div style="font-size:11px;font-weight:700;color:#1e3048;">${builderEsc(title)}</div><div style="font-size:10px;line-height:1.45;color:#4a6080;padding-top:5px;">${builderLines(text)}</div></td>`;
+    const card = (title, text, icon, last = false) => `<td class="mp-stack ${last ? '' : 'mp-process-border'}" width="25%" align="center" valign="top" style="padding:0 11px;${last ? '' : 'border-right:1px solid #dde5f0;'}">${builderPremiumIcon(icon, '#fff5eb', accent, 48, 21, 15)}<div style="font-size:11px;font-weight:700;color:#1e3048;">${builderEsc(title)}</div><div style="font-size:10px;line-height:1.45;color:#4a6080;padding-top:5px;">${builderLines(text)}</div></td>`;
     return `
         <div style="padding:${Number(block.padding) || 0}px 28px;background:#ffffff;text-align:center;">
             <div style="font-size:10px;color:#fb923c;font-weight:700;letter-spacing:.18em;text-transform:uppercase;">${builderEsc(block.eyebrow)}</div>
@@ -1554,7 +1559,7 @@ function builderPremiumPlumberProcessHtml(block) {
 
 function builderPremiumPlumberIncludesHtml(block) {
     const accent = builderAttr(block.accent || '#f47c20');
-    const item = (text, icon, last = false) => `<td width="25%" align="center" valign="top" style="${last ? '' : 'border-right:1px solid #dde5f0;'}padding:0 7px;"><div style="font-size:24px;line-height:1;color:${accent};font-weight:700;">${builderPremiumIconSymbol(icon, accent, 24)}</div><div style="font-size:10px;line-height:1.45;font-weight:700;color:#0b1d3a;padding-top:8px;">${builderLines(text)}</div></td>`;
+    const item = (text, icon, last = false) => `<td width="25%" align="center" valign="top" style="${last ? '' : 'border-right:1px solid #dde5f0;'}padding:0 7px;"><div style="font-size:28px;line-height:1;color:${accent};font-weight:700;">${builderPremiumIconSymbol(icon, accent, 28)}</div><div style="font-size:10px;line-height:1.45;font-weight:700;color:#0b1d3a;padding-top:8px;">${builderLines(text)}</div></td>`;
     return `
         <div style="padding:0 28px ${Number(block.padding) || 0}px 28px;background:#ffffff;">
             <div style="border:1px solid #dde5f0;border-radius:14px;padding:20px 12px;background:#ffffff;box-shadow:0 10px 34px rgba(9,17,22,.04);text-align:center;">
@@ -1723,7 +1728,7 @@ function builderPremiumPlumberFooterHtml(block) {
                     <td class="mp-hide-mobile" width="4%" style="border-left:1px solid #dde5f0;font-size:1px;line-height:1px;">&nbsp;</td>
                     <td class="mp-stack mp-mobile-top" width="48%" valign="top" style="padding-left:24px;">
                         <div style="font-size:16px;line-height:1.35;font-weight:700;color:#1e3048;">${builderEsc(block.title)}</div>
-                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-top:12px;"><tr><td style="font-size:14px;padding:4px 9px 4px 0;color:${accent};font-weight:700;">${builderPremiumIconSymbol('P', accent, 14)}</td><td style="font-size:12px;line-height:1.55;color:#0d2347;">${builderEsc(block.phone)}</td></tr></table>
+                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-top:12px;"><tr><td style="font-size:18px;padding:4px 10px 4px 0;color:${accent};font-weight:700;">${builderPremiumIconSymbol('P', accent, 18)}</td><td style="font-size:12px;line-height:1.55;color:#0d2347;">${builderEsc(block.phone)}</td></tr></table>
                     </td>
                 </tr>
             </table>
@@ -1764,7 +1769,7 @@ function builderBlockInnerHtml(block) {
         return `<div style="padding:${Number(block.padding) || 0}px 30px; background:${builderAttr(block.bg)};">
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
                 ${cards.map((card) => `<div style="border:1px solid ${builderAttr(block.border)}; background:${builderAttr(block.cardBg)}; border-radius:10px; padding:18px;">
-                    ${builderPremiumIcon(card[0], block.iconBg || '#eff6ff', block.iconColor || '#2563eb', 38, 15, 10, '0 0 14px 0')}
+                    ${builderPremiumIcon(card[0], block.iconBg || '#eff6ff', block.iconColor || '#2563eb', 44, 19, 12, '0 0 14px 0')}
                     <div style="font-weight:700; color:#0f172a; margin-bottom:8px;">${builderEsc(card[1])}</div>
                     <div style="font-size:13px; color:#475569; line-height:1.55;">${builderLines(card[2])}</div>
                 </div>`).join('')}
@@ -2079,7 +2084,7 @@ function builderRenderInspector() {
     } else if (block.type === 'premiumPlumberHeader') {
         html += builderInput('Brand', 'brand') + builderInput('Tagline', 'tagline') + builderInput('Right Text', 'rightText') + builderColor('Background', 'bg') + builderColor('Text Color', 'color') + builderColor('Dot / Accent', 'dotColor') + builderColor('Muted Text', 'muted') + builderNumber('Padding', 'padding', 8, 60);
     } else if (block.type === 'premiumPlumberHeroScore') {
-        html += builderInput('Pill', 'pill') + builderInput('Title', 'title') + builderInput('Orange Title Text', 'titleAccent') + builderTextarea('Intro Text', 'text', 4) + builderInput('Stat 1 Title', 'stat1Title') + builderInput('Stat 1 Text', 'stat1Text') + builderInput('Stat 2 Title', 'stat2Title') + builderInput('Stat 2 Text', 'stat2Text') + builderInput('Stat 3 Title', 'stat3Title') + builderInput('Stat 3 Text', 'stat3Text') + builderInput('Note', 'note') + builderInput('Card Pill', 'cardPill') + builderInput('Card Meta', 'cardMeta') + builderImageControl('Scorecard Background Image URL', 'cardImageUrl') + builderTextarea('Card Title', 'cardTitle', 3) + builderTextarea('Card Text', 'cardText', 3) + builderInput('Score', 'score') + builderInput('Score Label', 'scoreLabel') + builderInput('Check 1 Title', 'check1Title') + builderInput('Check 1 Text', 'check1Text') + builderInput('Check 2 Title', 'check2Title') + builderInput('Check 2 Text', 'check2Text') + builderInput('Check 3 Title', 'check3Title') + builderInput('Check 3 Text', 'check3Text') + builderInput('Bottom Label 1', 'bottom1') + builderInput('Bottom Label 2', 'bottom2') + builderInput('Bottom Label 3', 'bottom3') + builderColor('Background', 'bg') + builderColor('Second Background', 'bg2') + builderColor('Accent', 'accent') + builderColor('Muted Text', 'muted') + builderNumber('Padding', 'padding', 8, 70);
+        html += builderInput('Pill', 'pill') + builderInput('Title', 'title') + builderInput('Orange Title Text', 'titleAccent') + builderTextarea('Intro Text', 'text', 4) + builderInput('Stat 1 Title', 'stat1Title') + builderInput('Stat 1 Text', 'stat1Text') + builderInput('Stat 2 Title', 'stat2Title') + builderInput('Stat 2 Text', 'stat2Text') + builderInput('Stat 3 Title', 'stat3Title') + builderInput('Stat 3 Text', 'stat3Text') + builderInput('Primary Button Text', 'heroButtonText') + builderInput('Primary Button URL', 'heroButtonUrl') + builderInput('Secondary Button Text', 'heroSecondaryButtonText') + builderInput('Secondary Button URL', 'heroSecondaryButtonUrl') + builderInput('Note', 'note') + builderInput('Card Pill', 'cardPill') + builderInput('Card Meta', 'cardMeta') + builderImageControl('Scorecard Background Image URL', 'cardImageUrl') + builderTextarea('Card Title', 'cardTitle', 3) + builderTextarea('Card Text', 'cardText', 3) + builderInput('Score', 'score') + builderInput('Score Label', 'scoreLabel') + builderInput('Check 1 Title', 'check1Title') + builderInput('Check 1 Text', 'check1Text') + builderInput('Check 2 Title', 'check2Title') + builderInput('Check 2 Text', 'check2Text') + builderInput('Check 3 Title', 'check3Title') + builderInput('Check 3 Text', 'check3Text') + builderInput('Bottom Label 1', 'bottom1') + builderInput('Bottom Label 2', 'bottom2') + builderInput('Bottom Label 3', 'bottom3') + builderColor('Background', 'bg') + builderColor('Second Background', 'bg2') + builderColor('Accent', 'accent') + builderColor('Muted Text', 'muted') + builderNumber('Padding', 'padding', 8, 70);
     } else if (block.type === 'premiumPlumberFindings') {
         html += builderInput('Eyebrow', 'eyebrow') + builderTextarea('Title', 'title', 3) + builderTextarea('Text', 'text', 3) + builderTextarea('Item 1', 'item1', 3) + builderTextarea('Item 2', 'item2', 3) + builderTextarea('Item 3', 'item3', 3) + builderColor('Background', 'bg') + builderColor('Second Background', 'bg2') + builderColor('Accent', 'accent') + builderNumber('Padding', 'padding', 8, 70);
     } else if (block.type === 'premiumPlumberProcess') {
@@ -2192,7 +2197,7 @@ function builderEmailBlock(block) {
     if (block.type === 'auditGrid') {
         const card = (icon, title, text) => `<td width="50%" valign="top" style="padding:7px;">
             <div style="border:1px solid ${builderAttr(block.border)}; background:${builderAttr(block.cardBg)}; border-radius:10px; padding:18px;">
-                ${builderPremiumIcon(icon, block.iconBg || '#eff6ff', block.iconColor || '#2563eb', 38, 15, 10, '0 0 14px 0')}
+                ${builderPremiumIcon(icon, block.iconBg || '#eff6ff', block.iconColor || '#2563eb', 44, 19, 12, '0 0 14px 0')}
                 <div style="font-weight:bold; color:#0f172a; margin-bottom:8px;">${builderEsc(title)}</div>
                 <div style="font-size:13px; color:#475569; line-height:1.55;">${builderLines(text)}</div>
             </div>
