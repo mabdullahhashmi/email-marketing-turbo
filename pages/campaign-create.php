@@ -1443,7 +1443,11 @@ function builderPremiumPlumberHeroScoreHtml(block) {
     const pad = Number(block.padding) || 0;
     const accent = builderAttr(block.accent || '#f47c20');
     const muted = builderAttr(block.muted || '#8fa3bf');
-    const cardImageHtml = block.cardImageUrl ? `<img src="${builderAttr(block.cardImageUrl)}" width="220" alt="" style="display:block;width:100%;max-width:220px;height:auto;border:0;margin:0 auto 12px auto;border-radius:12px;">` : '';
+    const cardImageUrl = builderAttr(block.cardImageUrl || '');
+    const cardBackgroundAttribute = cardImageUrl ? ` background="${cardImageUrl}"` : '';
+    const cardBackgroundStyle = cardImageUrl
+        ? `background-color:#0b1d3a;background-image:linear-gradient(90deg,rgba(11,29,58,.98) 0%,rgba(11,29,58,.90) 42%,rgba(11,29,58,.42) 100%),url(&quot;${cardImageUrl}&quot;);background-repeat:no-repeat;background-position:center right;background-size:cover;`
+        : 'background-color:#0b1d3a;background-image:linear-gradient(90deg,#0b1d3a,#132d52);';
     const row = (title, text, icon, border = true) => `
         <tr>
             <td style="padding:8px 0;${border ? 'border-bottom:1px solid #dde5f0;' : ''}">
@@ -1477,12 +1481,13 @@ function builderPremiumPlumberHeroScoreHtml(block) {
                     </td>
                     <td class="mp-stack mp-mobile-top" width="46%" valign="top">
                         <div class="mp-light-bg" style="background:#ffffff;background-image:linear-gradient(#ffffff,#ffffff);border:1px solid #dde5f0;border-radius:18px;overflow:hidden;box-shadow:0 20px 55px rgba(8,24,50,.14);">
-                            <div style="padding:17px 20px 16px 20px;background:#0b1d3a;background-image:linear-gradient(90deg,rgba(11,29,58,.98),rgba(11,29,58,.82));">
-                                ${cardImageHtml}
-                                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td><span style="display:inline-block;background:rgba(244,124,32,.16);color:#fb923c;border:1px solid rgba(251,146,60,.22);padding:6px 9px;border-radius:999px;font-size:8px;letter-spacing:.11em;font-weight:700;text-transform:uppercase;">${builderEsc(block.cardPill)}</span></td><td align="right" style="font-size:10px;color:${muted};font-weight:700;">${builderEsc(block.cardMeta)}</td></tr></table>
-                                <div style="font-size:20px;line-height:1.14;margin:13px 0 0 0;font-weight:700;letter-spacing:-.7px;color:#ffffff;max-width:165px;">${builderLines(block.cardTitle)}</div>
-                                <div style="font-size:11px;line-height:1.48;margin:8px 0 0 0;color:${muted};max-width:175px;">${builderLines(block.cardText)}</div>
-                            </div>
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"${cardBackgroundAttribute} style="${cardBackgroundStyle}">
+                                <tr><td valign="top" style="padding:17px 20px 22px 20px;height:154px;">
+                                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td><span style="display:inline-block;background:rgba(244,124,32,.16);color:#fb923c;border:1px solid rgba(251,146,60,.32);padding:6px 9px;border-radius:999px;font-size:8px;letter-spacing:.11em;font-weight:700;text-transform:uppercase;">${builderEsc(block.cardPill)}</span></td><td align="right" style="font-size:10px;color:#dbeafe;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.45);">${builderEsc(block.cardMeta)}</td></tr></table>
+                                <div style="font-size:20px;line-height:1.14;margin:20px 0 0 0;font-weight:700;letter-spacing:-.7px;color:#ffffff;max-width:165px;text-shadow:0 1px 3px rgba(0,0,0,.5);">${builderLines(block.cardTitle)}</div>
+                                <div style="font-size:11px;line-height:1.48;margin:10px 0 0 0;color:#dbeafe;max-width:175px;text-shadow:0 1px 3px rgba(0,0,0,.5);">${builderLines(block.cardText)}</div>
+                                </td></tr>
+                            </table>
                             <div class="mp-light-bg" style="padding:18px 18px 14px 18px;background:#ffffff;background-image:linear-gradient(#ffffff,#ffffff);">
                                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                                     <tr>
