@@ -771,7 +771,7 @@ function builderBlock(type, data = {}) {
             note: 'No obligation. Just value.',
             cardPill: 'Free audit preview',
             cardMeta: '2-min scan',
-            cardImageUrl: 'https://abdullahhashmi.com/wp-content/uploads/2026/06/plumber-email-image.jpg',
+            cardImageUrl: 'assets/uploads/mailpilot-icons/plumber-card-background.jpg',
             cardTitle: 'Landing Page\nLeak Scorecard',
             cardText: 'A quick plumbing-focused check to show where leads may be dropping off.',
             score: '62',
@@ -1436,7 +1436,7 @@ function builderPremiumMiniIcon(label, bg = '#fff5eb', color = '#f47c20') {
 function builderPremiumPlumberHeaderHtml(block) {
     const pad = Number(block.padding) || 0;
     return `
-        <div class="mp-light-bg" style="padding:${pad}px 28px 18px 28px;background:${builderAttr(block.bg || '#ffffff')};background-image:linear-gradient(${builderAttr(block.bg || '#ffffff')},${builderAttr(block.bg || '#ffffff')});">
+        <div class="mp-light-bg" style="padding:${pad}px 28px 18px 28px;background-color:#ffffff;background-image:url(&quot;../assets/uploads/mailpilot-icons/email-white-bg.png&quot;);background-repeat:repeat;">
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                     <td align="left" style="font-family:${builderAttr(builderFontStack())};">
@@ -1453,7 +1453,14 @@ function builderPremiumPlumberHeroScoreHtml(block) {
     const pad = Number(block.padding) || 0;
     const accent = builderAttr(block.accent || '#f47c20');
     const muted = builderAttr(block.muted || '#8fa3bf');
-    const cardImageUrl = builderAttr(block.cardImageUrl || '');
+    const configuredCardImageUrl = String(block.cardImageUrl || '');
+    let resolvedCardImageUrl = configuredCardImageUrl;
+    if (!resolvedCardImageUrl || resolvedCardImageUrl.includes('/plumber-email-image.jpg')) {
+        resolvedCardImageUrl = '../assets/uploads/mailpilot-icons/plumber-card-background.jpg';
+    } else if (resolvedCardImageUrl.startsWith('assets/')) {
+        resolvedCardImageUrl = '../' + resolvedCardImageUrl;
+    }
+    const cardImageUrl = builderAttr(resolvedCardImageUrl);
     const cardBackgroundAttribute = cardImageUrl ? ` background="${cardImageUrl}"` : '';
     const cardBackgroundStyle = cardImageUrl
         ? `background-color:#0b1d3a;background-image:linear-gradient(90deg,rgba(11,29,58,.98) 0%,rgba(11,29,58,.90) 42%,rgba(11,29,58,.42) 100%),url(&quot;${cardImageUrl}&quot;);background-repeat:no-repeat;background-position:center right;background-size:cover;`
@@ -1493,13 +1500,13 @@ function builderPremiumPlumberHeroScoreHtml(block) {
                     <td class="mp-stack mp-mobile-top" width="46%" valign="top">
                         <div class="mp-light-bg" style="background:#ffffff;background-image:linear-gradient(#ffffff,#ffffff);border:1px solid #dde5f0;border-radius:18px;overflow:hidden;box-shadow:0 20px 55px rgba(8,24,50,.14);">
                             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"${cardBackgroundAttribute} style="${cardBackgroundStyle}">
-                                <tr><td valign="top" style="padding:17px 20px 22px 20px;height:154px;">
+                                <tr><td valign="top" style="padding:17px 20px 22px 20px;height:154px;background-color:rgba(11,29,58,.46);">
                                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td><span style="display:inline-block;background:rgba(244,124,32,.16);color:#fb923c;border:1px solid rgba(251,146,60,.32);padding:6px 9px;border-radius:999px;font-size:8px;letter-spacing:.11em;font-weight:700;text-transform:uppercase;">${builderEsc(block.cardPill)}</span></td><td align="right" style="font-size:10px;color:#dbeafe;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.45);">${builderEsc(block.cardMeta)}</td></tr></table>
                                 <div style="font-size:20px;line-height:1.14;margin:20px 0 0 0;font-weight:700;letter-spacing:-.7px;color:#ffffff;max-width:165px;text-shadow:0 1px 3px rgba(0,0,0,.5);">${builderLines(block.cardTitle)}</div>
                                 <div style="font-size:11px;line-height:1.48;margin:10px 0 0 0;color:#dbeafe;max-width:175px;text-shadow:0 1px 3px rgba(0,0,0,.5);">${builderLines(block.cardText)}</div>
                                 </td></tr>
                             </table>
-                            <div class="mp-light-bg" style="padding:18px 18px 14px 18px;background:#ffffff;background-image:linear-gradient(#ffffff,#ffffff);">
+                            <div class="mp-light-bg" style="padding:18px 18px 14px 18px;background-color:#ffffff;background-image:url(&quot;../assets/uploads/mailpilot-icons/email-white-bg.png&quot;);background-repeat:repeat;">
                                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                                     <tr>
                                         <td width="38%" align="center" valign="middle" style="padding-right:12px;">
@@ -1548,7 +1555,7 @@ function builderPremiumPlumberProcessHtml(block) {
     const accent = builderAttr(block.accent || '#f47c20');
     const card = (title, text, icon, last = false) => `<td class="mp-stack ${last ? '' : 'mp-process-border'}" width="25%" align="center" valign="top" style="padding:0 11px;${last ? '' : 'border-right:1px solid #dde5f0;'}">${builderPremiumIcon(icon, '#fff5eb', accent, 48, 21, 15)}<div style="font-size:11px;font-weight:700;color:#1e3048;">${builderEsc(title)}</div><div style="font-size:10px;line-height:1.45;color:#4a6080;padding-top:5px;">${builderLines(text)}</div></td>`;
     return `
-        <div style="padding:${Number(block.padding) || 0}px 28px;background:#ffffff;text-align:center;">
+        <div style="padding:${Number(block.padding) || 0}px 28px;background-color:#ffffff;background-image:url(&quot;../assets/uploads/mailpilot-icons/email-white-bg.png&quot;);background-repeat:repeat;text-align:center;">
             <div style="font-size:10px;color:#fb923c;font-weight:700;letter-spacing:.18em;text-transform:uppercase;">${builderEsc(block.eyebrow)}</div>
             <div style="font-size:15px;line-height:1.18;font-weight:700;letter-spacing:-.45px;color:#1e3048;padding-top:9px;">${builderEsc(block.title)}</div>
             <div style="font-size:14px;line-height:1.72;color:#4a6080;padding:14px 28px 26px 28px;">${builderLines(block.text)}</div>
@@ -1613,7 +1620,7 @@ function builderPremiumLeakHeroHtml(block) {
     const accent = builderAttr(block.accent || '#ff7a1a');
     const buttonBg = builderAttr(block.buttonBg || block.accent || '#ff7a1a');
     return `
-        <div class="mp-light-bg" style="padding:${padding}px 28px 28px 28px; background:#ffffff;background-image:linear-gradient(#ffffff,#ffffff);">
+        <div class="mp-light-bg" style="padding:${padding}px 28px 28px 28px;background-color:#ffffff;background-image:url(&quot;../assets/uploads/mailpilot-icons/email-white-bg.png&quot;);background-repeat:repeat;">
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:${bg};border-radius:18px;border-collapse:separate;overflow:hidden;color:#ffffff;">
                 <tr>
                     <td align="center" valign="middle" style="padding:42px 34px;text-align:center;">
@@ -1636,8 +1643,8 @@ function builderPremiumImpactDiceHtml(block) {
     const accent = builderAttr(block.accent || '#ff7a1a');
     const buttonBg = builderAttr(block.buttonBg || '#0a1f3d');
     return `
-        <div class="mp-light-bg" style="padding:${padding}px 28px; background:#ffffff;background-image:linear-gradient(#ffffff,#ffffff);">
-            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" class="mp-soft-bg" style="border:1px solid #d6e1ee; border-radius:20px; border-collapse:separate; overflow:hidden; background-color:#f7fbff; background-image:linear-gradient(#d9e5f2 1px, transparent 1px), linear-gradient(90deg, #d9e5f2 1px, transparent 1px); background-size:32px 32px;">
+        <div class="mp-light-bg" style="padding:${padding}px 28px;background-color:#ffffff;background-image:url(&quot;../assets/uploads/mailpilot-icons/email-white-bg.png&quot;);background-repeat:repeat;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" class="mp-soft-bg" style="border:1px solid #d6e1ee; border-radius:20px; border-collapse:separate; overflow:hidden; background-color:#ffffff; background-image:url(&quot;../assets/uploads/mailpilot-icons/email-white-bg.png&quot;); background-repeat:repeat;">
                 <tr><td align="center" style="padding:44px 42px 20px 42px;">
                     <div style="font-size:34px; line-height:1.14; font-weight:700; color:#20334f; margin-bottom:18px;"><span style="font-style:italic;">${builderEsc(block.smallWord)}</span> ${builderEsc(block.smallTail)}<br><span style="font-style:italic; color:${accent};">${builderEsc(block.bigWord)}</span>${builderEsc(block.bigTail)}</div>
                     <div style="font-size:17px; line-height:1.7; color:#4d6485; margin:0 auto 28px auto; max-width:470px;">${builderLines(block.text)}</div>
@@ -1659,7 +1666,7 @@ function builderPremiumCompareHtml(block) {
     const bg = builderAttr(block.bg || '#0a1f3d');
     const accent = builderAttr(block.accent || '#ff8a32');
     return `
-        <div style="padding:${padding}px 28px 26px 28px; background:#ffffff;">
+        <div style="padding:${padding}px 28px 26px 28px;background-color:#ffffff;background-image:url(&quot;../assets/uploads/mailpilot-icons/email-white-bg.png&quot;);background-repeat:repeat;">
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:${bg}; border-radius:24px; border-collapse:separate; overflow:hidden;">
                 <tr><td align="center" style="padding:32px 28px 10px 28px; font-size:38px; line-height:1.05; font-weight:700; color:#ffffff;">${builderEsc(block.title)}</td></tr>
                 <tr><td style="padding:10px 28px 30px 28px;">
@@ -1689,8 +1696,8 @@ function builderPremiumCompareHtml(block) {
 
 function builderPremiumPlumberFinalCtaHtml(block) {
     return `
-        <div class="mp-cta-wrap" style="padding:0 28px ${Number(block.padding) || 0}px 28px;background:#ffffff;">
-            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;background:${builderAttr(block.bg || '#fff5eb')};border-radius:18px;border:1px solid ${builderAttr(block.border || '#fbd6bd')};border-collapse:separate;table-layout:fixed;">
+        <div class="mp-cta-wrap" style="padding:0 28px ${Number(block.padding) || 0}px 28px;background-color:#ffffff;background-image:url(&quot;../assets/uploads/mailpilot-icons/email-white-bg.png&quot;);background-repeat:repeat;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;background-color:#ffffff;background-image:url(&quot;../assets/uploads/mailpilot-icons/email-white-bg.png&quot;);background-repeat:repeat;border-radius:18px;border:1px solid ${builderAttr(block.border || '#fbd6bd')};border-collapse:separate;table-layout:fixed;">
                 <tr>
                     <td class="mp-stack mp-cta-cell" width="62%" align="left" valign="middle" style="box-sizing:border-box;padding:24px 22px;">
                         <div class="mp-cta-title" style="font-size:15px;line-height:1.28;font-weight:700;letter-spacing:0;color:#1e3048;">${builderEsc(block.title)}</div>
@@ -1708,7 +1715,7 @@ function builderPremiumPlumberFinalCtaHtml(block) {
 function builderPremiumPlumberFooterHtml(block) {
     const accent = builderAttr(block.accent || '#f47c20');
     return `
-        <div style="padding:${Number(block.padding) || 0}px 28px 20px 28px;background:${builderAttr(block.bg || '#f7f9fc')};border-top:1px solid #dde5f0;">
+        <div style="padding:${Number(block.padding) || 0}px 28px 20px 28px;background-color:#ffffff;background-image:url(&quot;../assets/uploads/mailpilot-icons/email-white-bg.png&quot;);background-repeat:repeat;border-top:1px solid #dde5f0;">
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                     <td class="mp-stack" width="48%" valign="top" style="padding-right:18px;">

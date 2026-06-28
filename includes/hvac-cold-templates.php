@@ -6,7 +6,7 @@
 function seedHVACColdOutreachTemplates() {
     ensureCampaignTemplatesTable();
 
-    $version = '15';
+    $version = '16';
     $currentVersion = null;
     try {
         $currentVersion = dbFetchValue("SELECT setting_value FROM settings WHERE setting_key = 'hvac_template_pack_version' LIMIT 1");
@@ -166,7 +166,7 @@ function plumberPremiumLandingPageTemplateState($calendlyBaseUrl, $websiteBaseUr
                 'note' => 'No obligation. Just value.',
                 'cardPill' => 'Free audit preview',
                 'cardMeta' => '2-min scan',
-                'cardImageUrl' => 'https://abdullahhashmi.com/wp-content/uploads/2026/06/plumber-email-image.jpg',
+                'cardImageUrl' => 'assets/uploads/mailpilot-icons/plumber-card-background.jpg',
                 'cardTitle' => 'Landing Page' . "\n" . 'Leak Scorecard',
                 'cardText' => 'A quick plumbing-focused check to show where leads may be dropping off.',
                 'score' => '62',
