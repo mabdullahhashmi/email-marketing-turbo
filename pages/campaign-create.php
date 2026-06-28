@@ -1384,6 +1384,12 @@ function builderFaIconName(label) {
         'scorecard-cta-visibility': 'scorecard-cta-visibility',
         'scorecard-mobile-quote': 'scorecard-mobile-quote',
         'scorecard-trust-proof': 'scorecard-trust-proof',
+        'scorecard-calls': 'scorecard-calls',
+        'scorecard-quotes': 'scorecard-quotes',
+        'process-conversion-focused': 'process-conversion-focused',
+        'process-speed-optimized': 'process-speed-optimized',
+        'process-trust-built-in': 'process-trust-built-in',
+        'process-data-driven': 'process-data-driven',
         '$': 'dollar-sign',
         cost: 'dollar-sign',
         'lower cost': 'dollar-sign',
@@ -1518,9 +1524,9 @@ function builderPremiumPlumberHeroScoreHtml(block) {
                             </div>
                             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#0d2347;color:#ffffff;">
                                 <tr>
-                                    <td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:17px;">${builderPremiumIconSymbol('P', accent, 17)}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom1)}</span></td>
-                                    <td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:17px;">${builderPremiumIconSymbol('Q', accent, 17)}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom2)}</span></td>
-                                    <td align="center" style="padding:11px 8px;font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:17px;">${builderPremiumIconSymbol('B', accent, 17)}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom3)}</span></td>
+                                    <td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:18px;">${builderPremiumIconSymbol('scorecard-calls', accent, 18)}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom1)}</span></td>
+                                    <td align="center" style="padding:11px 8px;border-right:1px solid rgba(255,255,255,.12);font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:18px;">${builderPremiumIconSymbol('scorecard-quotes', accent, 18)}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom2)}</span></td>
+                                    <td align="center" style="padding:11px 8px;font-size:10px;font-weight:700;color:#ffffff;"><span style="color:${accent};font-size:18px;">${builderPremiumIconSymbol('hero-more-booked', accent, 18)}</span><br><span style="font-size:8px;color:${muted};font-weight:700;">${builderEsc(block.bottom3)}</span></td>
                                 </tr>
                             </table>
                         </div>
@@ -1558,7 +1564,7 @@ function builderPremiumPlumberProcessHtml(block) {
             <div style="font-size:10px;color:#fb923c;font-weight:700;letter-spacing:.18em;text-transform:uppercase;">${builderEsc(block.eyebrow)}</div>
             <div style="font-size:15px;line-height:1.18;font-weight:700;letter-spacing:-.45px;color:#1e3048;padding-top:9px;">${builderEsc(block.title)}</div>
             <div style="font-size:14px;line-height:1.72;color:#4a6080;padding:14px 28px 26px 28px;">${builderLines(block.text)}</div>
-            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr>${card(block.item1Title, block.item1Text, 'C')}${card(block.item2Title, block.item2Text, 'S')}${card(block.item3Title, block.item3Text, 'T')}${card(block.item4Title, block.item4Text, 'D', true)}</tr></table>
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr>${card(block.item1Title, block.item1Text, 'process-conversion-focused')}${card(block.item2Title, block.item2Text, 'process-speed-optimized')}${card(block.item3Title, block.item3Text, 'process-trust-built-in')}${card(block.item4Title, block.item4Text, 'process-data-driven', true)}</tr></table>
         </div>
     `;
 }
