@@ -6,7 +6,7 @@
 function seedHVACColdOutreachTemplates() {
     ensureCampaignTemplatesTable();
 
-    $version = '14';
+    $version = '15';
     $currentVersion = null;
     try {
         $currentVersion = dbFetchValue("SELECT setting_value FROM settings WHERE setting_key = 'hvac_template_pack_version' LIMIT 1");
@@ -213,15 +213,6 @@ function plumberPremiumLandingPageTemplateState($calendlyBaseUrl, $websiteBaseUr
                 'accent' => '#f47c20',
                 'padding' => 32,
             ]),
-            hvacWebsiteAuditBlock('premiumPlumberIncludes', 'premium', [
-                'title' => "What's Included",
-                'item1' => 'Conversion-Focused' . "\n" . 'Design',
-                'item2' => 'Mobile-Friendly' . "\n" . 'Pages',
-                'item3' => 'Fast Load' . "\n" . 'Speed',
-                'item4' => 'Clear CTAs' . "\n" . 'That Convert',
-                'accent' => '#f47c20',
-                'padding' => 28,
-            ]),
             hvacWebsiteAuditBlock('premiumLeakHero', 'premium', [
                 'titleLine1' => 'Stop Losing Jobs',
                 'titleLine2' => 'to a',
@@ -270,7 +261,6 @@ function plumberPremiumLandingPageTemplateState($calendlyBaseUrl, $websiteBaseUr
                 'text' => "Send us your landing page and we'll show the biggest conversion leaks.",
                 'buttonText' => 'Book Free Audit',
                 'buttonUrl' => $auditUrl,
-                'note' => 'No pressure. No hard pitch.',
                 'bg' => '#fff5eb',
                 'border' => '#fbd6bd',
                 'accent' => '#f47c20',

@@ -378,7 +378,6 @@ const builderBlockGroups = [
             ['premiumPlumberHeroScore', 'LP Hero', 'Scorecard'],
             ['premiumPlumberFindings', 'Findings', 'Dark wins'],
             ['premiumPlumberProcess', 'Process', '4 steps'],
-            ['premiumPlumberIncludes', 'Included', '4 features'],
             ['premiumLeakHero', 'Audit Hero', 'Centered CTA'],
             ['premiumImpactDice', 'Impact Grid', 'Dice visual'],
             ['premiumCompare', 'Convert Card', 'Results compare'],
@@ -819,15 +818,6 @@ function builderBlock(type, data = {}) {
             accent: '#f47c20',
             padding: 32,
         },
-        premiumPlumberIncludes: {
-            title: "What's Included",
-            item1: 'Conversion-Focused\nDesign',
-            item2: 'Mobile-Friendly\nPages',
-            item3: 'Fast Load\nSpeed',
-            item4: 'Clear CTAs\nThat Convert',
-            accent: '#f47c20',
-            padding: 28,
-        },
         premiumLeakHero: {
             titleLine1: 'Stop Losing Jobs',
             titleLine2: 'to a',
@@ -896,7 +886,6 @@ function builderBlock(type, data = {}) {
             text: "Send us your landing page and we'll show the biggest conversion leaks.",
             buttonText: 'Book Free Audit',
             buttonUrl: 'https://calendly.com/mu-abdullahhashmi/30min?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_leak_audit',
-            note: 'No pressure. No hard pitch.',
             bg: '#fff5eb',
             border: '#fbd6bd',
             accent: '#f47c20',
@@ -1043,7 +1032,6 @@ function builderTemplates() {
                 builderBlock('premiumPlumberHeroScore'),
                 builderBlock('premiumPlumberFindings'),
                 builderBlock('premiumPlumberProcess'),
-                builderBlock('premiumPlumberIncludes'),
                 builderBlock('premiumLeakHero', {
                     buttonUrl: 'https://calendly.com/mu-abdullahhashmi/30min?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_leak_audit',
                     bg: '#0b1d3a',
@@ -1570,16 +1558,7 @@ function builderPremiumPlumberProcessHtml(block) {
 }
 
 function builderPremiumPlumberIncludesHtml(block) {
-    const accent = builderAttr(block.accent || '#f47c20');
-    const item = (text, icon, last = false) => `<td width="25%" align="center" valign="top" style="${last ? '' : 'border-right:1px solid #dde5f0;'}padding:0 7px;"><div style="font-size:28px;line-height:1;color:${accent};font-weight:700;">${builderPremiumIconSymbol(icon, accent, 28)}</div><div style="font-size:10px;line-height:1.45;font-weight:700;color:#0b1d3a;padding-top:8px;">${builderLines(text)}</div></td>`;
-    return `
-        <div style="padding:0 28px ${Number(block.padding) || 0}px 28px;background:#ffffff;">
-            <div style="border:1px solid #dde5f0;border-radius:14px;padding:20px 12px;background:#ffffff;box-shadow:0 10px 34px rgba(9,17,22,.04);text-align:center;">
-                <div style="font-size:16px;line-height:1.35;font-weight:700;color:#1e3048;padding-bottom:17px;">${builderEsc(block.title)}</div>
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"><tr>${item(block.item1, '+')}${item(block.item2, 'M')}${item(block.item3, 'F')}${item(block.item4, 'C', true)}</tr></table>
-            </div>
-        </div>
-    `;
+    return '';
 }
 
 function builderPremiumPipeGraphicHtml(block) {
@@ -1719,7 +1698,6 @@ function builderPremiumPlumberFinalCtaHtml(block) {
                     </td>
                     <td class="mp-stack mp-center-mobile mp-cta-action" width="38%" align="right" valign="middle" style="box-sizing:border-box;padding:24px 22px;">
                         <a class="mp-cta-button" href="${builderAttr(block.buttonUrl)}" style="display:inline-block;background:${builderAttr(block.accent || '#f47c20')};color:#ffffff;text-decoration:none;padding:15px 18px;border-radius:8px;font-size:10px;line-height:1.35;font-weight:700;letter-spacing:0;box-shadow:0 12px 30px rgba(244,124,32,.24);white-space:normal;">${builderEsc(block.buttonText)} &#8594;</a>
-                        <div style="font-size:10px;line-height:1.45;color:#4a6080;padding-top:8px;text-align:center;">${builderEsc(block.note)}</div>
                     </td>
                 </tr>
             </table>
@@ -2101,8 +2079,6 @@ function builderRenderInspector() {
         html += builderInput('Eyebrow', 'eyebrow') + builderTextarea('Title', 'title', 3) + builderTextarea('Text', 'text', 3) + builderTextarea('Item 1', 'item1', 3) + builderTextarea('Item 2', 'item2', 3) + builderTextarea('Item 3', 'item3', 3) + builderColor('Background', 'bg') + builderColor('Second Background', 'bg2') + builderColor('Accent', 'accent') + builderNumber('Padding', 'padding', 8, 70);
     } else if (block.type === 'premiumPlumberProcess') {
         html += builderInput('Eyebrow', 'eyebrow') + builderInput('Title', 'title') + builderTextarea('Text', 'text', 4) + builderInput('Item 1 Title', 'item1Title') + builderTextarea('Item 1 Text', 'item1Text', 3) + builderInput('Item 2 Title', 'item2Title') + builderTextarea('Item 2 Text', 'item2Text', 3) + builderInput('Item 3 Title', 'item3Title') + builderTextarea('Item 3 Text', 'item3Text', 3) + builderInput('Item 4 Title', 'item4Title') + builderTextarea('Item 4 Text', 'item4Text', 3) + builderColor('Accent', 'accent') + builderNumber('Padding', 'padding', 8, 70);
-    } else if (block.type === 'premiumPlumberIncludes') {
-        html += builderInput('Title', 'title') + builderTextarea('Item 1', 'item1', 2) + builderTextarea('Item 2', 'item2', 2) + builderTextarea('Item 3', 'item3', 2) + builderTextarea('Item 4', 'item4', 2) + builderColor('Accent', 'accent') + builderNumber('Padding', 'padding', 8, 70);
     } else if (block.type === 'premiumLeakHero') {
         html += builderInput('Title Line 1', 'titleLine1') + builderInput('Title Line 2', 'titleLine2') + builderInput('Orange Title Text', 'titleAccent') + builderTextarea('Intro Text', 'text', 4) + builderInput('Button Text', 'buttonText') + builderInput('Button URL', 'buttonUrl') + builderColor('Background', 'bg') + builderColor('Text Color', 'textColor') + builderColor('Muted Text', 'muted') + builderColor('Accent', 'accent') + builderColor('Button Background', 'buttonBg') + builderNumber('Padding', 'padding', 8, 60);
     } else if (block.type === 'premiumFunnel') {
@@ -2112,7 +2088,7 @@ function builderRenderInspector() {
     } else if (block.type === 'premiumCompare') {
         html += builderInput('Title', 'title') + builderInput('Left Label', 'leftLabel') + builderInput('Left Percent', 'leftPercent') + builderInput('Left Main Text', 'leftTitle') + builderInput('Left Subtext', 'leftText') + builderInput('Right Label', 'rightLabel') + builderInput('Right Percent', 'rightPercent') + builderInput('Right Main Text', 'rightTitle') + builderInput('Right Subtext', 'rightText') + builderColor('Background', 'bg') + builderColor('Accent', 'accent') + builderNumber('Padding', 'padding', 8, 60);
     } else if (block.type === 'premiumPlumberFinalCta') {
-        html += builderInput('Title', 'title') + builderTextarea('Text', 'text', 3) + builderInput('Button Text', 'buttonText') + builderInput('Button URL', 'buttonUrl') + builderInput('Note', 'note') + builderColor('Background', 'bg') + builderColor('Border', 'border') + builderColor('Accent', 'accent') + builderNumber('Padding', 'padding', 8, 70);
+        html += builderInput('Title', 'title') + builderTextarea('Text', 'text', 3) + builderInput('Button Text', 'buttonText') + builderInput('Button URL', 'buttonUrl') + builderColor('Background', 'bg') + builderColor('Border', 'border') + builderColor('Accent', 'accent') + builderNumber('Padding', 'padding', 8, 70);
     } else if (block.type === 'premiumPlumberFooter') {
         html += builderInput('Brand', 'brand') + builderInput('Tagline', 'tagline') + builderTextarea('Left Text', 'text', 3) + builderInput('Right Title', 'title') + builderInput('Phone', 'phone') + builderTextarea('Footer Note', 'note', 4) + builderColor('Background', 'bg') + builderColor('Accent', 'accent') + builderColor('Muted Text', 'muted') + builderNumber('Padding', 'padding', 8, 70);
     } else if (block.type === 'image') {
