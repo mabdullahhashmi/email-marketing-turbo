@@ -1381,6 +1381,9 @@ function builderFaIconName(label) {
         'hero-more-leads': 'hero-more-leads',
         'hero-lower-cost': 'hero-lower-cost',
         'hero-more-booked': 'hero-more-booked',
+        'scorecard-cta-visibility': 'scorecard-cta-visibility',
+        'scorecard-mobile-quote': 'scorecard-mobile-quote',
+        'scorecard-trust-proof': 'scorecard-trust-proof',
         '$': 'dollar-sign',
         cost: 'dollar-sign',
         'lower cost': 'dollar-sign',
@@ -1466,7 +1469,7 @@ function builderPremiumPlumberHeroScoreHtml(block) {
             <td style="padding:8px 0;${border ? 'border-bottom:1px solid #dde5f0;' : ''}">
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                     <tr>
-                        <td width="38">${builderPremiumIcon(icon, '#fff5eb', accent, 30, 15, 9, '0')}</td>
+                        <td width="42">${builderPremiumIcon(icon, '#fff5eb', accent, 34, 19, 10, '0')}</td>
                         <td><div style="font-size:11px;font-weight:700;color:#0b1d3a;line-height:1.25;">${builderEsc(title)}</div><div style="font-size:9px;color:#4a6080;line-height:1.35;">${builderEsc(text)}</div></td>
                     </tr>
                 </table>
@@ -1509,7 +1512,7 @@ function builderPremiumPlumberHeroScoreHtml(block) {
                                             <div style="width:98px;height:98px;border-radius:50%;background:${accent};padding:7px;box-shadow:0 18px 40px rgba(244,124,32,.18);"><div style="width:84px;height:84px;border-radius:50%;background:#ffffff;text-align:center;padding-top:22px;"><div style="font-size:24px;line-height:1;font-weight:700;letter-spacing:-1px;color:#0b1d3a;">${builderEsc(block.score)}</div><div style="font-size:11px;font-weight:700;color:#4a6080;">/ 100</div></div></div>
                                             <div style="font-size:8px;color:#4a6080;font-weight:700;padding-top:8px;letter-spacing:.08em;text-transform:uppercase;line-height:1.3;">${builderEsc(block.scoreLabel)}</div>
                                         </td>
-                                        <td width="62%" valign="middle"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">${row(block.check1Title, block.check1Text, 'C')}${row(block.check2Title, block.check2Text, 'M')}${row(block.check3Title, block.check3Text, 'T', false)}</table></td>
+                                        <td width="62%" valign="middle"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">${row(block.check1Title, block.check1Text, 'scorecard-cta-visibility')}${row(block.check2Title, block.check2Text, 'scorecard-mobile-quote')}${row(block.check3Title, block.check3Text, 'scorecard-trust-proof', false)}</table></td>
                                     </tr>
                                 </table>
                             </div>
