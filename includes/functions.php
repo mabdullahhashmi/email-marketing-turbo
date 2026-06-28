@@ -336,6 +336,9 @@ function mailpilotBuilderFaIconName($label) {
         'more leads' => 'chart-line',
         'lead' => 'chart-line',
         'leads' => 'chart-line',
+        'hero-more-leads' => 'hero-more-leads',
+        'hero-lower-cost' => 'hero-lower-cost',
+        'hero-more-booked' => 'hero-more-booked',
         '$' => 'dollar-sign',
         'cost' => 'dollar-sign',
         'lower cost' => 'dollar-sign',
@@ -455,7 +458,7 @@ function mailpilotBuilderPremiumBlockHtml($block, $state) {
                     <span style="display:inline-block;padding:7px 13px;border-radius:999px;background:#fff5eb;color:' . $accent . ';font-size:10px;font-weight:700;line-height:1;letter-spacing:.12em;text-transform:uppercase;border:1px solid #fbd6bd;">' . $esc('pill') . '</span>
                     <div style="font-size:24px;line-height:1.10;font-weight:700;letter-spacing:-1.2px;margin:0;padding-top:22px;color:#ffffff;">' . $esc('title') . ' <span style="color:#f99148;">' . $esc('titleAccent') . '</span></div>
                     <div style="font-size:14px;line-height:1.72;margin:0;padding-top:18px;color:#dbeafe;">' . $lines('text') . '</div>
-                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top:30px;"><tr>' . $stat($get('stat1Title'), $get('stat1Text'), '+') . $stat($get('stat2Title'), $get('stat2Text'), '$') . $stat($get('stat3Title'), $get('stat3Text'), 'B') . '</tr></table>
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top:30px;"><tr>' . $stat($get('stat1Title'), $get('stat1Text'), 'hero-more-leads') . $stat($get('stat2Title'), $get('stat2Text'), 'hero-lower-cost') . $stat($get('stat3Title'), $get('stat3Text'), 'hero-more-booked') . '</tr></table>
                     <div style="padding-top:24px;"><a href="' . $attr('heroButtonUrl', 'https://calendly.com/mu-abdullahhashmi/30min?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_leak_audit') . '" style="display:inline-block;background:' . $accent . ';color:#ffffff;text-decoration:none;padding:13px 17px;border-radius:8px;font-size:10px;line-height:1.3;font-weight:700;margin:0 7px 7px 0;">' . $esc('heroButtonText', 'Book Free Audit') . ' &#8594;</a><a href="' . $attr('heroSecondaryButtonUrl', 'https://abdullahhashmi.com/plumbers-growth-expert/?utm_source=mailpilot&utm_medium=email&utm_campaign=plumber_premium_how_it_works') . '" style="display:inline-block;background:#ffffff;color:#0b1d3a;text-decoration:none;padding:12px 16px;border-radius:8px;border:1px solid #dbeafe;font-size:10px;line-height:1.3;font-weight:700;margin:0 0 7px 0;">' . $esc('heroSecondaryButtonText', 'See How It Works') . '</a></div>
                     <div style="margin-top:19px;height:1px;background:rgba(255,255,255,.14);line-height:1px;font-size:1px;">&nbsp;</div>
                     <div style="padding-top:14px;color:' . $muted . ';font-size:12px;line-height:1.55;"><span style="width:7px;height:7px;display:inline-block;border-radius:50%;background:#fb923c;vertical-align:middle;margin-right:8px;"></span>' . $esc('note') . '</div>
