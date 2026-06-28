@@ -6,7 +6,7 @@
 function seedHVACColdOutreachTemplates() {
     ensureCampaignTemplatesTable();
 
-    $version = '12';
+    $version = '13';
     $currentVersion = null;
     try {
         $currentVersion = dbFetchValue("SELECT setting_value FROM settings WHERE setting_key = 'hvac_template_pack_version' LIMIT 1");

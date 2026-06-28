@@ -874,11 +874,8 @@ function mailpilotRenderBuilderHtml($html, $force = false) {
         return mailpilotBuilderGenerateHtml($state);
     }
 
-    $hasPlaceholder = strpos((string)$html, 'Open this saved template in the Mailpilot builder') !== false;
-    if (!$force && !$hasPlaceholder) {
-        return $html;
-    }
-
+    // Builder state is the source of truth. Regenerate so saved templates and
+    // scheduled campaigns receive renderer fixes instead of stale embedded HTML.
     return mailpilotBuilderStateToHtml($state);
 }
 
