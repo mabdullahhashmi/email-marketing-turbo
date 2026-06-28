@@ -1718,7 +1718,7 @@ function builderPremiumPlumberFooterHtml(block) {
                     <td class="mp-hide-mobile" width="4%" style="border-left:1px solid #dde5f0;font-size:1px;line-height:1px;">&nbsp;</td>
                     <td class="mp-stack mp-mobile-top" width="48%" valign="top" style="padding-left:24px;">
                         <div style="font-size:16px;line-height:1.35;font-weight:700;color:#1e3048;">${builderEsc(block.title)}</div>
-                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-top:12px;"><tr><td style="font-size:18px;padding:4px 10px 4px 0;color:${accent};font-weight:700;">${builderPremiumIconSymbol('P', accent, 18)}</td><td style="font-size:12px;line-height:1.55;color:#0d2347;">${builderEsc(block.phone)}</td></tr></table>
+                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin-top:12px;"><tr><td style="font-size:20px;padding:4px 10px 4px 0;color:${accent};font-weight:700;">${builderPremiumIconSymbol('scorecard-calls', accent, 20)}</td><td style="font-size:12px;line-height:1.55;color:#0d2347;">${builderEsc(block.phone)}</td></tr></table>
                     </td>
                 </tr>
             </table>
