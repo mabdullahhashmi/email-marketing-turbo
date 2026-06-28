@@ -262,6 +262,12 @@ body, table, td, div, span, a { font-family: inherit; }
     .mp-mobile-light { background-color:#ffffff !important; background-image:linear-gradient(#ffffff,#ffffff) !important; color:#0b1d3a !important; }
     .mp-mobile-soft { background-color:#f7f9fc !important; background-image:linear-gradient(#f7f9fc,#f7f9fc) !important; color:#0b1d3a !important; }
     .mp-mobile-center { text-align:center !important; }
+    .mp-cta-wrap { padding-left:16px !important; padding-right:16px !important; }
+    .mp-cta-cell { box-sizing:border-box !important; padding:22px 18px 10px 18px !important; text-align:center !important; width:100% !important; }
+    .mp-cta-action { box-sizing:border-box !important; padding:12px 18px 22px 18px !important; text-align:center !important; width:100% !important; }
+    .mp-cta-title { margin:0 auto !important; max-width:290px !important; text-align:center !important; overflow-wrap:break-word !important; }
+    .mp-cta-copy { margin:0 auto !important; max-width:320px !important; text-align:center !important; overflow-wrap:break-word !important; }
+    .mp-cta-button { box-sizing:border-box !important; max-width:100% !important; text-align:center !important; white-space:normal !important; }
 }
 </style>';
 }
@@ -498,7 +504,7 @@ function mailpilotBuilderPremiumBlockHtml($block, $state) {
     if ($type === 'premiumPlumberFinalCta') {
         $padding = mailpilotBuilderNum($get('padding', 28));
         $accent = $attr('accent', '#f47c20');
-        return '<tr><td style="padding:0 28px ' . $padding . 'px 28px;background:#ffffff;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:' . $attr('bg', '#fff5eb') . ';border-radius:18px;border:1px solid ' . $attr('border', '#fbd6bd') . ';border-collapse:separate;"><tr><td class="mp-stack" width="62%" style="padding:24px 22px;"><div style="font-size:15px;line-height:1.18;font-weight:700;letter-spacing:-.45px;color:#1e3048;">' . $esc('title') . '</div><div style="font-size:12px;line-height:1.55;color:#4a6080;padding-top:8px;">' . $lines('text') . '</div></td><td class="mp-stack mp-center-mobile" align="right" style="padding:24px 22px;"><a href="' . $attr('buttonUrl', '#') . '" style="display:inline-block;background:' . $accent . ';color:#ffffff;text-decoration:none;padding:15px 23px;border-radius:8px;font-size:10px;font-weight:700;letter-spacing:.01em;box-shadow:0 12px 30px rgba(244,124,32,.24);">' . $esc('buttonText') . ' &#8594;</a><div style="font-size:10px;line-height:1.45;color:#4a6080;padding-top:8px;">' . $esc('note') . '</div></td></tr></table></td></tr>';
+        return '<tr><td class="mp-cta-wrap" style="padding:0 28px ' . $padding . 'px 28px;background:#ffffff;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;background:' . $attr('bg', '#fff5eb') . ';border-radius:18px;border:1px solid ' . $attr('border', '#fbd6bd') . ';border-collapse:separate;table-layout:fixed;"><tr><td class="mp-stack mp-cta-cell" width="62%" align="left" valign="middle" style="box-sizing:border-box;padding:24px 22px;"><div class="mp-cta-title" style="font-size:15px;line-height:1.28;font-weight:700;letter-spacing:0;color:#1e3048;">' . $esc('title') . '</div><div class="mp-cta-copy" style="font-size:12px;line-height:1.55;color:#4a6080;padding-top:8px;">' . $lines('text') . '</div></td><td class="mp-stack mp-center-mobile mp-cta-action" width="38%" align="right" valign="middle" style="box-sizing:border-box;padding:24px 22px;"><a class="mp-cta-button" href="' . $attr('buttonUrl', '#') . '" style="display:inline-block;background:' . $accent . ';color:#ffffff;text-decoration:none;padding:15px 18px;border-radius:8px;font-size:10px;line-height:1.35;font-weight:700;letter-spacing:0;box-shadow:0 12px 30px rgba(244,124,32,.24);white-space:normal;">' . $esc('buttonText') . ' &#8594;</a><div style="font-size:10px;line-height:1.45;color:#4a6080;padding-top:8px;text-align:center;">' . $esc('note') . '</div></td></tr></table></td></tr>';
     }
 
     if ($type === 'premiumPlumberFooter') {
